@@ -1,0 +1,64 @@
+<?xml version = "1.0" encoding = "utf-8"?>
+<!DOCTYPE hibernate-configuration SYSTEM 
+"http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <property name = "hibernate.dialect">
+            org.hibernate.dialect.PostgreSQLDialect
+        </property>
+        <property name = "hibernate.connection.driver_class">
+            org.postgresql.Driver
+        </property>
+        
+        <!-- Assume test is the database name -->
+        <property name = "hibernate.connection.url">
+            jdbc:postgresql://localhost:5432/sigadtestdb
+        </property>
+        <property name = "hibernate.connection.username">
+            postgres
+        </property>
+        <property name = "hibernate.connection.password">
+            root
+        </property>
+
+        <property name="show_sql">true</property>
+        <property name="hbm2ddl.auto">create</property>
+
+
+        <!-- List of XML mapping files -->
+        <mapping class="com.sigad.sigad.business.Constante"/>
+        <mapping class="com.sigad.sigad.business.Perfil"/>
+        <mapping class="com.sigad.sigad.business.Usuario"/>
+        <mapping class="com.sigad.sigad.business.ClienteFecha"/>
+        <mapping class="com.sigad.sigad.business.ClienteDireccion"/>
+        <mapping class="com.sigad.sigad.business.Insumo"/>
+        <mapping class="com.sigad.sigad.business.Tienda"/>
+        <mapping class="com.sigad.sigad.business.CapacidadTienda"/>
+        <mapping class="com.sigad.sigad.business.Vehiculo$Tipo"/>
+        <mapping class="com.sigad.sigad.business.Vehiculo"/>
+        
+        <mapping class="com.sigad.sigad.business.OrdenCompra"/>
+        <mapping class="com.sigad.sigad.business.DetalleOrdenCompra"/>
+        <mapping class="com.sigad.sigad.business.Insumo"/>
+        <mapping class="com.sigad.sigad.business.LoteInsumo"/>
+        <mapping class="com.sigad.sigad.business.LoteTienda"/>
+        <mapping class="com.sigad.sigad.business.Producto"/>
+        <mapping class="com.sigad.sigad.business.ProductoPrecio"/>
+        <mapping class="com.sigad.sigad.business.ProductoCategoria"/>
+        <mapping class="com.sigad.sigad.business.ProductoFragilidad"/>
+        <mapping class="com.sigad.sigad.business.Proveedor"/> 
+        <!--
+        <mapping class="com.sigad.sigad.business.Grupo"/>
+        <mapping class="com.sigad.sigad.business.Permiso"/>
+        <mapping class="com.sigad.sigad.business.Persona"/>
+        <mapping class="com.sigad.sigad.business.PersonaNatural"/>
+        <mapping class="com.sigad.sigad.business.PersonaJuridica"/>
+        <mapping class="com.sigad.sigad.business.Cliente"/>
+        <mapping class="com.sigad.sigad.business.Empleado"/>
+        <mapping class="com.sigad.sigad.business.FechaImportante"/>
+        <mapping class="com.sigad.sigad.business.HorarioLaboral"/>
+        <mapping class="com.sigad.sigad.business.Locacion"/>
+        <mapping class="com.sigad.sigad.business.TarjetaCredito"/>
+        -->
+    </session-factory>
+</hibernate-configuration>
