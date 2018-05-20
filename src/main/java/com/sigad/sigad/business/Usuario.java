@@ -8,10 +8,12 @@ package com.sigad.sigad.business;
 import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
@@ -45,7 +47,14 @@ public class Usuario {
     private Set<ClienteFecha> clienteFechas = new HashSet<ClienteFecha>();
     @OneToMany(mappedBy="usuario")
     private Set<ClienteDireccion> clienteDirecciones = new HashSet<ClienteDireccion>();
-
+    @OneToMany(mappedBy="id.insumo")
+    private Set<CapacidadTienda> capacidadTiendas = new HashSet<CapacidadTienda>();
+    @OneToMany(mappedBy = "cliente")
+    private Set<Pedido> pedidoCliente = new HashSet<Pedido>();
+    
+    @ManyToMany(mappedBy = "usuarios", cascade = { CascadeType.ALL })
+    private Set<ProductoDescuento> descuentos = new HashSet<ProductoDescuento>();
+    
     /**
      * Constructor.
      */
@@ -231,5 +240,45 @@ public class Usuario {
         }
     }
 
-    
+    /**
+     * @return the capacidadTiendas
+     */
+    public Set<CapacidadTienda> getCapacidadTiendas() {
+        return capacidadTiendas;
+    }
+
+    /**
+     * @param capacidadTienda the capacidadTienda to add
+     */
+    public void addCapacidadTienda(CapacidadTienda capacidadTienda) {
+        capacidadTiendas.add(capacidadTienda);
+    }
+
+    /**
+     * @return the pedidoCliente
+     */
+//    public Set<Pedido> getPedidoCliente() {
+//        return pedidoCliente;
+//    }
+
+    /**
+     * @param pedidoCliente the pedidoCliente to set
+     */
+//    public void setPedidoCliente(Set<Pedido> pedidoCliente) {
+//        this.pedidoCliente = pedidoCliente;
+//    }
+
+    /**
+     * @return the descuentos
+     */
+//    public Set<ProductoDescuento> getDescuentos() {
+//        return descuentos;
+//    }
+
+    /**
+     * @param descuentos the descuentos to set
+     */
+//    public void setDescuentos(Set<ProductoDescuento> descuentos) {
+//        this.descuentos = descuentos;
+//    }
 }

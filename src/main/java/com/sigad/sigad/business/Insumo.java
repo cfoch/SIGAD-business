@@ -8,6 +8,7 @@ package com.sigad.sigad.business;
 import java.util.HashSet;
 import java.util.Set;
 import javax.validation.constraints.NotNull;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -23,6 +24,7 @@ public class Insumo {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
+
     @NotNull
     private String nombre;
     private String imagen;
@@ -169,4 +171,5 @@ public class Insumo {
     public void setVolumen(boolean volumen) {
         this.volumen = volumen;
     }
+
 }
