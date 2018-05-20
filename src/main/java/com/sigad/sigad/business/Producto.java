@@ -200,6 +200,4 @@ public class Producto {
     public void setVolumen(double volumen) {
         this.volumen = volumen;
     }
-
-    
 }

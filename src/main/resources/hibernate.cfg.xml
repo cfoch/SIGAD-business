@@ -47,6 +47,19 @@
         <mapping class="com.sigad.sigad.business.ProductoCategoria"/>
         <mapping class="com.sigad.sigad.business.ProductoFragilidad"/>
         <mapping class="com.sigad.sigad.business.Proveedor"/> 
+        
+        <mapping class="com.sigad.sigad.business.ProductoDescuento"/>
+        <mapping class="com.sigad.sigad.business.DetallePedido"/>
+        <mapping class="com.sigad.sigad.business.DetalleReparto"/>
+        <mapping class="com.sigad.sigad.business.EstadoPedido"/>
+        <mapping class="com.sigad.sigad.business.PedidoEstado"/>
+        <mapping class="com.sigad.sigad.business.Producto"/>
+        <mapping class="com.sigad.sigad.business.ProductoDescuento"/>
+        <mapping class="com.sigad.sigad.business.ProductoInsumo"/>
+        <mapping class="com.sigad.sigad.business.Reparto"/>
+        <mapping class="com.sigad.sigad.business.Pedido"/>
+        <mapping class="com.sigad.sigad.business.TipoPago"/>
+        
         <!--
         <mapping class="com.sigad.sigad.business.Grupo"/>
         <mapping class="com.sigad.sigad.business.Permiso"/>

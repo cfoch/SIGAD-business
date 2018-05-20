@@ -5,7 +5,7 @@
  */
 package com.sigad.sigad.business;
 
-
+import javax.validation.constraints.NotNull;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;

@@ -5,27 +5,33 @@
  */
 package com.sigad.sigad.business;
 
+import java.sql.Time;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 
 /**
  *
- * @author cfoch
+ * @author Alexandra
  */
 @Entity
-public class TipoPago {
+public class PedidoEstado {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
+    @NotNull
+    private String nombre;
+
     private String descripcion;
 
-    /**
-     * Constructor.
-     */
-    public TipoPago() {
+    public PedidoEstado() {
     }
+
+    
     
     /**
      * @return the id
@@ -35,10 +41,17 @@ public class TipoPago {
     }
 
     /**
-     * @param id the id to set
+     * @return the nombre
      */
-    public void setId(Long id) {
-        this.id = id;
+    public String getNombre() {
+        return nombre;
+    }
+
+    /**
+     * @param nombre the nombre to set
+     */
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
     /**
@@ -54,4 +67,5 @@ public class TipoPago {
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
+
 }
