@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXPasswordField?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import java.net.URL?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+
+<StackPane fx:id="hiddenSp" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sigad.sigad.app.controller.LoginController">
+   <children>
+      <AnchorPane id="AnchorPane" prefHeight="552.0" prefWidth="1080.0" style="-fx-background-color: #455A64;" styleClass="mainFxmlClass">
+          <stylesheets>
+              <URL value="@/styles/login.css" />
+          </stylesheets>
+         <children>
+            <ImageView fitHeight="554.0" fitWidth="1086.0" layoutX="167.0" layoutY="105.0" opacity="0.23" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <image>
+                  <Image url="@../../../../../img/flores.jpg" />
+               </image>
+            </ImageView>
+            <AnchorPane layoutX="542.0" layoutY="-22.0" prefHeight="552.0" prefWidth="483.0" style="-fx-background-color: white;" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <JFXTextField fx:id="userTxt" layoutX="60.0" layoutY="151.0" prefHeight="55.0" prefWidth="295.0" promptText="Usuario" AnchorPane.leftAnchor="60.0" AnchorPane.rightAnchor="60.0" />
+                  <JFXPasswordField fx:id="passwordTxt" layoutX="56.0" layoutY="267.0" prefHeight="55.0" prefWidth="295.0" promptText="Contraseña" AnchorPane.leftAnchor="60.0" AnchorPane.rightAnchor="60.0" />
+                  <JFXButton alignment="CENTER" layoutX="58.0" layoutY="396.0" onMouseClicked="#loginClicked" prefHeight="43.0" prefWidth="363.0" style="-fx-background-color: #455A64;" text="Continuar" textFill="WHITE" AnchorPane.leftAnchor="58.0" AnchorPane.rightAnchor="62.0" />
+                  <Label layoutX="213.0" layoutY="64.0" text="Sign in">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="187.0" layoutY="465.0" onMouseClicked="#recoverPasswordClicked" text="Olvidé mi contraseaña" />
+               </children>
+            </AnchorPane>
+            <Label layoutX="126.0" layoutY="172.0" text="Bienvenido a MargaritaTel SA" textFill="WHITE" AnchorPane.leftAnchor="126.0">
+               <font>
+                  <Font size="28.0" />
+               </font>
+            </Label>
+            <Label layoutX="126.0" layoutY="232.0" prefHeight="64.0" prefWidth="392.0" text="Sistema de gestión del almacén. Si no dispones de una cuenta, regístrate aquí." textFill="WHITE" wrapText="true" />
+            <JFXButton alignment="CENTER" layoutX="128.0" layoutY="328.0" onMouseClicked="#signupClicked" prefHeight="43.0" prefWidth="363.0" style="-fx-background-color: white;" text="Sign up" AnchorPane.leftAnchor="128.0" AnchorPane.rightAnchor="700.0" />
+         </children>
+      </AnchorPane>
+   </children>
+</StackPane>
