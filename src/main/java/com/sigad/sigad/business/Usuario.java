@@ -5,9 +5,11 @@
  */
 package com.sigad.sigad.business;
 
+import com.jfoenix.controls.JFXComboBox;
 import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
+import javafx.fxml.FXML;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

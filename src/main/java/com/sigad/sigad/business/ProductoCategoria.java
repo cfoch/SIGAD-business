@@ -19,7 +19,7 @@ import javax.persistence.OneToMany;
  * @author jorgeespinoza
  */
 @Entity
-class ProductoCategoria {
+public class ProductoCategoria {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;

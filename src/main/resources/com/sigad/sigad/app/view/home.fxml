@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIconView?>
+<?import java.net.URL?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane id="AnchorPane" prefHeight="720.0" prefWidth="1080.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sigad.sigad.app.controller.HomeController">
+    <stylesheets>
+        <URL value="@/styles/home.css" />
+    </stylesheets>
+    <children>
+       <AnchorPane fx:id="menuPanel" layoutX="24.0" layoutY="20.0" prefHeight="40.0" prefWidth="1080.0" style="-fx-background-color: #455A64; -fx-padding: 0px;" AnchorPane.leftAnchor="70.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+          <children>
+            <JFXButton fx:id="menuBtn" layoutX="10.0" layoutY="13.0" onMouseClicked="#menuBtnClicked" text="Menu" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <graphic>
+                  <MaterialDesignIconView fill="WHITE" glyphName="MENU" size="20" />
+               </graphic>
+            </JFXButton>
+            <JFXButton contentDisplay="RIGHT" layoutX="978.0" layoutY="7.0" text="Nombre Apellido" textFill="WHITE" textOverrun="CLIP" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <graphic>
+                  <MaterialDesignIconView fill="WHITE" glyphName="MENU_DOWN" size="20" />
+               </graphic>
+            </JFXButton>
+          </children>
+       </AnchorPane>
+      <AnchorPane fx:id="firstPane" layoutX="127.0" layoutY="88.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" style="-fx-background-color: black; -fx-padding: 0px;" AnchorPane.leftAnchor="70.0" AnchorPane.topAnchor="40.0" />
+       <AnchorPane fx:id="secondPane" layoutX="117.0" layoutY="78.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" style="-fx-background-color: green;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="70.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0" />
+      <Label fx:id="profileLbl" text="Perfil" textFill="WHITE" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="110.0" />
+      <Label fx:id="productLbl" layoutX="10.0" layoutY="10.0" text="Productos" textFill="WHITE" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="180.0" />
+      <Label fx:id="offertLbl" layoutX="10.0" layoutY="10.0" text="Promociones" textFill="WHITE" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="250.0" />
+      <Label fx:id="workersLbl" layoutX="10.0" layoutY="10.0" text="Personal" textFill="WHITE" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="320.0" />
+      <Label fx:id="settingsLbl" layoutX="10.0" layoutY="10.0" text="Configuraciones" textFill="WHITE" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="390.0" />
+      <AnchorPane style="-fx-background-color: white;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <JFXButton fx:id="profileBtn" onAction="#handleButtonAction" prefHeight="70.0" prefWidth="70.0" text=" " AnchorPane.topAnchor="80.0">
+               <graphic>
+                  <MaterialDesignIconView glyphName="ACCOUNT_CIRCLE" size="30" />
+               </graphic>
+            </JFXButton>
+            <JFXButton fx:id="productoBtn" onAction="#handleButtonAction" prefHeight="70.0" prefWidth="70.0" text=" " AnchorPane.topAnchor="150.0">
+               <graphic>
+                  <MaterialDesignIconView glyphName="CLIPBOARD_TEXT" size="30" />
+               </graphic>
+            </JFXButton>
+            <JFXButton fx:id="productoBtn1" onAction="#handleButtonAction" prefHeight="70.0" prefWidth="70.0" text=" " AnchorPane.topAnchor="220.0">
+               <graphic>
+                  <MaterialDesignIconView glyphName="EYE" size="30" />
+               </graphic>
+            </JFXButton>
+            <JFXButton fx:id="productoBtn2" onAction="#handleButtonAction" prefHeight="70.0" prefWidth="70.0" text=" " AnchorPane.topAnchor="290.0">
+               <graphic>
+                  <MaterialDesignIconView glyphName="ACCOUNT_MULTIPLE" size="30" />
+               </graphic>
+            </JFXButton>
+            <JFXButton fx:id="productoBtn3" onAction="#handleButtonAction" prefHeight="70.0" prefWidth="70.0" text=" " AnchorPane.topAnchor="360.0">
+               <graphic>
+                  <MaterialDesignIconView glyphName="SETTINGS" size="30" />
+               </graphic>
+            </JFXButton>
+         </children>
+      </AnchorPane>
+    </children>
+</AnchorPane>
