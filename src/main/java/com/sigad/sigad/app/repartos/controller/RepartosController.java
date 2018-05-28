@@ -7,14 +7,19 @@ package com.sigad.sigad.app.repartos.controller;
 
 import com.jfoenix.controls.JFXListView;
 import com.sigad.sigad.app.controller.HomeController;
+import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 
 /**
@@ -107,6 +112,24 @@ public class RepartosController implements Initializable {
                     break;
                 }
                 case VEHICULOS_TIPO: {
+                    try {
+                        Node nd;
+                        URL resource;
+                        String resourcePath;
+                        FXMLLoader loader;
+
+                        resourcePath = VehiculoTipoController.VIEW_PATH;
+                        resource = getClass().getResource(resourcePath);
+
+                        loader = new FXMLLoader();
+
+                        nd = (Node) loader.load(resource);
+
+                        homeController.getFirstPanel().getChildren().setAll(nd);
+                    } catch (IOException ex) {
+                        Logger.getLogger(HomeController.class.getName())
+                                .log(Level.SEVERE, null, ex);
+                    }
                     break;
                 }
                 case VEHICULOS:

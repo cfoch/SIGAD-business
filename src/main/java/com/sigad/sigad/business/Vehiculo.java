@@ -32,6 +32,9 @@ public class Vehiculo {
         private String marca;
         private String modelo;
 
+        public Tipo() {
+        }
+
         public Tipo(String nombre, double pesoSoportado) {
             setNombre(nombre);
             //setPesoSoportado(pesoSoportado);
