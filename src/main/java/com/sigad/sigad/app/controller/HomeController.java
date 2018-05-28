@@ -7,20 +7,20 @@ package com.sigad.sigad.app.controller;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPopup;
+import com.sigad.sigad.app.repartos.controller.RepartosController;
 import com.sigad.sigad.business.Permiso;
 import com.sigad.sigad.business.helpers.PermisoHelper;
 import com.sigad.sigad.controller.cargaMasiva.CargaMasivaViewController;
-import com.sigad.sigad.personal.controller.PersonalController;
-import com.sigad.sigad.pedido.controller.SeleccionarProductosController;
 import com.sigad.sigad.deposito.controller.FXMLAlmacenIngresoListaOrdenCompraController;
+import com.sigad.sigad.pedido.controller.SeleccionarProductosController;
 import com.sigad.sigad.perfil.controller.PerfilController;
+import com.sigad.sigad.personal.controller.PersonalController;
 import com.sigad.sigad.tienda.controller.TiendaController;
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIconView;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -86,7 +86,8 @@ public class HomeController implements Initializable {
     }   
     
     private void initsidebar(){
-        
+        // TODO: Encontrar una manera más al estilo Java de hacer esto.
+        HomeController self = this;
         PermisoHelper helper = new PermisoHelper();
         ArrayList<Permiso> list = helper.getPermissions();
         
@@ -114,7 +115,22 @@ public class HomeController implements Initializable {
                             }else if(name.equals("Personal")){
                                 node = (Node) FXMLLoader.load(HomeController.this.getClass().getResource(PersonalController.viewPath));
                             }else if(name.equals("Repartos")){
-                
+                                URL resource;
+                                String resourcePath;
+                                FXMLLoader loader;
+                                RepartosController controller;
+
+                                resourcePath = RepartosController.VIEW_PATH;
+                                resource = getClass().getResource(resourcePath);
+
+                                loader = new FXMLLoader(resource);
+
+                                node = (Node) loader.load();
+                                controller = loader
+                                        .<RepartosController>getController();
+                                controller.setHomeController(self);
+
+                                getFirstPanel().getChildren().setAll(node);
                             }else if(name.equals("Pedidos")){
                                 node = (Node) FXMLLoader.load(HomeController.this.getClass().getResource(FXMLAlmacenIngresoListaOrdenCompraController.viewPath));
                             }else if(name.equals("Tiendas")){
@@ -191,13 +207,13 @@ public class HomeController implements Initializable {
         if(sidebarPane.getPrefWidth()==50){
             sidebarPane.setPrefWidth(200);
             AnchorPane.setLeftAnchor(menuPanel, 200.00);
-            AnchorPane.setLeftAnchor(firstPanel, 200.00);
+            AnchorPane.setLeftAnchor(getFirstPanel(), 200.00);
             
             addClassToContainer(Container.SIDEBAR,"active");
         }else{
             sidebarPane.setPrefWidth(50);
             AnchorPane.setLeftAnchor(menuPanel, 50.00);
-            AnchorPane.setLeftAnchor(firstPanel, 50.00);
+            AnchorPane.setLeftAnchor(getFirstPanel(), 50.00);
             
             removeClassFromContainer(Container.SIDEBAR,"active");
         }
@@ -266,6 +282,20 @@ public class HomeController implements Initializable {
         
         popup = new JFXPopup();
         popup.setPopupContent(vBox);
+    }
+
+    /**
+     * @return the firstPanel
+     */
+    public AnchorPane getFirstPanel() {
+        return firstPanel;
+    }
+
+    /**
+     * @param firstPanel the firstPanel to set
+     */
+    public void setFirstPanel(AnchorPane firstPanel) {
+        this.firstPanel = firstPanel;
     }
     
 //    public static void changeChildren(Node node){

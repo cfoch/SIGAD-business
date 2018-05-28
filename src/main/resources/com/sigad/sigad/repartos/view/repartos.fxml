@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import com.jfoenix.controls.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+
+<AnchorPane id="AnchorPane" prefHeight="680.0" prefWidth="1030.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sigad.sigad.app.repartos.controller.RepartosController">
+    <stylesheets>
+      <URL value="@/styles/repartos.css" />
+    </stylesheets>
+    <children>
+      <JFXListView fx:id="mainListView" layoutX="14.0" layoutY="14.0" prefHeight="268.0" prefWidth="318.0" />
+   </children>
+</AnchorPane>
