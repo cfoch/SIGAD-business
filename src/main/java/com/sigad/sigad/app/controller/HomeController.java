@@ -99,7 +99,7 @@ public class HomeController implements Initializable {
             }            
         }
         
-        for (int i = 0; i < list.size(); i++) {
+        for (int i = 0; i < list.size() && list != null; i++) {
             String name = list.get(i).getMenu();
             
             sidebarBtns.get(i).setOnAction(new EventHandler<ActionEvent>() {
