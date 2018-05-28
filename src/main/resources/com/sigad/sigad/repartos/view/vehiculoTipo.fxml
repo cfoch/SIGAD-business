@@ -17,6 +17,7 @@
          <children>
             <JFXNodesList />
             <JFXButton fx:id="listarBtn" onMouseClicked="#onListarButtonClicked" prefHeight="50.0" prefWidth="79.0" text="Listar" />
+            <JFXButton fx:id="nuevoBtn" onMouseClicked="#onNuevoButtonClicked" prefHeight="50.0" prefWidth="79.0" text="Nuevo" />
          </children>
          <opaqueInsets>
             <Insets />

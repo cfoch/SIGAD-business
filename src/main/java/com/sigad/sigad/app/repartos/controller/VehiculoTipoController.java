@@ -118,6 +118,7 @@ public class VehiculoTipoController implements Initializable {
             case EDITAR:
                 break;
             case CREAR:
+                setCrearNode();
                 break;
             case LISTAR:
                 setListarNode();
@@ -141,6 +142,23 @@ public class VehiculoTipoController implements Initializable {
 
         node = (Node) loader.load();
         controller = loader.<VehiculoTipoListaController>getController();
+        box.getChildren().setAll(node);
+    }
+
+    private void setCrearNode() throws IOException {
+        Node node;
+        URL resource;
+        String resourcePath;
+        FXMLLoader loader;
+        VehiculoTipoCrearController controller;
+
+        resourcePath = VehiculoTipoCrearController.VIEW_PATH;
+        resource = getClass().getResource(resourcePath);
+
+        loader = new FXMLLoader(resource);
+
+        node = (Node) loader.load();
+        controller = loader.<VehiculoTipoCrearController>getController();
         box.getChildren().setAll(node);
     }
 }
