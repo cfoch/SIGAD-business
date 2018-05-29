@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import com.jfoenix.controls.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<StackPane fx:id="stackPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sigad.sigad.app.repartos.controller.VehiculoTipoCrearController">
+   <children>
+      <AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0">
+         <children>
+            <TilePane layoutX="14.0" layoutY="14.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.topAnchor="14.0">
+               <children>
+                  <TilePane hgap="50.0" orientation="VERTICAL" prefHeight="314.0" prefWidth="567.0" style="-fx-background-color: ;">
+                     <children>
+                        <TilePane prefHeight="149.0" prefWidth="230.0" vgap="30.0">
+                           <children>
+                              <JFXTextField fx:id="nombreTxt" prefHeight="50.0" prefWidth="230.0" promptText="Nombre" />
+                              <JFXTextField fx:id="capacidadTxt" prefHeight="25.0" prefWidth="230.0" promptText="Capacidad" />
+                              <JFXTextField fx:id="marcaTxt" prefHeight="25.0" prefWidth="230.0" promptText="Marca" />
+                              <JFXTextField fx:id="modeloTxt" prefHeight="25.0" prefWidth="230.0" promptText="Modelo" />
+                           </children>
+                        </TilePane>
+                        <JFXTextArea fx:id="descripcionTxtArea" prefHeight="180.0" prefWidth="258.0" promptText="Descripción">
+                           <TilePane.margin>
+                              <Insets bottom="95.0" top="18.0" />
+                           </TilePane.margin>
+                        </JFXTextArea>
+                     </children>
+                  </TilePane>
+               </children>
+            </TilePane>
+         </children>
+      </AnchorPane>
+   </children>
+</StackPane>

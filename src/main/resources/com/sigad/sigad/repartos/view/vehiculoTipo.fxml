@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import com.jfoenix.controls.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<StackPane fx:id="stackPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sigad.sigad.app.repartos.controller.VehiculoTipoController">
+   <children>
+      <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="511.0" prefWidth="850.0" style="-fx-border-color: #C8C8C8;">
+         <center>
+            <VBox fx:id="box" prefHeight="200.0" prefWidth="0.0" style="-fx-background-color: #FFFFFF;" BorderPane.alignment="CENTER" />
+         </center>
+         <top>
+            <VBox>
+               <children>
+                  <HBox alignment="CENTER_RIGHT" prefHeight="50.0" prefWidth="0.0" spacing="10.0" style="-fx-background-color: #FFFFFF;" BorderPane.alignment="CENTER">
+                     <children>
+                        <JFXButton fx:id="menuBtn" onMouseClicked="#onMenuBtnClicked" prefHeight="25.0" prefWidth="25.0" text=":" />
+                        <JFXNodesList />
+                     </children>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                  </HBox>
+                  <VBox prefHeight="25.0" prefWidth="0.0" style="-fx-background-color: #ECEFF1; -fx-border-width: 1 0 1 0; -fx-border-color: #C8C8C8;" />
+               </children>
+            </VBox>
+         </top>
+      </BorderPane>
+   </children>
+</StackPane>
