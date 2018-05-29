@@ -39,7 +39,7 @@ public class Perfil {
      */
     public Perfil() {
     }
-    
+
     public Perfil(String nombre, String descripcion, boolean activo) {
         this.nombre = nombre;
         this.descripcion = descripcion;

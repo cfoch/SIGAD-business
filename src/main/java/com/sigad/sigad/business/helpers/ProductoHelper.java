@@ -3,12 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.sigad.sigad.pedido.helper;
+package com.sigad.sigad.business.helpers;
 
 import com.sigad.sigad.app.controller.LoginController;
 import com.sigad.sigad.business.Producto;
 import java.util.ArrayList;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
 /**
@@ -18,7 +19,8 @@ import org.hibernate.query.Query;
 public class ProductoHelper {
 
     Session session = null;
-    
+    private String errorMessage = "";
+
     public ProductoHelper() {
         session = LoginController.serviceInit();
         session.beginTransaction();
@@ -28,22 +30,47 @@ public class ProductoHelper {
 //        session.save(prod);
 //        session.save(prod2);
     }
-    
-    public ArrayList<Producto> getProducts(){
+
+    public ArrayList<Producto> getProducts() {
         ArrayList<Producto> list = null;
         try {
-            Query query  = session.createQuery("from Producto");
-            
-            if(!query.list().isEmpty()){
-                list= (ArrayList<Producto>) query.list();
+            Query query = session.createQuery("from Producto");
+
+            if (!query.list().isEmpty()) {
+                list = (ArrayList<Producto>) query.list();
             }
         } catch (Exception e) {
+            session.getTransaction().rollback();
+            System.out.println("Error: " + e.getMessage());
+            errorMessage = e.getMessage();
         }
-        
-        return list;
-    };
 
-    public void close(){
+        return list;
+
+    }
+
+    ;
+    
+    public Producto getProductById(Integer id) {
+        Producto product = null;
+        Query query = null;
+        try {
+            query = session.createQuery("from Producto where id='" + id + "'");
+
+            if (!query.list().isEmpty()) {
+                product = (Producto) query.list().get(0);
+            }
+        } catch (Exception e) {
+            
+            System.out.println("Error: " + e.getMessage());
+            this.errorMessage = e.getMessage();
+        } 
+        return product;
+    }
+
+    ;
+
+    public void close() {
         session.getTransaction().commit();
     }
 }

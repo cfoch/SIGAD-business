@@ -9,55 +9,60 @@
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.effect.Shadow?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="anchorPane" prefHeight="680.0" prefWidth="1010.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sigad.sigad.pedido.controller.SeleccionarProductosController">
-    <stylesheets>
-        <URL value="@/styles/pedido.css" />
-    </stylesheets>
+<StackPane fx:id="stackPane" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sigad.sigad.pedido.controller.SeleccionarProductosController"> 
     <children>
-        <Label layoutX="31.0" layoutY="308.0" text="Productos con Stock">
-            <font>
-                <Font name="System Bold" size="18.0" />
-            </font>
-        </Label>
-        <JFXTreeTableView id="tablaProductos" fx:id="treeView" layoutX="47.0" layoutY="354.0" prefHeight="243.0" prefWidth="916.0" AnchorPane.leftAnchor="47.0" AnchorPane.rightAnchor="47.0">
-            <effect>
-                <DropShadow color="#00000093" />
-            </effect>
-        </JFXTreeTableView>
-      <JFXButton id="btnContinuar" fx:id="btnContinuar" buttonType="RAISED" layoutX="851.0" layoutY="619.0" style="-fx-background-color: #FFFFFF;" text="Continuar">
-         <font>
-            <Font size="15.0" />
-         </font>
-         <effect>
-            <DropShadow color="#00000036">
-               <input>
-                  <Shadow />
-               </input>
-            </DropShadow>
-         </effect>
-      </JFXButton>
-      <JFXTextField id="filtro" fx:id="filtro" layoutX="803.0" layoutY="301.0" />
-      <Label layoutX="729.0" layoutY="301.0" text="Buscar :" textAlignment="CENTER" textOverrun="CENTER_ELLIPSIS">
-         <font>
-            <Font name="System Italic" size="15.0" />
-         </font>
-         <effect>
-            <Bloom threshold="0.23" />
-         </effect>
-      </Label>
-      <Label layoutX="27.0" layoutY="43.0" text="Carrito">
-         <font>
-            <Font name="System Bold" size="18.0" />
-         </font>
-      </Label>
-      <JFXTreeTableView id="tablaPedidos" fx:id="treeViewPedido" layoutX="47.0" layoutY="70.0" prefHeight="219.0" prefWidth="678.0">
-         <effect>
-            <DropShadow color="#00000093" />
-         </effect>
-      </JFXTreeTableView>
-      <Label layoutX="755.0" layoutY="90.0" prefHeight="27.0" prefWidth="40.0" text="Total :" />
-      <Label id="lblTotal" fx:id="lblTotal" layoutX="795.0" layoutY="95.0" text="0.0" />
+        <AnchorPane id="AnchorPane" fx:id="anchorPane" prefHeight="680.0" prefWidth="1010.0" styleClass="mainFxmlClass" >
+            <stylesheets>
+                <URL value="@/styles/pedido.css" />
+            </stylesheets>
+            <children>
+                <Label layoutX="31.0" layoutY="308.0" text="Productos con Stock">
+                    <font>
+                        <Font name="System Bold" size="18.0" />
+                    </font>
+                </Label>
+                <JFXTreeTableView id="tablaProductos" fx:id="treeView" layoutX="47.0" layoutY="354.0" prefHeight="243.0" prefWidth="916.0" AnchorPane.leftAnchor="47.0" AnchorPane.rightAnchor="47.0">
+                    <effect>
+                        <DropShadow color="#00000093" />
+                    </effect>
+                </JFXTreeTableView>
+                <JFXButton id="btnContinuar" fx:id="btnContinuar" buttonType="RAISED" layoutX="851.0" layoutY="619.0" style="-fx-background-color: #FFFFFF;" text="Continuar">
+                    <font>
+                        <Font size="15.0" />
+                    </font>
+                    <effect>
+                        <DropShadow color="#00000036">
+                            <input>
+                                <Shadow />
+                            </input>
+                        </DropShadow>
+                    </effect>
+                </JFXButton>
+                <JFXTextField id="filtro" fx:id="filtro" layoutX="803.0" layoutY="301.0" />
+                <Label layoutX="729.0" layoutY="301.0" text="Buscar :" textAlignment="CENTER" textOverrun="CENTER_ELLIPSIS">
+                    <font>
+                        <Font name="System Italic" size="15.0" />
+                    </font>
+                    <effect>
+                        <Bloom threshold="0.23" />
+                    </effect>
+                </Label>
+                <Label layoutX="27.0" layoutY="43.0" text="Carrito">
+                    <font>
+                        <Font name="System Bold" size="18.0" />
+                    </font>
+                </Label>
+                <JFXTreeTableView id="tablaPedidos" fx:id="treeViewPedido" layoutX="47.0" layoutY="70.0" prefHeight="219.0" prefWidth="678.0">
+                    <effect>
+                        <DropShadow color="#00000093" />
+                    </effect>
+                </JFXTreeTableView>
+                <Label layoutX="755.0" layoutY="90.0" prefHeight="27.0" prefWidth="40.0" text="Total :" />
+                <Label id="lblTotal" fx:id="lblTotal" layoutX="795.0" layoutY="95.0" text="0.0" />
+            </children>
+        </AnchorPane>
     </children>
-</AnchorPane>
+</StackPane>
