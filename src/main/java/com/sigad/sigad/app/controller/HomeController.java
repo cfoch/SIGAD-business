@@ -67,8 +67,8 @@ public class HomeController implements Initializable {
     private AnchorPane menuPanel;
     @FXML
     private JFXPopup popup;
-    public static final int SIDEBAR_BUTTON_HEIGHT = 70;
-    public static final int SIDEBAR_BUTTON_GAP = 20;
+    public static final int SIDEBAR_BUTTON_HEIGHT = 50;
+    public static final int SIDEBAR_BUTTON_GAP = 0;
     public static final Pos SIDEBAR_BUTTON_ALIGNMENT = Pos.BASELINE_LEFT;
     public static final String SIDEBAR_BUTTON_ICON_SIZE = "30";
  
@@ -99,7 +99,7 @@ public class HomeController implements Initializable {
             }            
         }
         
-        for (int i = 0; i < list.size(); i++) {
+        for (int i = 0; i < list.size() && list != null; i++) {
             String name = list.get(i).getMenu();
             
             sidebarBtns.get(i).setOnAction(new EventHandler<ActionEvent>() {
@@ -167,7 +167,8 @@ public class HomeController implements Initializable {
         
         sidebarPane.getChildren().add(newButton);   
         
-        AnchorPane.setTopAnchor(newButton, baseTop + 70*(count));
+        AnchorPane.setTopAnchor(
+                newButton, baseTop + SIDEBAR_BUTTON_HEIGHT * (count));
         AnchorPane.setLeftAnchor(newButton, 0.0);
         AnchorPane.setRightAnchor(newButton, 0.0);
     }
