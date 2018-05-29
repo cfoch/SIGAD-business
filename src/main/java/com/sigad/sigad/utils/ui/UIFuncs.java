@@ -83,6 +83,7 @@ public class UIFuncs {
             public static final String CANCELAR = "Cancelar";
             public static final String CERRAR = "Cerrar";
             public static final String CREAR = "Crear";
+            public static final String EDITAR = "Editar";
         }
 
         public static class MESSAGES {
@@ -91,8 +92,14 @@ public class UIFuncs {
             public static final String CRUD_DELETE_ERROR =
                     "No se pudo borrar este elemento. ¿Tal vez otros dependen "
                     + "de este?";
+            public static final String CRUD_UPDATE_ERROR =
+                    "Lo sentimos. Hubo un problema al intentar actualizar este "
+                    + "elemento. ¿Existe?";
+
             public static final String CRUD_CREATE_SUCCESS =
                     "Creación exitosa.";
+            public static final String CRUD_UPDATE_SUCCESS =
+                    "Este element ha sido actualizado con éxito.";
             public static final String CRUD_DELETE_SUCCESS =
                     "Este elemento ha sido borrado con éxito.";
         }

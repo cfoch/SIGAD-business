@@ -118,8 +118,10 @@ public class VehiculoTipoListaController implements Initializable {
             menuFactory = mainController.getMenuFactory();
             if (newSelection == null) {
                 menuFactory.getButton(Modo.BORRAR).setDisable(true);
+                menuFactory.getButton(Modo.EDITAR).setDisable(true);
             } else {
                 menuFactory.getButton(Modo.BORRAR).setDisable(false);
+                menuFactory.getButton(Modo.EDITAR).setDisable(false);
             }
             if (newSelection != null && mainController != null) {
                 menuFactory.getButton(Modo.BORRAR).setOnAction((evt) -> {
@@ -177,6 +179,17 @@ public class VehiculoTipoListaController implements Initializable {
         } finally {
             session.close();
         }
+    }
+
+    public Long getSelectedId() {
+        int i;
+        VehiculoTipoInfo info;
+        i = treeView.getSelectionModel().getSelectedIndex();
+        info = infos.get(i);
+        if (info == null) {
+            return null;
+        }
+        return new Long(info.id.getValue());
     }
 
     private List<Vehiculo.Tipo> getData() throws Exception {

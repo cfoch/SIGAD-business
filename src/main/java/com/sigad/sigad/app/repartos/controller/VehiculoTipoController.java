@@ -16,7 +16,6 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -59,6 +58,7 @@ public class VehiculoTipoController implements Initializable {
     private StackPane stackPane;
 
     private SimplePopupMenuFactory<Modo> menuFactory;
+    private VehiculoTipoListaController listarController;
 
     /**
      * Initializes the controller class.
@@ -75,36 +75,11 @@ public class VehiculoTipoController implements Initializable {
 
         resetMenuBtnVisibility();
 
-        getMenuFactory().getButton(Modo.CREAR).setOnAction(
-                new EventHandler<ActionEvent>() {
-            @Override public void handle(ActionEvent e) {
-                try {
-                    JFXDialog dialog;
-                    Node node;
-                    VehiculoTipoCrearController controller;
-                    JFXButton button = new JFXButton(Dialogs.BUTTON.CREAR);
-                    FXMLLoader loader = getCrearLoader();
-                    node = (Node) loader.load();
-                    controller = loader.<VehiculoTipoCrearController>getController();
-                    controller.setCrearButton(button);
-                    dialog = Dialogs.buildDialog(stackPane,
-                            Dialogs.HEADINGS.EMPTY, node, button, false);
-                    dialog.setOnDialogClosed(closeEvent -> {
-                        try {
-                            setListarNode();
-                            resetMenuBtnVisibility();
-                        } catch (IOException ex) {
-                            Logger.getLogger(VehiculoTipoController.class.getName())
-                                    .log(Level.SEVERE, null, ex);
-                        }
-                    });
-                    dialog.show();
-
-                } catch (IOException ex) {
-                    Logger.getLogger(VehiculoTipoController.class.getName())
-                            .log(Level.SEVERE, null, ex);
-                }
-            }
+        getMenuFactory().getButton(Modo.CREAR).setOnAction((event) -> {
+            onMenuCrearBtnClicked(event);
+        });
+        getMenuFactory().getButton(Modo.EDITAR).setOnAction((event) -> {
+            onMenuEditarBtnClicked(event);
         });
     }
 
@@ -113,6 +88,74 @@ public class VehiculoTipoController implements Initializable {
         JFXPopup popup;
         popup = getMenuFactory().getPopup();
         popup.show(menuBtn);
+    }
+
+    private void onMenuCrearBtnClicked(ActionEvent e) {
+        try {
+            JFXDialog dialog;
+            Node node;
+            VehiculoTipoCrearController controller;
+            JFXButton button = new JFXButton(Dialogs.BUTTON.CREAR);
+            FXMLLoader loader = getCrearLoader();
+            node = (Node) loader.load();
+            controller = loader.<VehiculoTipoCrearController>getController();
+            controller.setCrearButton(button);
+            dialog = Dialogs.buildDialog(stackPane,
+                    Dialogs.HEADINGS.EMPTY, node, button, false);
+            dialog.setOnDialogClosed(closeEvent -> {
+                try {
+                    setListarNode();
+                    resetMenuBtnVisibility();
+                } catch (IOException ex) {
+                    Logger.getLogger(VehiculoTipoController.class.getName())
+                            .log(Level.SEVERE, null, ex);
+                }
+            });
+            dialog.show();
+
+        } catch (IOException ex) {
+            Logger.getLogger(VehiculoTipoController.class.getName())
+                    .log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void onMenuEditarBtnClicked(ActionEvent e) {
+        try {
+            JFXDialog dialog;
+            Node node;
+            VehiculoTipoCrearController controller;
+            Long selectedId;
+            JFXButton button = new JFXButton(Dialogs.BUTTON.EDITAR);
+            FXMLLoader loader = getCrearLoader();
+            node = (Node) loader.load();
+            controller = loader.<VehiculoTipoCrearController>getController();
+            controller.setCrearButton(button);
+            controller.setModo(VehiculoTipoCrearController.Modo.EDITAR);
+            selectedId = listarController.getSelectedId();
+            controller.setData(selectedId);
+            dialog = Dialogs.buildDialog(stackPane,
+                    Dialogs.HEADINGS.EMPTY, node, button, false);
+            dialog.setOnDialogClosed(closeEvent -> {
+                try {
+                    setListarNode();
+                    resetMenuBtnVisibility();
+                } catch (IOException ex) {
+                    Logger.getLogger(VehiculoTipoController.class.getName())
+                            .log(Level.SEVERE, null, ex);
+                }
+            });
+            dialog.show();
+
+        } catch (IOException ex) {
+            Logger.getLogger(VehiculoTipoController.class.getName())
+                    .log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(VehiculoTipoController.class.getName())
+                    .log(Level.SEVERE, null, ex);
+            Dialogs.showMsg(stackPane, Dialogs.HEADINGS.ERROR,
+                    Dialogs.MESSAGES.CRUD_UPDATE_ERROR,
+                    Dialogs.BUTTON.CERRAR);
+        }
     }
 
     /**
@@ -127,16 +170,14 @@ public class VehiculoTipoController implements Initializable {
         URL resource;
         String resourcePath;
         FXMLLoader loader;
-        VehiculoTipoListaController controller;
-
         resourcePath = VehiculoTipoListaController.VIEW_PATH;
         resource = getClass().getResource(resourcePath);
 
         loader = new FXMLLoader(resource);
 
         node = (Node) loader.load();
-        controller = loader.<VehiculoTipoListaController>getController();
-        controller.setMainController(this);
+        listarController = loader.<VehiculoTipoListaController>getController();
+        listarController.setMainController(this);
         box.getChildren().setAll(node);
     }
 
