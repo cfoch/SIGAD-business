@@ -6,7 +6,9 @@
 package com.sigad.sigad.app.repartos.controller;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXPopup;
 import static com.sigad.sigad.app.repartos.controller.VehiculoTipoController.Modo.LISTAR;
+import com.sigad.sigad.utils.ui.UIFuncs.Dialogs.SimplePopupMenuFactory;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -38,16 +40,20 @@ public class VehiculoTipoController implements Initializable {
 
     private VehiculoTipoController.Modo modo;
 
-    @FXML
+    //@FXML
     private JFXButton borrarBtn;
-    @FXML
+    //@FXML
     private JFXButton editarBtn;
-    @FXML
+    //@FXML
     private JFXButton nuevoBtn;
-    @FXML
+    //@FXML
     private JFXButton listarBtn;
     @FXML
+    private JFXButton menuBtn;
+    @FXML
     private VBox box;
+
+    private SimplePopupMenuFactory<Modo> menuFactory;
 
     /**
      * Initializes the controller class.
@@ -60,6 +66,14 @@ public class VehiculoTipoController implements Initializable {
             Logger.getLogger(VehiculoTipoController.class.getName()).
                     log(Level.SEVERE, null, ex);
         }
+        menuFactory = new SimplePopupMenuFactory<Modo>(Modo.values());
+    }
+
+    @FXML
+    private void onMenuBtnClicked(MouseEvent e) {
+        JFXPopup popup;
+        popup = menuFactory.getPopup();
+        popup.show(menuBtn);
     }
 
     @FXML
