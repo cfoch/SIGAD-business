@@ -44,11 +44,12 @@ import org.hibernate.cfg.Configuration;
  * @author paul
  */
 public class CargaMasivaHelper {
-
+    
     private final static Logger LOGGER = Logger.getLogger(CargaMasivaHelper.class.getName());
-
+    
     /* Incio : Metodos disponibles */
- /* forma de consumo : se pasa como parametros la lista des tablas de las cuales se quieren generar sus plantillas
+    
+    /* forma de consumo : se pasa como parametros la lista des tablas de las cuales se quieren generar sus plantillas
     y la ruta donde se quiere guardar el archivo, cabe senialar que la ruta debe contener el nombre del archivo con el formato xls (Excel)*/
     public static void generarCargaMasivaTemplate(ArrayList<String> listaTablaCarga, String destinoTemplate) {
         if (listaTablaCarga != null && !listaTablaCarga.isEmpty()) {
@@ -59,7 +60,7 @@ public class CargaMasivaHelper {
                 HSSFRow rowhead = sheet.createRow(0);
                 rowIndex = 0;
                 // Definimos las cabeceras
-                switch (tablaCarga) {
+                switch(tablaCarga) {
                     case CargaMasivaConstantes.TABLA_PRODUCTOCATEGORIA:
                         rowhead.createCell(rowIndex).setCellValue("Nombre");
                         rowIndex++;
@@ -183,13 +184,14 @@ public class CargaMasivaHelper {
                 workbook.write(fileOut);
                 fileOut.close();
                 LOGGER.log(Level.INFO, "Plantilla(s) creada(s) con exito");
-            } catch (Exception ex) {
+                }
+            catch(Exception ex) {
                 LOGGER.log(Level.SEVERE, "Error al generar la(s) plantilla(s)");
                 System.out.print(ex);
             }
         }
     }
-
+    
     /* forma de consumo : se pasa como unico parametro la ruta del archivo, el metodo identificara las hojas del archivo e iniciara la carga masiva */
     public static void CargaMasivaProceso(String archivoRuta) {
         try {
@@ -216,7 +218,7 @@ public class CargaMasivaHelper {
             // se itera sobre la prioridad establecida en CargaMasivaConstantes
             for (String tablaEnCola : CargaMasivaConstantes.getList()) {
                 sheet = workbook.getSheet(tablaEnCola);
-                if (sheet != null) {
+                if (sheet!=null) {
                     sheetName = sheet.getSheetName();
                     LOGGER.log(Level.INFO, String.format("Hoja %s reconocida, iniciando proceso ...", sheetName));
                     hojasReconocidas++;
@@ -242,12 +244,13 @@ public class CargaMasivaHelper {
             workbook.close();
             LOGGER.log(Level.INFO, "Procesamiento Finalizado, reporte final :");
             LOGGER.log(Level.INFO, String.format("Cantidad de Hojas Procesadas : %s", hojasReconocidas));
-        } catch (Exception ex) {
+        }
+        catch(Exception ex) {
             LOGGER.log(Level.SEVERE, "Error al cargar masivamente, revisar la ruta del archivo");
             System.out.print(ex);
         }
     }
-
+    
     /* Fin : Metodos disponibles */
     
     /* Inicio : Metodos de Apoyo */
@@ -273,7 +276,7 @@ public class CargaMasivaHelper {
     // solo retornara el primero que encuentre
     private static Object busquedaGeneralString(Session session, String nombreEntidad, String [] condiciones, String [] valoresCondiciones) {
         String hqlQuery = String.format("from %s where %s='%s'", nombreEntidad, condiciones[0], valoresCondiciones[0]);
-        for (int i = 1; i < condiciones.length; i++) {
+        for (int i=1;i<condiciones.length;i++)
             hqlQuery += String.format(" and %s='%s'", condiciones[i], valoresCondiciones[i]);
         try{
             List<Object> resultadoBusqueda = session.createQuery(hqlQuery).list();
@@ -514,9 +517,9 @@ public class CargaMasivaHelper {
                         if (permisoAux!=null) {
                             LOGGER.log(Level.INFO, String.format("Permiso %s encontrado con exito", permisoOpcionAux));
                             perfilAsociado.getPermisos().add(permisoAux);
-                        } else {
-                            LOGGER.log(Level.WARNING, String.format("Permiso %s no encontrado, este permiso no sera considerado", permisoOpcionAux));
                         }
+                        else
+                            LOGGER.log(Level.WARNING, String.format("Permiso %s no encontrado, este permiso no sera considerado", permisoOpcionAux));
                     }
                     */
                 }
