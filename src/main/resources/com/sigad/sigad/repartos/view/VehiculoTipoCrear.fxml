@@ -34,7 +34,6 @@
                   </TilePane>
                </children>
             </TilePane>
-            <JFXButton fx:id="guardarBtn" layoutX="14.0" layoutY="345.0" onMouseClicked="#onGuardarButtonClicked" prefHeight="41.0" prefWidth="170.0" style="-fx-background-color: #303F9F;" text="Guardar" textFill="WHITE" />
          </children>
       </AnchorPane>
    </children>

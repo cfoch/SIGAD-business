@@ -11,14 +11,19 @@ import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import com.sigad.sigad.app.controller.LoginController;
+import com.sigad.sigad.app.repartos.controller.VehiculoTipoController.Modo;
 import com.sigad.sigad.business.Vehiculo;
 import com.sigad.sigad.utils.ui.UIFuncs.Dialogs;
+import com.sigad.sigad.utils.ui.UIFuncs.Dialogs.SimplePopupMenuFactory;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -50,6 +55,7 @@ public class VehiculoTipoListaController implements Initializable {
     private StackPane stackPane;
 
     ObservableList<VehiculoTipoInfo> infos;
+    private VehiculoTipoController mainController;
     /**
      * Initializes the controller class.
      */
@@ -97,6 +103,40 @@ public class VehiculoTipoListaController implements Initializable {
         treeView.setShowRoot(false);
 
         populate();
+        handleEvents();
+    }
+
+    private void handleEvents() {
+        ReadOnlyObjectProperty prop =
+                treeView.getSelectionModel().selectedItemProperty();
+
+        prop.addListener((obs, oldSelection, newSelection) -> {
+            SimplePopupMenuFactory<Modo> menuFactory;
+            if (mainController == null) {
+                return;
+            }
+            menuFactory = mainController.getMenuFactory();
+            if (newSelection == null) {
+                menuFactory.getButton(Modo.BORRAR).setDisable(true);
+            } else {
+                menuFactory.getButton(Modo.BORRAR).setDisable(false);
+            }
+            if (newSelection != null && mainController != null) {
+                menuFactory.getButton(Modo.BORRAR).setOnAction((evt) -> {
+                    int i = treeView.getSelectionModel().getFocusedIndex();
+                    try {
+                        deleteData(infos.get(i));
+                        infos.remove(i);
+                        Dialogs.showMsg(stackPane, Dialogs.HEADINGS.EXITO,
+                                Dialogs.MESSAGES.CRUD_DELETE_SUCCESS,
+                                Dialogs.BUTTON.ACEPTAR);
+                    } catch (Exception ex) {
+                        Logger.getLogger(VehiculoTipoListaController.class.getName())
+                                .log(Level.SEVERE, null, ex);
+                    }
+                });
+            }
+        });
     }
 
     private void populate() {
@@ -114,6 +154,29 @@ public class VehiculoTipoListaController implements Initializable {
             info = new VehiculoTipoInfo(tipo);
             infos.add(info);
         });
+    }
+
+    private void deleteData(VehiculoTipoInfo info) throws Exception {
+        Session session;
+        Query query;
+        ArrayList<Vehiculo.Tipo> vehiculoTipos;
+        session = LoginController.serviceInit();
+        try {
+            Long id = new Long(info.id.intValue());
+            String hql = "delete from Vehiculo$Tipo where id = :id";
+            session.beginTransaction();
+            session.createQuery(hql).setParameter("id", id).executeUpdate();
+            session.getTransaction().commit();
+        } catch (Exception ex) {
+            if (session.getTransaction() != null) {
+                session.getTransaction().rollback();
+            }
+            Dialogs.showMsg(stackPane, Dialogs.HEADINGS.ERROR,
+                    Dialogs.MESSAGES.CRUD_DELETE_ERROR, Dialogs.BUTTON.ACEPTAR);
+            throw ex;
+        } finally {
+            session.close();
+        }
     }
 
     private List<Vehiculo.Tipo> getData() throws Exception {
@@ -147,5 +210,19 @@ public class VehiculoTipoListaController implements Initializable {
             marca = new SimpleStringProperty(vehiculoTipo.getMarca());
             modelo = new SimpleStringProperty(vehiculoTipo.getModelo());
         }
+    }
+
+    /**
+     * @return the mainController
+     */
+    public VehiculoTipoController getMainController() {
+        return mainController;
+    }
+
+    /**
+     * @param mainController the mainController to set
+     */
+    public void setMainController(VehiculoTipoController mainController) {
+        this.mainController = mainController;
     }
 }

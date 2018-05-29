@@ -73,6 +73,7 @@ public class UIFuncs {
         }
 
         public static class HEADINGS {
+            public static final String EMPTY = "";
             public static final String EXITO = "Éxito";
             public static final String ERROR = "Error";
         }
@@ -81,13 +82,19 @@ public class UIFuncs {
             public static final String ACEPTAR = "Aceptar";
             public static final String CANCELAR = "Cancelar";
             public static final String CERRAR = "Cerrar";
+            public static final String CREAR = "Crear";
         }
 
         public static class MESSAGES {
             public static final String DB_GENERIC_ERROR =
                     "Lo sentimos. Hubo un problema con la conexión.";
+            public static final String CRUD_DELETE_ERROR =
+                    "No se pudo borrar este elemento. ¿Tal vez otros dependen "
+                    + "de este?";
             public static final String CRUD_CREATE_SUCCESS =
                     "Creación exitosa.";
+            public static final String CRUD_DELETE_SUCCESS =
+                    "Este elemento ha sido borrado con éxito.";
         }
 
         /**
@@ -99,7 +106,8 @@ public class UIFuncs {
          */
         public static void showMsg(StackPane pane, String heading, String body,
                 String textButton) {
-            showDialog(pane, heading, new Text(body), textButton);
+            showDialog(pane, heading, new Text(body),
+                    new JFXButton(textButton), true);
         }
 
         /**
@@ -110,10 +118,16 @@ public class UIFuncs {
          * @param textButton The text of the single button.
          */
         public static void showDialog(StackPane pane, String heading,
-                javafx.scene.Node nodeBody, String textButton) {
+                javafx.scene.Node nodeBody, JFXButton button, boolean close) {
+            JFXDialog dialog;
+            dialog = buildDialog(pane, heading, nodeBody, button, close);
+            dialog.show();
+        }
+
+        public static JFXDialog buildDialog(StackPane pane, String heading,
+                javafx.scene.Node nodeBody, JFXButton button, boolean close) {
             JFXDialogLayout content;
             JFXDialog dialog;
-            JFXButton button;
 
             content = new JFXDialogLayout();
             content.setHeading(new Text(heading));
@@ -121,15 +135,16 @@ public class UIFuncs {
 
             dialog = new JFXDialog(pane, content,
                     JFXDialog.DialogTransition.CENTER);
-            button = new JFXButton(textButton);
-            button.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent event) {
-                    dialog.close();
-                }
-            });
+            if (close) {
+                button.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
+                        dialog.close();
+                    }
+                });
+            }
             content.setActions(button);
-            dialog.show();
+            return dialog;
         }
     }
 }

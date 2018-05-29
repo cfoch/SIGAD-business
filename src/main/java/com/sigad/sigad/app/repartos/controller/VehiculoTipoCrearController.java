@@ -18,9 +18,10 @@ import com.sigad.sigad.validations.SIGADValidations;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -46,9 +47,9 @@ public class VehiculoTipoCrearController implements Initializable {
     @FXML
     JFXTextArea descripcionTxtArea;
     @FXML
-    JFXButton guardarBtn;
-    @FXML
     StackPane stackPane;
+
+    private JFXButton crearButton;
 
     /**
      * Initializes the controller class.
@@ -95,8 +96,7 @@ public class VehiculoTipoCrearController implements Initializable {
         return nombreTxt.validate() && capacidadTxt.validate();
     }
 
-    @FXML
-    private void onGuardarButtonClicked(MouseEvent e) {
+    private void onCrearButtonClicked(ActionEvent e) {
         if (isValid()) {
             Configuration config;
             Session session;
@@ -126,5 +126,26 @@ public class VehiculoTipoCrearController implements Initializable {
                 session.close();
             }
         }
+    }
+
+    /**
+     * @return the crearButton
+     */
+    public JFXButton getCrearButton() {
+        return crearButton;
+    }
+
+    /**
+     * @param crearButton the crearButton to set
+     */
+    public void setCrearButton(JFXButton crearButton) {
+        this.crearButton = crearButton;
+        this.crearButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                onCrearButtonClicked(e);
+            }
+        });
+
     }
 }
