@@ -7,6 +7,7 @@ package com.sigad.sigad.business;
 
 import java.util.HashSet;
 import java.util.Set;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import javax.persistence.GeneratedValue;
@@ -24,6 +25,7 @@ public class ProductoFragilidad {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     @NotNull
+    @Column(name= "productofragilidad", unique = true)
     private int valor;
     private String descripcion;
     @OneToMany(mappedBy = "fragilidad")

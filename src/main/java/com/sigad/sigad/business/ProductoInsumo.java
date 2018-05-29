@@ -29,14 +29,14 @@ public class ProductoInsumo {
     /**
      * @return the cantidad
      */
-    public Float getCantidad() {
+    public Double getCantidad() {
         return cantidad;
     }
 
     /**
      * @param cantidad the cantidad to set
      */
-    public void setCantidad(Float cantidad) {
+    public void setCantidad(Double cantidad) {
         this.cantidad = cantidad;
     }
 
@@ -71,7 +71,7 @@ public class ProductoInsumo {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     @NotNull
-    private Float cantidad;
+    private Double cantidad;
     
     //Fk
     @ManyToOne

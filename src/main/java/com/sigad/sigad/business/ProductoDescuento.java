@@ -33,10 +33,10 @@ public class ProductoDescuento {
     private Date fechaInicio ;
     @NotNull
     private Date fechaFin;
-    private Float valorPct;
+    private Double valorPct;
     private Boolean activo;
     private String codCupon;
-    private Float valorDescuento;
+    private Double valorDescuento;
     private Integer duracionDias;
     
     //Fk
@@ -87,14 +87,14 @@ public class ProductoDescuento {
     /**
      * @return the valorPct
      */
-    public Float getValorPct() {
+    public Double getValorPct() {
         return valorPct;
     }
 
     /**
      * @param valorPct the valorPct to set
      */
-    public void setValorPct(Float valorPct) {
+    public void setValorPct(Double valorPct) {
         this.valorPct = valorPct;
     }
 
@@ -129,14 +129,14 @@ public class ProductoDescuento {
     /**
      * @return the valorDescuento
      */
-    public Float getValorDescuento() {
+    public Double getValorDescuento() {
         return valorDescuento;
     }
 
     /**
      * @param valorDescuento the valorDescuento to set
      */
-    public void setValorDescuento(Float valorDescuento) {
+    public void setValorDescuento(Double valorDescuento) {
         this.valorDescuento = valorDescuento;
     }
 

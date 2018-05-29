@@ -129,7 +129,7 @@ public class SeleccionarProductosController implements Initializable {
             productosDB.forEach((p) -> {
                 Producto t = p;
                 System.out.println(t.getPrecio());
-                prod.add(new ProductoLista(t.getNombre(), t.getPrecio().toString(), Integer.toString(t.getStock()), /*t.getCategoria().getNombre()*/ "Hola", "", t.getImagen(), t.getId().intValue()));
+                prod.add(new ProductoLista(t.getNombre(), t.getPrecio().toString(), Integer.toString(t.getStockLogico()), /*t.getCategoria().getNombre()*/ "Hola", "", t.getImagen(), t.getId().intValue()));
             });
         }
         gest.close();

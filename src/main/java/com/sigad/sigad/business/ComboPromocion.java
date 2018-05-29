@@ -25,7 +25,7 @@ public class ComboPromocion {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     private String nombre;
-    private Float preciounitario;
+    private Double preciounitario;
     private Integer maxDisponible;
     private Integer numVendidos;
     private Date fechaInicio;
@@ -71,14 +71,14 @@ public class ComboPromocion {
     /**
      * @return the preciounitario
      */
-    public Float getPreciounitario() {
+    public Double getPreciounitario() {
         return preciounitario;
     }
 
     /**
      * @param preciounitario the preciounitario to set
      */
-    public void setPreciounitario(Float preciounitario) {
+    public void setPreciounitario(Double preciounitario) {
         this.preciounitario = preciounitario;
     }
 

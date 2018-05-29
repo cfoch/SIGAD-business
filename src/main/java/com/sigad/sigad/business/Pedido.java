@@ -30,7 +30,7 @@ public class Pedido {
     @NotNull
     private Timestamp fechaVenta;
     @NotNull
-    private float total;
+    private Double total;
     @NotNull
     private boolean activo;
     @NotNull
@@ -91,14 +91,14 @@ public class Pedido {
     /**
      * @return the total
      */
-    public float getTotal() {
+    public Double getTotal() {
         return total;
     }
 
     /**
      * @param total the total to set
      */
-    public void setTotal(float total) {
+    public void setTotal(Double total) {
         this.total = total;
     }
 

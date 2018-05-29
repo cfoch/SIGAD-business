@@ -30,7 +30,10 @@ public class LoteInsumo {
     private Insumo insumo;
     
     @NotNull
-    private Integer cantidad;
+    private Integer stockLogico;
+    @NotNull
+    private Integer stockFisico;
+    
     @NotNull
     private Date fechaVencimiento;
     @NotNull
@@ -76,20 +79,6 @@ public class LoteInsumo {
     }
 
     /**
-     * @return the cantidad
-     */
-    public Integer getCantidad() {
-        return cantidad;
-    }
-
-    /**
-     * @param cantidad the cantidad to set
-     */
-    public void setCantidad(Integer cantidad) {
-        this.cantidad = cantidad;
-    }
-
-    /**
      * @return the fechaVencimiento
      */
     public Date getFechaVencimiento() {
@@ -129,5 +118,33 @@ public class LoteInsumo {
      */
     public void setDetalleOrdenCompra(DetalleOrdenCompra detalleOrdenCompra) {
         this.detalleOrdenCompra = detalleOrdenCompra;
+    }
+
+    /**
+     * @return the stockLogico
+     */
+    public Integer getStockLogico() {
+        return stockLogico;
+    }
+
+    /**
+     * @param stockLogico the stockLogico to set
+     */
+    public void setStockLogico(Integer stockLogico) {
+        this.stockLogico = stockLogico;
+    }
+
+    /**
+     * @return the stockFisico
+     */
+    public Integer getStockFisico() {
+        return stockFisico;
+    }
+
+    /**
+     * @param stockFisico the stockFisico to set
+     */
+    public void setStockFisico(Integer stockFisico) {
+        this.stockFisico = stockFisico;
     }
 }

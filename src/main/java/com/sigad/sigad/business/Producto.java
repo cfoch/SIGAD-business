@@ -31,7 +31,9 @@ public class Producto {
     private String imagen;
     private String descripcion;
     @NotNull
-    private int stock;
+    private int stockLogico;
+    @NotNull
+    private int stockFisico;
     @ManyToOne
     private ProductoCategoria categoria;
     @NotNull
@@ -51,7 +53,7 @@ public class Producto {
     public Producto(String nombre, String imagen, Integer stock,Double precio, Boolean activo) {
         this.nombre = nombre;
         this.imagen = imagen;
-        this.stock = stock;
+        this.stockFisico = stock;
         this.activo = activo;
         this.precio = precio;
     }
@@ -141,20 +143,6 @@ public class Producto {
     }
 
     /**
-     * @return the stock
-     */
-    public int getStock() {
-        return stock;
-    }
-
-    /**
-     * @param stock the stock to set
-     */
-    public void setStock(int stock) {
-        this.stock = stock;
-    }
-
-    /**
      * @return the categoria
      */
     public ProductoCategoria getCategoria() {
@@ -222,5 +210,33 @@ public class Producto {
      */
     public void setPrecio(Double precio) {
         this.precio = precio;
+    }
+
+    /**
+     * @return the stockLogico
+     */
+    public int getStockLogico() {
+        return stockLogico;
+    }
+
+    /**
+     * @param stockLogico the stockLogico to set
+     */
+    public void setStockLogico(int stockLogico) {
+        this.stockLogico = stockLogico;
+    }
+
+    /**
+     * @return the stockFisico
+     */
+    public int getStockFisico() {
+        return stockFisico;
+    }
+
+    /**
+     * @param stockFisico the stockFisico to set
+     */
+    public void setStockFisico(int stockFisico) {
+        this.stockFisico = stockFisico;
     }
 }

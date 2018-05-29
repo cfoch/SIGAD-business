@@ -34,7 +34,7 @@ public class DetallePedido {
     @NotNull
     private Integer cantidad;
     @NotNull
-    private Float precioUnitario;
+    private Double precioUnitario;
     @NotNull
     private Integer numEntregados;
     
@@ -95,14 +95,14 @@ public class DetallePedido {
     /**
      * @return the precioUnitario
      */
-    public Float getPrecioUnitario() {
+    public Double getPrecioUnitario() {
         return precioUnitario;
     }
 
     /**
      * @param precioUnitario the precioUnitario to set
      */
-    public void setPrecioUnitario(Float precioUnitario) {
+    public void setPrecioUnitario(Double precioUnitario) {
         this.precioUnitario = precioUnitario;
     }
 

@@ -32,7 +32,9 @@ public class Insumo {
     private int tiempoVida; //dias
     private double precio; //ojo que esto puede variar
     @NotNull
-    private int stock;
+    private int stockTotalLogico;
+    @NotNull
+    private int stockTotalFisico;
     @NotNull
     private boolean activo;
     private Double volumen;
@@ -131,20 +133,6 @@ public class Insumo {
     }
 
     /**
-     * @return the stock
-     */
-    public int getStock() {
-        return stock;
-    }
-
-    /**
-     * @param stock the stock to set
-     */
-    public void setStock(int stock) {
-        this.stock = stock;
-    }
-
-    /**
      * @return the activo
      */
     public boolean isActivo() {
@@ -170,6 +158,34 @@ public class Insumo {
      */
     public void setVolumen(Double volumen) {
         this.volumen = volumen;
+    }
+
+    /**
+     * @return the stockTotalLogico
+     */
+    public int getStockTotalLogico() {
+        return stockTotalLogico;
+    }
+
+    /**
+     * @param stockTotalLogico the stockTotalLogico to set
+     */
+    public void setStockTotalLogico(int stockTotalLogico) {
+        this.stockTotalLogico = stockTotalLogico;
+    }
+
+    /**
+     * @return the stockTotalFisico
+     */
+    public int getStockTotalFisico() {
+        return stockTotalFisico;
+    }
+
+    /**
+     * @param stockTotalFisico the stockTotalFisico to set
+     */
+    public void setStockTotalFisico(int stockTotalFisico) {
+        this.stockTotalFisico = stockTotalFisico;
     }
 
 }
