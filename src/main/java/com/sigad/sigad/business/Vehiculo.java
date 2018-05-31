@@ -125,6 +125,16 @@ public class Vehiculo {
             this.modelo = modelo;
         }
 
+        /**
+         * Obtiene un formato entendido por simulated_annealing.
+         * @return un tipo de simulated_annealing.
+         */
+        public com.grupo1.simulated_annealing.Vehiculo.Tipo getTipo() {
+            com.grupo1.simulated_annealing.Vehiculo.Tipo tipo;
+            tipo = new com.grupo1.simulated_annealing.Vehiculo.Tipo(
+                    id.toString(), (int) capacidad);
+            return tipo;
+        }
     }
 
     @Id
