@@ -7,6 +7,7 @@ package com.sigad.sigad.business.helpers;
 
 import com.sigad.sigad.app.controller.LoginController;
 import com.sigad.sigad.business.Producto;
+import com.sigad.sigad.business.Tienda;
 import java.util.ArrayList;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -50,7 +51,29 @@ public class ProductoHelper {
     }
 
     ;
-    
+    public ArrayList<Producto> getProductsByTends() {
+        ArrayList<Producto> listTienda = null;
+        try {
+            Query query = session.createQuery("from Tienda where id='" + LoginController.user.getTienda().getId() + "'");
+            Tienda tienda = (Tienda) query;
+           
+            tienda.getCapacidadTiendas().forEach((t) -> {
+            });
+
+            if (!query.list().isEmpty()) {
+                //ist = (ArrayList<Tienda>) query.list();
+            }
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+            System.out.println("Error: " + e.getMessage());
+            errorMessage = e.getMessage();
+        }
+        return null;
+       //return list;
+
+    }
+
+    ;
     public Producto getProductById(Integer id) {
         Producto product = null;
         Query query = null;
@@ -61,17 +84,17 @@ public class ProductoHelper {
                 product = (Producto) query.list().get(0);
             }
         } catch (Exception e) {
-            
+
             System.out.println("Error: " + e.getMessage());
             this.errorMessage = e.getMessage();
-        } 
+        }
         return product;
     }
 
     ;
-
+    
     public void close() {
         session.getTransaction().commit();
     }
-    
+
 }

@@ -97,6 +97,7 @@ public class PersonalController implements Initializable {
                 ));
     }
 
+    //usar para llenar LISTA
     private void getDataFromDB() {
         UsuarioHelper userHelper = new UsuarioHelper();
         
@@ -109,6 +110,7 @@ public class PersonalController implements Initializable {
         userHelper.close();
     }
 
+    //usar para botones
     @FXML
     private void handleAction(ActionEvent event) {
         if(event.getSource() == addBtn){

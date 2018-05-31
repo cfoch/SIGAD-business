@@ -53,6 +53,7 @@ public class Producto {
     public Producto(String nombre, String imagen, Integer stock,Double precio, Boolean activo) {
         this.nombre = nombre;
         this.imagen = imagen;
+        this.stockLogico = stock;
         this.stockFisico = stock;
         this.activo = activo;
         this.precio = precio;

@@ -29,7 +29,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import com.sigad.sigad.app.controller.HomeController;
 import com.sigad.sigad.app.controller.LoginController;
-import com.sigad.sigad.insumos.controller.InsumoController;
+import com.sigad.sigad.insumos.controller.ListaInsumoController;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -3,24 +3,38 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.sigad.sigad.insumos.controller;
+package com.sigad.sigad.productos.controller;
 
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXTreeTableView;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.layout.StackPane;
 
 /**
  * FXML Controller class
  *
- * @author jorgeespinoza
+ * @author chrs
  */
-public class InsumoController implements Initializable {
-    
+public class ListaProductoController implements Initializable {
+
     /**
      * Initializes the controller class.
      */
     
-    public static String viewPath = "/com/sigad/sigad/insumos/view/insumo.fxml";
+    @FXML
+    private StackPane hiddenSp;
+
+    @FXML
+    private JFXTreeTableView<?> tblProductos;
+
+    @FXML
+    private JFXButton moreBtn;
+
+    @FXML
+    private JFXButton btnAdd;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {

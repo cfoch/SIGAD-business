@@ -13,6 +13,8 @@ import com.sigad.sigad.business.Permiso;
 import com.sigad.sigad.controller.cargaMasiva.CargaMasivaViewController;
 import com.sigad.sigad.deposito.controller.FXMLAlmacenIngresoListaOrdenCompraController;
 import com.sigad.sigad.pedido.controller.SeleccionarProductosController;
+import com.sigad.sigad.insumos.controller.ListaInsumoController;
+import com.sigad.sigad.ordenescompra.controller.ListaOrdenesCompraController;
 import com.sigad.sigad.perfil.controller.PerfilController;
 import com.sigad.sigad.personal.controller.PersonalController;
 import com.sigad.sigad.tienda.controller.TiendaController;
@@ -119,7 +121,7 @@ public class HomeController implements Initializable {
                                 if(name.equals("Productos")){
                                     node = (Node) FXMLLoader.load(HomeController.this.getClass().getResource(SeleccionarProductosController.viewPath));
                                 }else if(name.equals("Insumos")){
-
+                                    node = (Node) FXMLLoader.load(HomeController.this.getClass().getResource(ListaInsumoController.viewPath));
                                 }else if(name.equals("Personal")){
                                     node = (Node) FXMLLoader.load(HomeController.this.getClass().getResource(PersonalController.viewPath));
                                 }else if(name.equals("Repartos")){
@@ -141,7 +143,7 @@ public class HomeController implements Initializable {
 
                                     getFirstPanel().getChildren().setAll(node);
                                 }else if(name.equals("Pedidos")){
-                                    node = (Node) FXMLLoader.load(HomeController.this.getClass().getResource(FXMLAlmacenIngresoListaOrdenCompraController.viewPath));
+                                    node = (Node) FXMLLoader.load(HomeController.this.getClass().getResource(ListaOrdenesCompraController.viewPath));
                                 }else if(name.equals("Tiendas")){
                                     node = (Node) FXMLLoader.load(getClass().getResource(TiendaController.viewPath));
                                 }else if(name.equals("Perfiles")){

@@ -26,6 +26,7 @@ public class Perfil {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
+    private Boolean esCliente;
     @NotNull
     @Column(unique = true)
     private String nombre;

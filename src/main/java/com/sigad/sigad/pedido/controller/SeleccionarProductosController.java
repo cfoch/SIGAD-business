@@ -164,7 +164,10 @@ public class SeleccionarProductosController implements Initializable {
         btnContinuar.addEventHandler(EventType.ROOT, (event) -> {
 
             pedidos.forEach((next) -> {
-                System.out.println(next.nombre + next.cantidad.toString() + next.subtotal.toString());
+                System.out.println(next.nombre + next.cantidad.toString() + next.subtotal.toString() );
+            });
+            prod.forEach((next)-> {
+                System.out.println(next.seleccion.toString());
             });
         });
     }
@@ -271,7 +274,7 @@ public class SeleccionarProductosController implements Initializable {
                 Integer stock = event.getRowValue().getValue().stock.getValue();
                 PedidoLista nuevo = new PedidoLista(event.getRowValue().getValue().nombre.getValue(), event.getRowValue().getValue().precio.getValue(),
                         (event.getNewValue() <= stock) ? event.getNewValue() : event.getOldValue(),
-                        String.valueOf(Float.valueOf(event.getRowValue().getValue().precio.get()) * Float.valueOf(event.getNewValue()) - Float.valueOf(event.getRowValue().getValue().precio.get()) * ( - Float.valueOf(event.getRowValue().getValue().descuento.get())) / 100.0),
+                        String.valueOf(Float.valueOf(event.getRowValue().getValue().precio.get()) * Float.valueOf(event.getNewValue()) + Float.valueOf(event.getRowValue().getValue().precio.get()) * ( - Float.valueOf(event.getRowValue().getValue().descuento.get())) / 100.0),
                         event.getRowValue().getValue().codigo, event.getRowValue().getValue().descuento.get(), event.getRowValue().getValue().stock.getValue());
                 Integer i = pedidos.indexOf(nuevo);
                 pedidos.remove(nuevo);

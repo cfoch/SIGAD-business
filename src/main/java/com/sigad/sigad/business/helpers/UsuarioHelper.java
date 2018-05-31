@@ -163,4 +163,24 @@ public class UsuarioHelper {
         }
         return ok;
     }
+    
+    /*Get user by email*/
+    public Usuario getClients(String email){
+        Usuario user = null;
+        Query query = null;
+        try {
+            query = session.createQuery("from Usuario where correo='" + email + "'");
+            
+            if(!query.list().isEmpty()){
+                user = (Usuario) query.list().get(0);
+            }
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            this.errorMessage = e.getMessage();
+        } finally {
+            return user;
+        }
+    }
+    
+    
 }
