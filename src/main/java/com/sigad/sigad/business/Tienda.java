@@ -5,6 +5,8 @@
  */
 package com.sigad.sigad.business;
 
+import com.grupo1.simulated_annealing.Locacion;
+import com.grupo1.simulated_annealing.Servicio;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,7 +17,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
@@ -188,6 +189,17 @@ public class Tienda {
             
         }
         return hm;
+    }
     
+    /**
+     * Obtiene la Locacion de un pedido en la estructura de SimmulatedAnnealing.
+     * @return Una locacion de SimulatedAnnealing.
+     */
+    public Locacion getLocacion() {
+        Locacion locacion;
+        Servicio servicio;
+        locacion = new Locacion(id, direccion, Locacion.Tipo.DEPOSITO,
+                cooXDireccion, cooYDireccion);
+        return locacion;
     }
 }

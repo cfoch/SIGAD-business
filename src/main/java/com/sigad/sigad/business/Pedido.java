@@ -6,19 +6,19 @@
 package com.sigad.sigad.business;
 
 import java.sql.Time;
+import com.grupo1.simulated_annealing.Locacion;
+import com.grupo1.simulated_annealing.Servicio;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.validation.constraints.NotNull;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
 
 /**
  *
@@ -86,6 +86,13 @@ public class Pedido {
     private Time horaFinEntrega;
 
     public Pedido() {
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(long id) {
+        this.id = id;
     }
 
     /**
@@ -331,6 +338,20 @@ public class Pedido {
      */
     public void setEstado(PedidoEstado estado) {
         this.estado = estado;
+    }
+
+    /**
+     * Obtiene la Locacion de un pedido en la estructura de SimmulatedAnnealing.
+     * @return Una locacion de SimulatedAnnealing.
+     */
+    public Locacion getLocacion() {
+        Locacion locacion;
+        Servicio servicio;
+        locacion = new Locacion(id, direccionDeEnvio, Locacion.Tipo.OTRO,
+                cooXDireccion, cooYDireccion);
+        servicio = new Servicio("", locacion, (int) volumenTotal);
+        locacion.setServicio(servicio);
+        return locacion;
     }
 
     /**
