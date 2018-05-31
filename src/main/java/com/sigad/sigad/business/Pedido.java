@@ -5,18 +5,19 @@
  */
 package com.sigad.sigad.business;
 
+import com.grupo1.simulated_annealing.Locacion;
+import com.grupo1.simulated_annealing.Servicio;
 import java.security.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
-import javax.validation.constraints.NotNull;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
 
 /**
  *
@@ -43,6 +44,8 @@ public class Pedido {
     private double cooXDireccion;
     @NotNull
     private double cooYDireccion;
+    @NotNull
+    private double volumen;
 
     //fk
     @ManyToOne(optional = false)
@@ -65,6 +68,13 @@ public class Pedido {
     private Timestamp horaFinEntrega;
     
     public Pedido() {
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(long id) {
+        this.id = id;
     }
 
     /**
@@ -296,6 +306,34 @@ public class Pedido {
      */
     public void setEstadosPedido(Set<EstadoPedido> estadosPedido) {
         this.estadosPedido = estadosPedido;
+    }
+
+    /**
+     * Obtiene la Locacion de un pedido en la estructura de SimmulatedAnnealing.
+     * @return Una locacion de SimulatedAnnealing.
+     */
+    public Locacion getLocacion() {
+        Locacion locacion;
+        Servicio servicio;
+        locacion = new Locacion(id, direccionDeEnvio, Locacion.Tipo.OTRO,
+                cooXDireccion, cooYDireccion);
+        servicio = new Servicio("", locacion, (int) volumen);
+        locacion.setServicio(servicio);
+        return locacion;
+    }
+
+    /**
+     * @return the volumen
+     */
+    public double getVolumen() {
+        return volumen;
+    }
+
+    /**
+     * @param volumen the volumen to set
+     */
+    public void setVolumen(double volumen) {
+        this.volumen = volumen;
     }
 
 }

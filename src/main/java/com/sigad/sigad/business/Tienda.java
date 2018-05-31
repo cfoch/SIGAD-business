@@ -5,6 +5,8 @@
  */
 package com.sigad.sigad.business;
 
+import com.grupo1.simulated_annealing.Locacion;
+import com.grupo1.simulated_annealing.Servicio;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Column;
@@ -160,5 +162,17 @@ public class Tienda {
      */
     public void setEmpleadosTienda(Set<Usuario> empleadosTienda) {
         this.empleadosTienda = empleadosTienda;
+    }
+
+    /**
+     * Obtiene la Locacion de un pedido en la estructura de SimmulatedAnnealing.
+     * @return Una locacion de SimulatedAnnealing.
+     */
+    public Locacion getLocacion() {
+        Locacion locacion;
+        Servicio servicio;
+        locacion = new Locacion(id, direccion, Locacion.Tipo.DEPOSITO,
+                cooXDireccion, cooYDireccion);
+        return locacion;
     }
 }
