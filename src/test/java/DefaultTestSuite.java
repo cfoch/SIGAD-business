@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-import com.sigad.sigad.business.helpers.MapsHelperTest;
+import com.sigad.sigad.business.helpers.AlgoritmoHelperTest;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -18,7 +18,7 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    MapsHelperTest.class
+    AlgoritmoHelperTest.class
 })
 public class DefaultTestSuite {
 
