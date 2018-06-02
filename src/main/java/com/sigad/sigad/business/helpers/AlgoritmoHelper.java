@@ -63,26 +63,25 @@ public class AlgoritmoHelper extends BaseHelper {
     /**
      * Construye un problema de VRP dadas ciertas locaciones, un tipo de
      * vehículo y una matriz de costos.
-     *
-     * Nota: La matriz de costos puede ser generada
-     * con MapsHelper.getDistanceMatrix() el cual puede ser convertido a un
-     * double[][] con MapsHelper.distanceMatrixTo2DArray.
-     * 
      * @param locaciones
      * @param vehiculoTipo
      * @param costMatrix
      * @return Un VRPProblem
      * @throws Exception
      */
-    public final VRPProblem buildVRPProblem(Locacion [] locaciones,
+    public static final VRPProblem buildVRPProblem(Locacion [] locaciones,
             Vehiculo.Tipo vehiculoTipo,
-            double [][] costMatrix) throws Exception {
+            double [][] costMatrix) {
         int i, j;
         Stream<Locacion> stream;
         VRPCostMatrix vrpMatrix;
         Graph<Locacion, Pista> grafo;
 
-        vrpMatrix = new VRPCostMatrix(costMatrix, locaciones);
+        try {
+            vrpMatrix = new VRPCostMatrix(costMatrix, locaciones);
+        } catch (Exception ex) {
+            vrpMatrix = null;
+        }
         grafo = new SimpleGraph<>(Pista.class);
         for (i = 0; i < locaciones.length; i++) {
             Locacion locacion;
