@@ -2,6 +2,7 @@ package com.sigad.sigad.samples.map;
 
 import com.grupo1.simulated_annealing.Locacion;
 import com.jfoenix.controls.JFXListView;
+import com.sigad.sigad.fx.utils.Utils;
 import com.sigad.sigad.fx.widgets.VRPMapView;
 import java.net.URL;
 import java.util.ArrayList;
@@ -40,11 +41,17 @@ public class MapController implements Initializable {
 
     @FXML
     private void handleButtonAction(ActionEvent event) {
+        boolean validSolution;
         if (selectedIndex == NO_SELECTED_INDEX) {
             return;
         }
         resetRoutesListView(true);
-        browser.setupSolution();
+        validSolution =
+                browser.setSolution(Utils.marshallVRPSolution(solution));
+        System.out.println("solution: " + validSolution);
+        if (!validSolution) {
+            return;
+        }
         browser.createMarkers();
         browser.drawMarkers();
         browser.drawRoute(selectedIndex, true);
@@ -102,10 +109,10 @@ public class MapController implements Initializable {
      */
     @Override
     public void initialize(final URL url, final ResourceBundle rb) {
+        boolean validSolution;
         browser = new VRPMapView();
         pane.getChildren().add(browser);
 
-        browser.setSolution(MapController.solution);
         resetListView();
     }
 }
