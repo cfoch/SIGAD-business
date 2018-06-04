@@ -173,6 +173,20 @@ public class DetallePedido {
         this.producto = producto;
     }
 
+    /**
+     * @return the pedido
+     */
+    public Pedido getPedido() {
+        return pedido;
+    }
+
+    /**
+     * @param pedido the pedido to set
+     */
+    public void setPedido(Pedido pedido) {
+        this.pedido = pedido;
+    }
+
   
     
 }
