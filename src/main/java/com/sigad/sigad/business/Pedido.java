@@ -5,7 +5,6 @@
  */
 package com.sigad.sigad.business;
 
-import java.sql.Time;
 import com.grupo1.simulated_annealing.Locacion;
 import com.grupo1.simulated_annealing.Servicio;
 import java.sql.Timestamp;
@@ -76,8 +75,6 @@ public class Pedido {
     private Set<DocumentoLegal> documentos = new HashSet<>();
 
     private Timestamp horaEntrega;
-    private Time horaIniEntrega;
-    private Time horaFinEntrega;
 
     public Pedido() {
     }
@@ -150,34 +147,6 @@ public class Pedido {
      */
     public void setModificable(boolean modificable) {
         this.modificable = modificable;
-    }
-
-    /**
-     * @return the horaIniEntrega
-     */
-    public Time getHoraIniEntrega() {
-        return horaIniEntrega;
-    }
-
-    /**
-     * @param horaIniEntrega the horaIniEntrega to set
-     */
-    public void setHoraIniEntrega(Time horaIniEntrega) {
-        this.horaIniEntrega = horaIniEntrega;
-    }
-
-    /**
-     * @return the horaFinEntrega
-     */
-    public Time getHoraFinEntrega() {
-        return horaFinEntrega;
-    }
-
-    /**
-     * @param horaFinEntrega the horaFinEntrega to set
-     */
-    public void setHoraFinEntrega(Time horaFinEntrega) {
-        this.horaFinEntrega = horaFinEntrega;
     }
 
     /**
