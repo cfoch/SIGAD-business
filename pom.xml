@@ -128,5 +128,10 @@
             <artifactId>directions-api-client-hc</artifactId>
             <version>0.10.1</version>
         </dependency>
+        <dependency>
+            <groupId>com.thedeanda</groupId>
+            <artifactId>lorem</artifactId>
+            <version>2.1</version>
+        </dependency>
     </dependencies>
 </project>

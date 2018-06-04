@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import javax.validation.constraints.NotNull;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -170,6 +169,13 @@ public class Insumo {
      * @return the volumen
      */
     public Double isVolumen() {
+        return volumen;
+    }
+
+    /**
+     * @return the volumen
+     */
+    public double getVolumen() {
         return volumen;
     }
 
