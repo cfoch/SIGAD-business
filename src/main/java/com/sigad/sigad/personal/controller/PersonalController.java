@@ -97,7 +97,7 @@ public class PersonalController implements Initializable {
                 ));
     }
 
-    private void getDataFromDB() {
+    protected void getDataFromDB() {
         UsuarioHelper userHelper = new UsuarioHelper();
         
         ArrayList<Usuario> lista = userHelper.getUsers();
@@ -216,7 +216,7 @@ public class PersonalController implements Initializable {
         userDialog.show();
     }
 
-    private void initUserTbl() {
+    protected void initUserTbl() {
         JFXTreeTableColumn<PersonalController.User, String> name = new JFXTreeTableColumn<>("Nombre");
         name.setPrefWidth(120);
         name.setCellValueFactory((TreeTableColumn.CellDataFeatures<PersonalController.User, String> param) -> param.getValue().getValue().nombres);
