@@ -115,7 +115,7 @@ public class CargaMasivaViewController implements Initializable {
             public void handle(ActionEvent event){
                 File file = loadFile(event);
                 if(file != null){
-                    openFile(file);
+                    //openFile(file);
                     String fileName = file.getAbsolutePath();
                     archivoNombre.setText(fileName);
                     loadedFile = file;
@@ -194,13 +194,7 @@ public class CargaMasivaViewController implements Initializable {
         return fileChooser.showOpenDialog(currentStage);
     }
     
-    public void downloadTemplate(ActionEvent event){
-        System.out.println("La lista es:");
-        for (Iterator<String> iterator = entidadesSeleccionadas.iterator(); iterator.hasNext();) {
-            String next = iterator.next();
-            System.out.println(next);
-        }
-                 
+    public void downloadTemplate(ActionEvent event){                 
         Window currentStage = getCurrentStage(event);
         if(entidadesSeleccionadas != null){
             DirectoryChooser dirChooser = new DirectoryChooser();
