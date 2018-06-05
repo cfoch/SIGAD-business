@@ -39,7 +39,8 @@ public class AlgoritmoHelper extends BaseHelper {
         return tienda;
     }
 
-    public void autogenerarRepartos(String turno) throws Exception {
+    public void autogenerarRepartos(Tienda tienda,
+            String turno) throws Exception {
         int i, j;
         try (Session session = LoginController.serviceInit()) {
             PedidoHelper helperPedido = new PedidoHelper();
@@ -64,20 +65,14 @@ public class AlgoritmoHelper extends BaseHelper {
                     "from Vehiculo$Tipo order by capacidad desc").list();
             tiendas = (List<Tienda>) session.createQuery("from Tienda").list();
 
-            for (i = 0; i < tiendas.size(); i++) {
-                Tienda tienda = tiendas.get(i);
-                List<Vehiculo> vehiculos = tienda.getVehiculos();
-                pedidos = helperPedido.getPedidosPorTienda(tienda, estado,
-                        turno);
-
-
-                // FIXME
-                // Si no hubiera vehiculos asignados para la tienda, se rompe.
-                generarRepartos(tienda, pedidos,
-                        vehiculos.get(0).getTipo(), vehiculos);
-            }
+            List<Vehiculo> vehiculos = tienda.getVehiculos();
+            pedidos = helperPedido.getPedidosPorTienda(tienda, estado,
+                    turno);
+            // FIXME
+            // Si no hubiera vehiculos asignados para la tienda, se rompe.
+            generarRepartos(tienda, pedidos,
+                    vehiculos.get(0).getTipo(), vehiculos);
         } catch (Exception ex) {
-            session.getTransaction().rollback();
             throw ex;
         }
     }
@@ -112,21 +107,26 @@ public class AlgoritmoHelper extends BaseHelper {
                 .setParameter("tienda_id", tienda.getId())
                 .list();
         //repartidores.addAll();
-        for (i = 0; i < solution.size(); i++) {
-            Vehiculo vehiculo = vehiculos.get(i % vehiculos.size());
-            List<Pedido> subpedidos;
-            List<Locacion> ruta = solution.get(i).getVertexList();
+        try {
+            for (i = 0; i < solution.size(); i++) {
+                Vehiculo vehiculo = vehiculos.get(i % vehiculos.size());
+                List<Pedido> subpedidos;
+                List<Locacion> ruta = solution.get(i).getVertexList();
 
-            subpedidos = locacionesToPedidos(ruta);
-            repartidor = repartidores.get(rand.nextInt(repartidores.size()));
+                subpedidos = locacionesToPedidos(ruta);
+                repartidor = repartidores.get(rand.nextInt(repartidores.size()));
 
-            session.getTransaction().begin();
-            Reparto reparto = new Reparto();
-            reparto.setVehiculo(vehiculo);
-            reparto.setPedidos(subpedidos);
-            reparto.setRepartidor(repartidor);
-            session.save(reparto);
-            session.getTransaction().commit();
+                session.getTransaction().begin();
+                Reparto reparto = new Reparto();
+                reparto.setVehiculo(vehiculo);
+                reparto.setPedidos(subpedidos);
+                reparto.setRepartidor(repartidor);
+                session.save(reparto);
+                session.getTransaction().commit();
+            }
+        } catch (Exception ex) {
+            session.getTransaction().rollback();
+            throw ex;
         }
     }
 
