@@ -21,11 +21,13 @@ import com.sigad.sigad.business.ProductoInsumo;
 import com.sigad.sigad.business.Tienda;
 import com.sigad.sigad.business.Usuario;
 import com.sigad.sigad.business.Vehiculo;
+import com.sigad.sigad.business.helpers.ListHelper;
 import com.thedeanda.lorem.Lorem;
 import com.thedeanda.lorem.LoremIpsum;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -46,6 +48,7 @@ public class DBPopulator {
 
     public static void populateVehiculoTipo() {
         int i;
+        int limitOne = 1;
         Lorem lorem = LoremIpsum.getInstance();
         String [][] infos = {
             {"Vehículo Turbo", lorem.getWords(3, 5), "Toyota", "A400"},
@@ -53,10 +56,10 @@ public class DBPopulator {
             {"Doble Troque", lorem.getWords(3, 5), "BMW", "M300"},
             {"Cuatro Manos", lorem.getWords(3, 5), "KIA", "K400"},
         };
-        double capacidades[] = {10000, 12000, 15000, 18000};
+        double capacidades[] = {40000, 12000, 15000, 18000};
         try (Session session = LoginController.serviceInit()) {
             session.getTransaction().begin();
-            for (i = 0; i < infos.length; i++) {
+            for (i = 0; i < limitOne; i++) {
                 Vehiculo.Tipo tipo = new Vehiculo.Tipo();
                 tipo.setNombre(infos[i][0]);
                 tipo.setDescripcion(infos[i][1]);
@@ -71,8 +74,8 @@ public class DBPopulator {
 
     public static void populateVehiculo() {
         int i, j;
-        int maxVehiculosPorTipo = 4;
-        int min = 2;
+        int maxVehiculosPorTipo = 30;
+        int min = 20;
         Random rand = new Random();
         Lorem lorem = LoremIpsum.getInstance();
         try (Session session = LoginController.serviceInit()) {
@@ -131,6 +134,24 @@ public class DBPopulator {
         };
         int i;
         try (Session session = LoginController.serviceInit()) {
+            List<Vehiculo> vehiculos;
+            List<List<Vehiculo>> vehiculosSublists;
+            int nVehiculosPorTienda;
+            double proportions[];
+            double proportion;
+            // Se asume que todos los vehículos son del mismo tipo.
+            // 100 vehiculos
+            // 4 tiendas
+            // 0.04
+            vehiculos = session.createQuery("from Vehiculo").list();
+            nVehiculosPorTienda = vehiculos.size() / infos.length;
+            proportion = ((double) nVehiculosPorTienda) / vehiculos.size();
+
+            proportions =
+                    Arrays.stream(infos).mapToDouble(x -> proportion).toArray();
+
+            vehiculosSublists =
+                    ListHelper.<Vehiculo>sublist(vehiculos, proportions);
             session.getTransaction().begin();
             for (i = 0; i < infos.length; i++) {
                 Tienda tienda = new Tienda();
@@ -140,6 +161,7 @@ public class DBPopulator {
                 tienda.setCooXDireccion(coordenadas[i][0]);
                 tienda.setCooYDireccion(coordenadas[i][1]);
                 tienda.setActivo(true);
+                tienda.setVehiculos(vehiculosSublists.get(i));
                 session.save(tienda);
             }
             session.getTransaction().commit();
@@ -152,6 +174,7 @@ public class DBPopulator {
             {"Administrador de tienda", "Administrador de tienda"},
             {"Vendedor", "Encargado de ventas"},
             {"Encargado de almacén", "Encargado de almacén"},
+            {"Repartidor", "Repartidor de pedidos"},
         };
         int i;
         try (Session session = LoginController.serviceInit()) {
@@ -207,10 +230,14 @@ public class DBPopulator {
         try (Session session = LoginController.serviceInit()) {
             Lorem lorem = LoremIpsum.getInstance();
             List<Perfil> perfiles;
+            List<Tienda> tiendas;
+            List<Usuario> repartidores;
             Random rand = new Random();
 
             perfiles = (List<Perfil>)
                     session.createQuery("from Perfil").list();
+            tiendas = (List<Tienda>)
+                    session.createQuery("from Tienda").list();
             session.getTransaction().begin();
             for (i = 0; i < perfiles.size(); i++) {
                 Perfil perfil;
@@ -221,6 +248,8 @@ public class DBPopulator {
                 if ("Cliente".equals(perfil.getNombre())) {
                     maxUsuarios = rand.nextInt(maxClientes - minClientes + 1)
                             + minClientes;
+                } else if ("Repartidor".equals(perfil.getNombre())) {
+                    maxUsuarios = tiendas.size();
                 } else {
                     maxUsuarios = rand.nextInt(maxOtrosPerfiles) + 1;
                 }
@@ -245,6 +274,9 @@ public class DBPopulator {
                     usuario.setTelefono(lorem.getPhone());
                     usuario.setCelular(lorem.getPhone());
                     usuario.setDni(RandomStringUtils.random(8, "0123456789"));
+                    if ("Repartidor".equals(perfil.getNombre())) {
+                        usuario.setTienda(tiendas.get(j));
+                    }
                     session.save(usuario);
                 }
             }
@@ -461,9 +493,9 @@ public class DBPopulator {
         String []turnos = {"M", "T", "N"};
         ArrayList<Pair<Double, Double>> coords;
         int nPedidosPorCliente;
-        int maxPedidosPorCliente = 5;
+        int maxPedidosPorCliente = 30;
         int minProductosPorPedido = 1;
-        int maxProductosPorPedido = 4;
+        int maxProductosPorPedido = 25;
         int i, j, k;
 
         Random rand = new Random();
@@ -471,6 +503,7 @@ public class DBPopulator {
             List<Usuario> clientes, vendedores;
             List<Producto> productos;
             List<PedidoEstado> pedidoEstados;
+            List<Tienda> tiendas;
             Perfil perfilCliente, perfilVendedor;
             Lorem lorem = LoremIpsum.getInstance();
             perfilCliente = (Perfil)
@@ -489,6 +522,8 @@ public class DBPopulator {
                     session.createQuery("from Producto").list();
             pedidoEstados = (List<PedidoEstado>)
                     session.createQuery("from PedidoEstado").list();
+            tiendas = (List<Tienda>)
+                    session.createQuery("from Tienda").list();
             session.getTransaction().begin();
             for (i = 0; i < clientes.size(); i++) {
                 Usuario cliente;
@@ -589,6 +624,7 @@ public class DBPopulator {
                     pedido.setVolumenTotal(volumenTotal);
                     pedido.setCooXDireccion(coords.get(0).getLeft());
                     pedido.setCooYDireccion(coords.get(0).getRight());
+                    pedido.setTienda(tiendas.get(rand.nextInt(tiendas.size())));
                     System.out.println("Saving pedido: ");
                     session.save(pedido);
                     System.out.println("Saving " + detallesPedido.size() + " detalles");

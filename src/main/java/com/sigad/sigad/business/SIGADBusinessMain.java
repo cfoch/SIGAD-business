@@ -6,6 +6,7 @@
 package com.sigad.sigad.business;
 
 import com.sigad.sigad.app.controller.LoginController;
+import com.sigad.sigad.business.helpers.AlgoritmoHelper;
 import com.sigad.sigad.db.DBPopulator;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
@@ -48,6 +49,7 @@ public class SIGADBusinessMain extends Application{
      @Override
 	public void start(Stage stage) {
             try {
+                    AlgoritmoHelper helperAlgo = new AlgoritmoHelper();
                     DBPopulator.populateVehiculoTipo();
                     DBPopulator.populateVehiculo();
                     DBPopulator.populateTienda();
@@ -60,6 +62,7 @@ public class SIGADBusinessMain extends Application{
                     DBPopulator.populateInsumo();
                     DBPopulator.populateProducto();
                     DBPopulator.populatePedido();
+                    helperAlgo.autogenerarRepartos("T");
 
 
                     Parent root = FXMLLoader.load(getClass().getResource(LoginController.viewPath));
