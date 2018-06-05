@@ -8,12 +8,16 @@ package com.sigad.sigad.business;
 import com.sigad.sigad.app.controller.LoginController;
 import com.sigad.sigad.business.helpers.AlgoritmoHelper;
 import com.sigad.sigad.db.DBPopulator;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.hibernate.Session;
 /**
  *
  * @author cfoch
@@ -62,7 +66,20 @@ public class SIGADBusinessMain extends Application{
                     DBPopulator.populateInsumo();
                     DBPopulator.populateProducto();
                     DBPopulator.populatePedido();
-                    helperAlgo.autogenerarRepartos("T");
+
+                    Session session = LoginController.serviceInit();
+                    List<Tienda> tiendas = (List<Tienda>) session
+                            .createQuery("from Tienda").list();
+                    for (int i = 0; i < tiendas.size(); i++) {
+                        try {
+                            helperAlgo.autogenerarRepartos(tiendas.get(i), "T");
+                        } catch (Exception ex) {
+                            Logger.getLogger(SIGADBusinessMain.class.getName())
+                                    .log(Level.SEVERE, null, ex);
+                        }
+                        i++;
+                        System.out.println("Tienda " + i + "/" + tiendas.size());
+                    };
 
 
                     Parent root = FXMLLoader.load(getClass().getResource(LoginController.viewPath));
