@@ -70,6 +70,9 @@ public class Pedido {
 
     private Timestamp horaEntrega;
 
+    @ManyToOne
+    private Tienda tienda;
+
     public Pedido() {
     }
 
@@ -356,5 +359,19 @@ public class Pedido {
      */
     public void setTurno(String turno) {
         this.turno = turno;
+    }
+
+    /**
+     * @return the tienda
+     */
+    public Tienda getTienda() {
+        return tienda;
+    }
+
+    /**
+     * @param tienda the tienda to set
+     */
+    public void setTienda(Tienda tienda) {
+        this.tienda = tienda;
     }
 }

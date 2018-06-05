@@ -8,6 +8,7 @@ package com.sigad.sigad.business;
 import com.grupo1.simulated_annealing.Locacion;
 import com.grupo1.simulated_annealing.Servicio;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -39,6 +40,8 @@ public class Tienda {
     private Set<CapacidadTienda> capacidadTiendas = new HashSet<CapacidadTienda>();
     @OneToMany(mappedBy = "tienda", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Usuario> empleadosTienda = new HashSet<Usuario>();
+    @OneToMany
+    private List<Vehiculo> vehiculos;
     /**
      * Constructor.
      */
@@ -175,5 +178,19 @@ public class Tienda {
         locacion = new Locacion(id, direccion, Locacion.Tipo.DEPOSITO,
                 cooXDireccion, cooYDireccion);
         return locacion;
+    }
+
+    /**
+     * @return the vehiculos
+     */
+    public List<Vehiculo> getVehiculos() {
+        return vehiculos;
+    }
+
+    /**
+     * @param vehiculos the vehiculos to set
+     */
+    public void setVehiculos(List<Vehiculo> vehiculos) {
+        this.vehiculos = vehiculos;
     }
 }
