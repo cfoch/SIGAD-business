@@ -294,6 +294,7 @@ public class ListaInsumoController implements Initializable {
     private void showOptions(){
         JFXButton edit = new JFXButton("Editar");
         JFXButton delete = new JFXButton("Desactivar");
+        JFXButton io = new JFXButton("I/O");
         
         edit.setOnAction((ActionEvent event) -> {
             popup.hide();
@@ -309,19 +310,32 @@ public class ListaInsumoController implements Initializable {
             deleteInsumosDialog();
         });
         
+        io.setOnAction((ActionEvent event) ->{ 
+            popup.hide();
+            try {
+                registraringresoSalidaDialog();
+            } catch (IOException ex) {
+                Logger.getLogger(ListaInsumoController.class.getName()).log(Level.SEVERE, "initPopup(): registraringresoSalidaDialog()", ex);
+            }
+            
+            
+        });
+        
         edit.setPadding(new Insets(20));
         edit.setPrefSize(145, 40);
-        delete.setPadding(new Insets(20));
+        delete.setPadding(new Insets(40));
         delete.setPrefSize(145, 40);
+        io.setPadding(new Insets(60));
+        io.setPrefSize(145, 40);
         
-        VBox vBox = new VBox(edit, delete);
+        VBox vBox = new VBox(edit, io,delete);
         
         popup = new JFXPopup();
         popup.setPopupContent(vBox);
     }
     
     private void deleteInsumosDialog() {
-        //delete if stock 0
+        //delete if stock 0 validacion falta
         if(Integer.parseInt(selectedInsumo.getStockTotal().getValue()) >= 0) {
             ErrorController error = new ErrorController();
             error.loadDialog("Atención", "No puede desactivar un insumo con stock", "OK", hiddenSp);
@@ -366,4 +380,17 @@ public class ListaInsumoController implements Initializable {
         insumoDialog.show();
     }  
     
+    // ingresos por hallazgo y salidas por accidente
+    private void registraringresoSalidaDialog() throws IOException{
+        JFXDialogLayout content = new JFXDialogLayout();
+        
+        content.setHeading(new Text("Registrar Ingreso o salida"));
+        
+        Node node;
+        node = (Node) FXMLLoader.load(ListaInsumoController.this.getClass().getResource(RegistrarIngresoSalidaInsumoController.viewPath));
+        content.setBody(node);
+        
+        insumoDialog = new JFXDialog(hiddenSp,content,JFXDialog.DialogTransition.CENTER);
+        insumoDialog.show();
+    }
 }

@@ -30,6 +30,9 @@ import com.sigad.sigad.business.helpers.ProveedorHelper;
 import com.sigad.sigad.business.helpers.TiendaHelper;
 import com.sigad.sigad.insumos.controller.ListaInsumoController.InsumoViewer;
 import java.net.URL;
+import java.text.Format;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -37,6 +40,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -101,11 +106,20 @@ public class CrearEditarOrdenCompraController implements Initializable {
     JFXTreeTableColumn<InsumoViewerOrden,String> precioCol = new JFXTreeTableColumn<>("Precio");
     JFXTreeTableColumn<InsumoViewerOrden,String> cantidadCol = new JFXTreeTableColumn<>("Cantidad");
     JFXTreeTableColumn<InsumoViewerOrden,String> subtotalCol = new JFXTreeTableColumn<>("Subtotal");
+    JFXTreeTableColumn<InsumoViewerOrden,String> fechaVencimientoCol = new JFXTreeTableColumn<>("Fecha venc");
     
     Date inputDate = new Date();
     LocalDate date = inputDate .toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     
     public static class InsumoViewerOrden extends RecursiveTreeObject<InsumoViewerOrden>{
+
+        public SimpleStringProperty getFechaVencimiento() {
+            return fechaVencimiento;
+        }
+
+        public void setFechaVencimiento(String fechaVencimiento) {
+            this.fechaVencimiento = new SimpleStringProperty(fechaVencimiento);
+        }
 
         public SimpleStringProperty getNombre() {
             return nombre;
@@ -154,6 +168,8 @@ public class CrearEditarOrdenCompraController implements Initializable {
         public void setInsumoLocal(Insumo insumoLocal) {
             this.insumoLocal = insumoLocal;
         }
+        
+        
 
         private SimpleStringProperty nombre;
         private SimpleStringProperty volumen;
@@ -162,13 +178,15 @@ public class CrearEditarOrdenCompraController implements Initializable {
         private SimpleStringProperty subTotal;
         private Insumo insumoLocal;
         private SimpleStringProperty recibido;
+        private SimpleStringProperty fechaVencimiento;
         
-        public InsumoViewerOrden(String nombre,String volumen,String precio,String cantidad,String subtotal) {
+        public InsumoViewerOrden(String nombre,String volumen,String precio,String cantidad,String subtotal,String fecha) {
             this.nombre = new SimpleStringProperty(nombre);
             this.volumen = new SimpleStringProperty(volumen);            
             this.precio = new SimpleStringProperty(precio);
             this.cantidad = new SimpleStringProperty(cantidad);
             this.subTotal = new SimpleStringProperty(subtotal);
+            this.fechaVencimiento = new SimpleStringProperty(fecha);
             
         }
     }
@@ -225,17 +243,30 @@ public class CrearEditarOrdenCompraController implements Initializable {
                 if(listaLotes!= null){
                     insumosList.forEach((i)-> {
                         if(!i.getCantidad().getValue().equals("")){
-                             LoteInsumo li = new LoteInsumo();
+                            LoteInsumo li = new LoteInsumo();
 
-                             //Double val = Double.parseDouble(i.getCantidad().getValue())*Double.parseDouble(i.getSubTotal().getValue());
-                             li.setInsumo(i.insumoLocal);
-                             li.setFechaVencimiento(new Date());
+                            //Double val = Double.parseDouble(i.getCantidad().getValue())*Double.parseDouble(i.getSubTotal().getValue());
+                            li.setInsumo(i.insumoLocal);
 
-                             li.setCostoUnitario(Double.parseDouble(i.getPrecio().getValue()));
-                             li.setStockFisico(0);
-                             li.setStockLogico(Integer.parseInt(i.getCantidad().getValue()));
-                             li.setTienda(currentStore);
-                             listaLotes.add(li);
+                            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+                            
+                            if(!i.getFechaVencimiento().getValue().equals("")){
+                                Date fvenc;
+                                try {
+                                    fvenc = formatter.parse(i.getFechaVencimiento().getValue());
+                                } catch (ParseException ex) {
+                                    Logger.getLogger(CrearEditarOrdenCompraController.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                                li.setFechaVencimiento(inputDate);
+                            }
+                            else {
+                                li.setFechaVencimiento(new Date());
+                            }
+                            li.setCostoUnitario(Double.parseDouble(i.getPrecio().getValue()));
+                            li.setStockFisico(0);
+                            li.setStockLogico(Integer.parseInt(i.getCantidad().getValue()));
+                            li.setTienda(currentStore);
+                            listaLotes.add(li);
                         }
                     });
                 }
@@ -327,13 +358,23 @@ public class CrearEditarOrdenCompraController implements Initializable {
         subtotalCol.setCellValueFactory((TreeTableColumn.CellDataFeatures<InsumoViewerOrden, String> param) -> param.getValue().getValue().getSubTotal()
         );
         
+        fechaVencimientoCol.setCellValueFactory((TreeTableColumn.CellDataFeatures<InsumoViewerOrden, String> param) -> param.getValue().getValue().getFechaVencimiento()
+        );
+        
+        fechaVencimientoCol.setCellFactory((TreeTableColumn<InsumoViewerOrden, String> param) -> new EditingCellText());
+        
+        fechaVencimientoCol.setOnEditCommit((TreeTableColumn.CellEditEvent<InsumoViewerOrden, String> event) -> {
+            Integer i = insumosList.indexOf(event.getRowValue().getValue());
+            insumosList.get(i).setFechaVencimiento(event.getNewValue());
+        });
+        
 
     }
     
     private void addColumns(){
         final TreeItem<InsumoViewerOrden> rootInsumo = new RecursiveTreeItem<>(insumosList,RecursiveTreeObject::getChildren);
         tblInsumos.setEditable(true);
-        tblInsumos.getColumns().setAll(nombreCol,volumenCol,precioCol,cantidadCol,subtotalCol);
+        tblInsumos.getColumns().setAll(nombreCol,volumenCol,precioCol,cantidadCol,subtotalCol,fechaVencimientoCol);
         tblInsumos.setRoot(rootInsumo);
         tblInsumos.setShowRoot(false);
     }
@@ -411,7 +452,7 @@ public class CrearEditarOrdenCompraController implements Initializable {
         }
         
         InsumoViewerOrden insumoOrd = new InsumoViewerOrden(provinsumo.getInsumo().getNombre(),provinsumo.getInsumo().isVolumen().toString(), 
-                                           provinsumo.getPrecio().toString(), cant, subtotal);
+                                           provinsumo.getPrecio().toString(), cant, subtotal,"");
         insumoOrd.setInsumoLocal(provinsumo.getInsumo());
         insumosList.add(insumoOrd);
     }
@@ -457,6 +498,7 @@ public class CrearEditarOrdenCompraController implements Initializable {
 //        else 
         return true;
     }
+    
     class EditingCell extends TreeTableCell<InsumoViewerOrden, String> {
 
         private JFXTextField textField;
@@ -515,9 +557,77 @@ public class CrearEditarOrdenCompraController implements Initializable {
                     if (t.getCode() == KeyCode.ENTER) {
                         if (isNumeric(textField.getText())) {
                             commitEdit(textField.getText());
-                            
                         }
 
+                    } else if (t.getCode() == KeyCode.ESCAPE) {
+                        cancelEdit();
+                    }
+                }
+            });
+        }
+
+        private String getString() {
+            return getItem() == null ? "" : getItem().toString();
+        }
+    }
+    
+    class EditingCellText extends TreeTableCell<InsumoViewerOrden, String> {
+
+        private JFXTextField textField;
+
+        public EditingCellText() {
+        }
+
+        @Override
+        public void startEdit() {
+            super.startEdit();
+
+            if (textField == null) {
+                createTextField();
+            }
+
+            setGraphic(textField);
+            setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+            textField.selectAll();
+        }
+
+        @Override
+        public void cancelEdit() {
+            super.cancelEdit();
+
+            setText(String.valueOf(getItem()));
+            setContentDisplay(ContentDisplay.TEXT_ONLY);
+        }
+
+        @Override
+        public void updateItem(String item, boolean empty) {
+            super.updateItem(item, empty);
+
+            if (empty) {
+                setText(null);
+                setGraphic(null);
+            } else {
+                if (isEditing()) {
+                    if (textField != null) {
+                        textField.setText(getString());
+                    }
+                    setGraphic(textField);
+                    setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+                } else {
+                    setText(getString());
+                    setContentDisplay(ContentDisplay.TEXT_ONLY);
+                }
+            }
+        }
+
+        private void createTextField() {
+            textField = new JFXTextField(getString());
+            textField.setMinWidth(this.getWidth() - this.getGraphicTextGap() * 2);
+            textField.setOnKeyPressed(new EventHandler<KeyEvent>() {
+                @Override
+                public void handle(KeyEvent t) {
+                    if (t.getCode() == KeyCode.ENTER) {
+                            commitEdit(textField.getText());
                     } else if (t.getCode() == KeyCode.ESCAPE) {
                         cancelEdit();
                     }
