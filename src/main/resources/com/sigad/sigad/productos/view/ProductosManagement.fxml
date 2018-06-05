@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXTextArea?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import com.jfoenix.controls.JFXTreeTableView?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="647.0" prefWidth="881.0" style="-fx-background-color: white;" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sigad.sigad.productos.controller.ProductosManagementController">
+   <children>
+      <Label layoutX="278.0" layoutY="39.0" prefHeight="16.0" prefWidth="200.0" text="Nombre">
+         <font>
+            <Font size="10.0" />
+         </font></Label>
+      <JFXTextField id="txtNombre" fx:id="txtNombre" layoutX="278.0" layoutY="58.0" prefHeight="26.0" prefWidth="224.0">
+         <font>
+            <Font size="10.0" />
+         </font></JFXTextField>
+      <Label layoutX="277.0" layoutY="106.0" prefHeight="17.0" prefWidth="200.0" text="Categoria">
+         <font>
+            <Font size="10.0" />
+         </font></Label>
+      <Label layoutX="277.0" layoutY="179.0" text="Fragilidad">
+         <font>
+            <Font size="10.0" />
+         </font></Label>
+      <Label layoutX="566.0" layoutY="58.0" text="Descripcion">
+         <font>
+            <Font size="10.0" />
+         </font></Label>
+      <ImageView id="imageProducto" fx:id="imageProducto" fitHeight="150.0" fitWidth="200.0" layoutX="36.0" layoutY="66.0" pickOnBounds="true" preserveRatio="true">
+         <effect>
+            <DropShadow color="#000000bc" />
+         </effect>
+      </ImageView>
+      <JFXTextArea fx:id="txtDescripcion" layoutX="568.0" layoutY="88.0" prefHeight="119.0" prefWidth="234.0">
+         <font>
+            <Font size="10.0" />
+         </font></JFXTextArea>
+      <Label layoutX="279.0" layoutY="258.0" text="Peso">
+         <font>
+            <Font size="10.0" />
+         </font></Label>
+      <JFXComboBox fx:id="selectCategoria" layoutX="275.0" layoutY="132.0" prefHeight="26.0" prefWidth="224.0" />
+      <JFXComboBox fx:id="selectFragilidad" layoutX="278.0" layoutY="209.0" prefHeight="26.0" prefWidth="224.0" />
+      <JFXTreeTableView fx:id="insumoTable" layoutX="90.0" layoutY="372.0" prefHeight="150.0" prefWidth="713.0" />
+      <Label layoutX="92.0" layoutY="334.0" prefHeight="16.0" prefWidth="234.0" text="INSUMOS">
+         <font>
+            <Font size="17.0" />
+         </font>
+      </Label>
+      <Label layoutX="563.0" layoutY="301.0" text="Buscar">
+         <font>
+            <Font size="10.0" />
+         </font></Label>
+      <JFXTextField layoutX="619.0" layoutY="289.0" prefHeight="26.0" prefWidth="184.0">
+         <font>
+            <Font size="10.0" />
+         </font></JFXTextField>
+      <JFXTextField fx:id="txtPeso" layoutX="274.0" layoutY="285.0" prefHeight="26.0" prefWidth="234.0">
+         <font>
+            <Font size="10.0" />
+         </font></JFXTextField>
+      <JFXTextField fx:id="finalPrice" disable="true" layoutX="474.0" layoutY="566.0" prefHeight="26.0" prefWidth="200.0" />
+      <Label layoutX="392.0" layoutY="574.0" text="Precio Base" />
+      <JFXButton fx:id="saveBtn" buttonType="RAISED" layoutX="710.0" layoutY="565.0" style="-fx-background-color: #FFFFFF;" text="Guardar">
+         <font>
+            <Font size="15.0" />
+         </font>
+         <effect>
+            <DropShadow />
+         </effect>
+      </JFXButton>
+   </children>
+</AnchorPane>

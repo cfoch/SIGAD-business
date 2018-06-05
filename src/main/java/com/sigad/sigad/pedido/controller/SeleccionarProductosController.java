@@ -399,7 +399,6 @@ public class SeleccionarProductosController implements Initializable {
         treeViewPedido.setRoot(rootPedido);
         treeViewPedido.setShowRoot(false);
     }
-
     class ProductoLista extends RecursiveTreeObject<ProductoLista> {
 
         ImageView imagen;
