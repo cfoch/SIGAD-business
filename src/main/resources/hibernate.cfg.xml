@@ -63,6 +63,7 @@
         <mapping class="com.sigad.sigad.business.MovimientosTienda"/>
         <mapping class="com.sigad.sigad.business.TipoMovimiento"/>
         <mapping class="com.sigad.sigad.business.Permiso"/>
+        <mapping class="com.sigad.sigad.business.ProveedorInsumo"/>
         
         <!--
         <mapping class="com.sigad.sigad.business.Grupo"/>

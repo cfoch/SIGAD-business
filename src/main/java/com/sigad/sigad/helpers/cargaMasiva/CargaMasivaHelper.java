@@ -403,7 +403,7 @@ public class CargaMasivaHelper {
                 Proveedor nuevoProv = new Proveedor();
                 nuevoProv.setNombre(StringUtils.trimToEmpty(dataFormatter.formatCellValue(row.getCell(index))));
                 index++;
-                String rucProved = (String) CargaMasivaHelper.validarParsing(StringUtils.trimToEmpty(dataFormatter.formatCellValue(row.getCell(index))), true);
+                String rucProved = StringUtils.trimToEmpty(dataFormatter.formatCellValue(row.getCell(index)));
                 if (rucProved!=null)
                     nuevoProv.setRuc(rucProved);
                 else
@@ -517,7 +517,7 @@ public class CargaMasivaHelper {
                     }
                     // identificamos la opcion y el icono en la variable permisoOpcionxIcono
                     String [] permisoAux = permisoMenuxIcono.split(",");
-                    if (StringUtils.isNotBlank(permisoAux[0]) && StringUtils.isNotBlank(permisoAux[1])){
+                    if ((permisoAux.length == 2) && (StringUtils.isNotBlank(permisoAux[0]) && StringUtils.isNotBlank(permisoAux[1]))){
                         Permiso permisoAsociado = (Permiso) CargaMasivaHelper.busquedaGeneralString(session, "Permiso", new String [] {"menu","icono"}, new String [] {StringUtils.trimToEmpty(permisoAux[0]), StringUtils.trimToEmpty(permisoAux[1])});
                         if (permisoAsociado!=null) {
                             LOGGER.log(Level.INFO, String.format("Permiso %s encontrado con exito", permisoMenuxIcono));

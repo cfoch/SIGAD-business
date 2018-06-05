@@ -29,8 +29,9 @@ public class Reparto {
     
     @NotNull
     private Date fecha;
-    @NotNull
-    private String ruta;
+    
+    @OneToMany(mappedBy="reparto")
+    private Set<Pedido> pedidos = new HashSet<Pedido>();
     //fk
     @ManyToOne
     private Usuario repartidor;
@@ -64,20 +65,6 @@ public class Reparto {
      */
     public void setFecha(Date fecha) {
         this.fecha = fecha;
-    }
-
-    /**
-     * @return the ruta
-     */
-    public String getRuta() {
-        return ruta;
-    }
-
-    /**
-     * @param ruta the ruta to set
-     */
-    public void setRuta(String ruta) {
-        this.ruta = ruta;
     }
 
     /**
@@ -120,5 +107,19 @@ public class Reparto {
      */
     public void setDetallesReparto(Set<DetalleReparto> detallesReparto) {
         this.detallesReparto = detallesReparto;
+    }
+
+    /**
+     * @return the pedidos
+     */
+    public Set<Pedido> getPedidos() {
+        return pedidos;
+    }
+
+    /**
+     * @param pedidos the pedidos to set
+     */
+    public void setPedidos(Set<Pedido> pedidos) {
+        this.pedidos = pedidos;
     }
 }

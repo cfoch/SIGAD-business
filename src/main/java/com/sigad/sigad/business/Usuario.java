@@ -44,6 +44,7 @@ public class Usuario {
     @NotNull
     private boolean activo;
     @Email(message = "{user.email.invalid}")
+    @Column(unique = true)
     private String correo;
     @Column(nullable = false)
     private String password;

@@ -20,6 +20,7 @@ import com.sigad.sigad.personal.controller.PersonalController;
 import com.sigad.sigad.tienda.controller.TiendaController;
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIconView;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -219,13 +220,13 @@ public class HomeController implements Initializable {
             AnchorPane.setLeftAnchor(menuPanel, 200.00);
             AnchorPane.setLeftAnchor(getFirstPanel(), 200.00);
             
-            addClassToContainer(Container.SIDEBAR,"active");
+//            addClassToContainer(Container.SIDEBAR,"active");
         }else{
             sidebarPane.setPrefWidth(50);
             AnchorPane.setLeftAnchor(menuPanel, 50.00);
             AnchorPane.setLeftAnchor(getFirstPanel(), 50.00);
             
-            removeClassFromContainer(Container.SIDEBAR,"active");
+//            removeClassFromContainer(Container.SIDEBAR,"active");
         }
     }
     @FXML
