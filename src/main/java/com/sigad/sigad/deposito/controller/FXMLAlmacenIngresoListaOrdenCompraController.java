@@ -19,7 +19,7 @@ import com.sigad.sigad.app.controller.ErrorController;
 import com.sigad.sigad.app.controller.HomeController;
 import com.sigad.sigad.business.OrdenCompra;
 import com.sigad.sigad.deposito.helper.DepositoHelper;
-import com.sun.org.apache.bcel.internal.generic.AALOAD;
+import com.sigad.sigad.ordenescompra.controller.ListaOrdenesCompraController.OrdenCompraViewer;
 import java.beans.EventHandler;
 import java.io.IOException;
 import java.net.URL;
@@ -74,90 +74,22 @@ public class FXMLAlmacenIngresoListaOrdenCompraController implements Initializab
     
     public static OrdenCompraViewer selectedOrder = null;
     
-    class OrdenCompraViewer extends RecursiveTreeObject<OrdenCompraViewer>{
-
-        /**
-         * @return the codigo
-         */
-        public SimpleStringProperty getCodigo() {
-            return codigo;
-        }
-
-        /**
-         * @param codigo the codigo to set
-         */
-        public void setCodigo(SimpleStringProperty codigo) {
-            this.codigo = codigo;
-        }
-
-        /**
-         * @return the fecha
-         */
-        public SimpleStringProperty getFecha() {
-            return fecha;
-        }
-
-        /**
-         * @param fecha the fecha to set
-         */
-        public void setFecha(SimpleStringProperty fecha) {
-            this.fecha = fecha;
-        }
-
-        /**
-         * @return the precio
-         */
-        public SimpleDoubleProperty getPrecio() {
-            return precio;
-        }
-
-        /**
-         * @param precio the precio to set
-         */
-        public void setPrecio(Double precio) {
-            this.precio = new SimpleDoubleProperty(precio);
-        }
-        private SimpleStringProperty codigo;
-        private SimpleStringProperty fecha;
-        private SimpleDoubleProperty  precio;
-        
-        public OrdenCompraViewer(String codigo,String fecha,Double precio){
-            this.codigo = new SimpleStringProperty(codigo);
-            this.fecha = new SimpleStringProperty(fecha);
-            this.precio = new SimpleDoubleProperty(precio);
-        }
-    }
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
         JFXTreeTableColumn<OrdenCompraViewer,String> codCol = new JFXTreeTableColumn<>("Codigo");
         codCol.setPrefWidth(425);
-        codCol.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<OrdenCompraViewer, String>, ObservableValue<String>>(){
-            @Override
-            public ObservableValue<String> call(TreeTableColumn.CellDataFeatures<OrdenCompraViewer, String> param) {
-                //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-                return param.getValue().getValue().getCodigo();
-            }
-        });
+        codCol.setCellValueFactory((TreeTableColumn.CellDataFeatures<OrdenCompraViewer, String> param) -> param.getValue().getValue().getCodigo() //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        );
         
         JFXTreeTableColumn<OrdenCompraViewer,String> fechaCol = new JFXTreeTableColumn<>("Fecha Compra");
         fechaCol.setPrefWidth(200);
-        fechaCol.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<OrdenCompraViewer, String>, ObservableValue<String>>(){
-            @Override
-            public ObservableValue<String> call(TreeTableColumn.CellDataFeatures<OrdenCompraViewer, String> param) {
-                //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-                return param.getValue().getValue().getFecha();
-            }
-        });
+        fechaCol.setCellValueFactory((TreeTableColumn.CellDataFeatures<OrdenCompraViewer, String> param) -> param.getValue().getValue().getFecha() //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        );
         JFXTreeTableColumn<OrdenCompraViewer,Number> precioCol = new JFXTreeTableColumn<>("Precio");
         precioCol.setPrefWidth(200);
-        precioCol.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<OrdenCompraViewer, Number>, ObservableValue<Number>>(){
-            @Override
-            public ObservableValue<Number> call(TreeTableColumn.CellDataFeatures<OrdenCompraViewer, Number> param) {
-                //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-                return param.getValue().getValue().getPrecio();
-            }
-        });
+        precioCol.setCellValueFactory((TreeTableColumn.CellDataFeatures<OrdenCompraViewer, Number> param) -> param.getValue().getValue().getPrecio() //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        );
         
         //Double click on row
         tblAlmacenOrdenesCompra.setRowFactory(ord -> {

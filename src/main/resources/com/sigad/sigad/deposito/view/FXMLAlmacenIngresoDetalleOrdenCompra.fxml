@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXDatePicker?>
 <?import com.jfoenix.controls.JFXTimePicker?>
 <?import com.jfoenix.controls.JFXTreeTableView?>
@@ -12,7 +11,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sigad.sigad.deposito.controller.FXMLAlmacenIngresoDetalleOrdenCompraController">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="760.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sigad.sigad.deposito.controller.FXMLAlmacenIngresoDetalleOrdenCompraController">
    <children>
       <GridPane>
         <columnConstraints>
@@ -53,20 +52,7 @@
                   </Label>
                </children>
             </AnchorPane>
-            <AnchorPane prefHeight="35.0" prefWidth="529.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
-               <children>
-                  <JFXButton layoutX="452.0" layoutY="12.0" text="Guardar">
-                     <font>
-                        <Font size="11.0" />
-                     </font>
-                  </JFXButton>
-                  <JFXButton layoutX="383.0" layoutY="12.0" text="Cancelar">
-                     <font>
-                        <Font size="11.0" />
-                     </font>
-                  </JFXButton>
-               </children>
-            </AnchorPane>
+            <AnchorPane prefHeight="35.0" prefWidth="529.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
          </children>
       </GridPane>
    </children>

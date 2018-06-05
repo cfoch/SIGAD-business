@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 
 /**
  *
@@ -26,7 +27,10 @@ public class ProveedorInsumo {
     @ManyToOne
     private Insumo insumo;
     private Double precio;
+    @NotNull
+    private boolean activo;
 
+    
     /**
      * @return the id
      */
@@ -81,6 +85,20 @@ public class ProveedorInsumo {
      */
     public void setPrecio(Double precio) {
         this.precio = precio;
+    }
+
+    /**
+     * @return the activo
+     */
+    public boolean isActivo() {
+        return activo;
+    }
+
+    /**
+     * @param activo the activo to set
+     */
+    public void setActivo(boolean activo) {
+        this.activo = activo;
     }
 
 }

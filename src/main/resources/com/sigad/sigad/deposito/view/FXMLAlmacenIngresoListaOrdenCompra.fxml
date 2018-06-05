@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
-<?import com.jfoenix.controls.JFXDialog?>
 <?import com.jfoenix.controls.JFXTreeTableView?>
 <?import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIconView?>
 <?import javafx.scene.control.Label?>
@@ -33,7 +32,7 @@
             <AnchorPane prefHeight="33.0" prefWidth="200.0" style="-fx-border-color: #C8C8C8;" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <children>
                   <Label layoutX="20.0" layoutY="11.0" text="Ordenes de compra" />
-                  <JFXButton fx:id="moreBtn" layoutX="865.0" layoutY="6.0" prefHeight="27.0" prefWidth="26.0">
+                  <JFXButton fx:id="moreBtn" layoutX="865.0" layoutY="6.0" onAction="#handleAction" prefHeight="27.0" prefWidth="26.0">
                      <graphic>
                         <MaterialDesignIconView glyphName="DOTS_VERTICAL" />
                      </graphic>
@@ -41,9 +40,11 @@
                </children>
             </AnchorPane>
             <AnchorPane prefHeight="14.0" prefWidth="919.0" style="-fx-background-color: #ECEFF1; -fx-border-color: #C8C8C8;" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+               <children>
+                  <JFXButton fx:id="addBtn" layoutX="892.0" layoutY="2.0" onAction="#handleAction" text="+" />
+               </children></AnchorPane>
          </children>
       </GridPane>
-      <JFXDialog fx:id="diag" />
    </children>
 </StackPane>
