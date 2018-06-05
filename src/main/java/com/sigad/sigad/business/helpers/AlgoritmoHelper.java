@@ -7,16 +7,25 @@ package com.sigad.sigad.business.helpers;
 
 import com.grupo1.simulated_annealing.Locacion;
 import com.grupo1.simulated_annealing.Pista;
+import com.grupo1.simulated_annealing.VRPAlgorithm;
 import com.grupo1.simulated_annealing.VRPCostMatrix;
 import com.grupo1.simulated_annealing.VRPProblem;
+import com.sigad.sigad.app.controller.LoginController;
 import com.sigad.sigad.business.Pedido;
+import com.sigad.sigad.business.PedidoEstado;
+import com.sigad.sigad.business.Reparto;
 import com.sigad.sigad.business.Tienda;
 import com.sigad.sigad.business.Usuario;
 import com.sigad.sigad.business.Vehiculo;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Stream;
+import org.apache.commons.lang3.ArrayUtils;
+import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.jgrapht.Graph;
+import org.jgrapht.graph.GraphWalk;
 import org.jgrapht.graph.SimpleGraph;
 
 /**
@@ -28,6 +37,118 @@ public class AlgoritmoHelper extends BaseHelper {
         Tienda tienda;
         tienda = usuario.getTienda();
         return tienda;
+    }
+
+    public void autogenerarRepartos(Tienda tienda,
+            String turno) throws Exception {
+        int i, j;
+        try (Session session = LoginController.serviceInit()) {
+            PedidoHelper helperPedido = new PedidoHelper();
+            List<Pedido> pedidos;
+            List<List<Pedido>> pedidosSublists;
+            List<PedidoEstado> estados;
+            List<Tienda> tiendas;
+            List<Vehiculo.Tipo> vehiculoTipos;
+            PedidoEstado estado;
+            String hql;
+            Double totalCapacidadTipo;
+            double [] proportions;
+            int iPedido, jPedido;
+
+            estados = (List<PedidoEstado>) session.createQuery(
+                    "from PedidoEstado where nombre='Venta'").list();
+            if (estados.isEmpty()) {
+                throw new Exception("PedidoEstado[nombre='Venta'] no existe");
+            }
+            estado = estados.get(0);
+            vehiculoTipos = (List<Vehiculo.Tipo>) session.createQuery(
+                    "from Vehiculo$Tipo order by capacidad desc").list();
+            tiendas = (List<Tienda>) session.createQuery("from Tienda").list();
+
+            List<Vehiculo> vehiculos = tienda.getVehiculos();
+            pedidos = helperPedido.getPedidosPorTienda(tienda, estado,
+                    turno);
+            // FIXME
+            // Si no hubiera vehiculos asignados para la tienda, se rompe.
+            generarRepartos(tienda, pedidos,
+                    vehiculos.get(0).getTipo(), vehiculos);
+        } catch (Exception ex) {
+            throw ex;
+        }
+    }
+
+    public void generarRepartos(Tienda tienda, List<Pedido> pedidos,
+            Vehiculo.Tipo vehiculoTipo, List<Vehiculo> vehiculos)
+            throws Exception {
+        GraphHopperHelper hopperHelper;
+        VRPProblem problem;
+        VRPAlgorithm algorithm;
+        ArrayList<GraphWalk> solution;
+        double [][] costMatrix;
+        Locacion [] locaciones;
+        List<Usuario> repartidores;
+        Usuario repartidor;
+        Random rand = new Random();
+        int i;
+
+        // Resolver problema VRP
+        locaciones = createLocaciones(tienda, pedidos);
+        hopperHelper = GraphHopperHelper.getInstance();
+        costMatrix = hopperHelper.getCostMatrix(locaciones, true);
+        problem = AlgoritmoHelper.buildVRPProblem(locaciones,
+                vehiculoTipo, costMatrix);
+        algorithm = new VRPAlgorithm(problem);
+        solution = algorithm.solve();
+        algorithm.printSolution(solution);
+
+        // Generar repartos
+        repartidores = (List<Usuario>) session
+                .createQuery("from Usuario where tienda_id = :tienda_id")
+                .setParameter("tienda_id", tienda.getId())
+                .list();
+        //repartidores.addAll();
+        try {
+            for (i = 0; i < solution.size(); i++) {
+                Vehiculo vehiculo = vehiculos.get(i % vehiculos.size());
+                List<Pedido> subpedidos;
+                List<Locacion> ruta = solution.get(i).getVertexList();
+
+                subpedidos = locacionesToPedidos(ruta);
+                repartidor = repartidores.get(rand.nextInt(repartidores.size()));
+
+                session.getTransaction().begin();
+                Reparto reparto = new Reparto();
+                reparto.setVehiculo(vehiculo);
+                reparto.setPedidos(subpedidos);
+                reparto.setRepartidor(repartidor);
+                session.save(reparto);
+                session.getTransaction().commit();
+            }
+        } catch (Exception ex) {
+            session.getTransaction().rollback();
+            throw ex;
+        }
+    }
+
+    public List<Pedido> locacionesToPedidos(
+            List<Locacion> locaciones) {
+        Query query;
+        List<Pedido> pedidos;
+        long [] idPedidosTmp;
+        Long [] idPedidos;
+        try {
+            idPedidosTmp = locaciones.stream()
+                    .filter(l -> l.getServicio() != null)
+                    .mapToLong(l -> l.getId())
+                    .toArray();
+            idPedidos = ArrayUtils.toObject(idPedidosTmp);
+            query = session.createQuery("from Pedido p where p.id in (:ids)")
+                    .setParameterList("ids", idPedidos);
+            pedidos = (List<Pedido>) query.list();
+        } catch (Exception ex) {
+            pedidos = new ArrayList<>();
+        }
+        return pedidos;
     }
 
     /**
