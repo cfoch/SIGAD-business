@@ -294,8 +294,6 @@ public class CrearEditarInsumoController implements Initializable {
                 else volumenTxt.setFocusColor(new Color(0.30,0.47,0.23, 1));
             }
         });
-        
-
     }
     
     

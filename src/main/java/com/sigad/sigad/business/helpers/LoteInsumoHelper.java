@@ -8,7 +8,6 @@ package com.sigad.sigad.business.helpers;
 import com.sigad.sigad.app.controller.LoginController;
 import com.sigad.sigad.business.Insumo;
 import com.sigad.sigad.business.LoteInsumo;
-import com.sigad.sigad.business.LoteTienda;
 import com.sigad.sigad.business.Tienda;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -92,6 +91,20 @@ public class LoteInsumoHelper {
             this.errorMessage = e.getMessage();
         }
         return insumo;
+    }
+    
+    public ArrayList<LoteInsumo> getLoteInsumosEspecific(Tienda tienda,Insumo insumo){
+        ArrayList<LoteInsumo> listaLotes = null;
+        Query query = null;
+        try {
+            query = session.createQuery("from LoteInsumo where insumo_id =" + insumo.getId().toString() + "and tienda_id = "  + tienda.getId().toString());
+            if (!query.list().isEmpty()) {
+                listaLotes = (ArrayList<LoteInsumo>) query.list();
+            }
+        } catch (Exception e) {
+            this.errorMessage = e.getMessage();
+        }
+        return listaLotes;
     }
 
     public boolean updateLoteInsumo(LoteInsumo tOld) {
@@ -177,6 +190,31 @@ public class LoteInsumoHelper {
             this.errorMessage = e.getMessage();
         }
         return ok;
+    }
+    
+    public LoteInsumo getMostRecentLoteInsumo(Tienda tienda){
+        Boolean ok = Boolean.FALSE;
+        try {
+            Transaction tx;
+            if (session.getTransaction().isActive()) {
+                tx = session.getTransaction();
+            } else {
+                tx = session.beginTransaction();
+            }
+            
+            
+            ArrayList<LoteInsumo> loteinsumos = getLoteInsumos(tienda);
+            LoteInsumo lowestDateInsumo = loteinsumos.get(0);
+            for (int i = 1; i < loteinsumos.size(); i++) {
+                if(lowestDateInsumo.getFechaVencimiento().compareTo(loteinsumos.get(i).getFechaVencimiento())>0){
+                    lowestDateInsumo = loteinsumos.get(i);
+                }
+            }
+            return lowestDateInsumo;
+        } catch (Exception e) {
+            this.errorMessage = e.getMessage();
+        }
+        return null;
     }
 
 }

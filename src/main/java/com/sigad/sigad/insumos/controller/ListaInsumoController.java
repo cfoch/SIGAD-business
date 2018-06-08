@@ -323,9 +323,9 @@ public class ListaInsumoController implements Initializable {
         
         edit.setPadding(new Insets(20));
         edit.setPrefSize(145, 40);
-        delete.setPadding(new Insets(40));
+        delete.setPadding(new Insets(20));
         delete.setPrefSize(145, 40);
-        io.setPadding(new Insets(60));
+        io.setPadding(new Insets(20));
         io.setPrefSize(145, 40);
         
         VBox vBox = new VBox(edit, io,delete);

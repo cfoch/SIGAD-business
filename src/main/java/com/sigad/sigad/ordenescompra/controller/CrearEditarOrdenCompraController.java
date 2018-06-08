@@ -18,7 +18,6 @@ import com.sigad.sigad.app.controller.LoginController;
 import com.sigad.sigad.business.DetalleOrdenCompra;
 import com.sigad.sigad.business.Insumo;
 import com.sigad.sigad.business.LoteInsumo;
-import com.sigad.sigad.business.LoteTienda;
 import com.sigad.sigad.business.OrdenCompra;
 import com.sigad.sigad.business.Proveedor;
 import com.sigad.sigad.business.ProveedorInsumo;
@@ -226,7 +225,7 @@ public class CrearEditarOrdenCompraController implements Initializable {
                     }
                 }
 
-                
+
                 for (int i = 0; i < insumosList.size(); i++) {
                     if(!insumosList.get(i).getCantidad().getValue().equals("")){
                         capacidadActual += Double.parseDouble(insumosList.get(i).getVolumen().getValue())* Double.parseDouble(insumosList.get(i).getCantidad().getValue());
@@ -432,11 +431,9 @@ public class CrearEditarOrdenCompraController implements Initializable {
                 });
                 helper.close();
             }
-            
         });
         
-        
-        
+        //whats this?
         pckDate.setValue(date);
     }
     

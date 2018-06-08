@@ -40,7 +40,7 @@
         <mapping class="com.sigad.sigad.business.DetalleOrdenCompra"/>
         <mapping class="com.sigad.sigad.business.Insumo"/>
         <mapping class="com.sigad.sigad.business.LoteInsumo"/>
-        <mapping class="com.sigad.sigad.business.LoteTienda"/>
+<!--        <mapping class="com.sigad.sigad.business.LoteTienda"/>-->
         <mapping class="com.sigad.sigad.business.Producto"/>
         <mapping class="com.sigad.sigad.business.ProductoPrecio"/>
         <mapping class="com.sigad.sigad.business.ProductoCategoria"/>
