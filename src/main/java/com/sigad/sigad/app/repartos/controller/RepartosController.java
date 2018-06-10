@@ -109,6 +109,24 @@ public class RepartosController implements Initializable {
             menuType = mainMenu.get(selectedLabel);
             switch (menuType) {
                 case REPARTIDORES: {
+                    try {
+                        Node nd;
+                        URL resource;
+                        String resourcePath;
+                        FXMLLoader loader;
+
+                        resourcePath = RepartidoresInnerController.viewPath;
+                        resource = getClass().getResource(resourcePath);
+
+                        loader = new FXMLLoader();
+
+                        nd = (Node) loader.load(resource);
+
+                        homeController.getFirstPanel().getChildren().setAll(nd);
+                    } catch (IOException ex) {
+                        Logger.getLogger(HomeController.class.getName())
+                                .log(Level.SEVERE, null, ex);
+                    }
                     break;
                 }
 //                case VEHICULOS_TIPO: {
