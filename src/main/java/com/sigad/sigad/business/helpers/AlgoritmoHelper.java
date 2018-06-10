@@ -18,6 +18,7 @@ import com.sigad.sigad.business.Tienda;
 import com.sigad.sigad.business.Usuario;
 import com.sigad.sigad.business.Vehiculo;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Stream;
@@ -47,23 +48,21 @@ public class AlgoritmoHelper extends BaseHelper {
             List<Pedido> pedidos;
             List<List<Pedido>> pedidosSublists;
             List<PedidoEstado> estados;
-            List<Tienda> tiendas;
-            List<Vehiculo.Tipo> vehiculoTipos;
             PedidoEstado estado;
             String hql;
             Double totalCapacidadTipo;
             double [] proportions;
             int iPedido, jPedido;
 
+            tienda = (Tienda) session.createQuery("from Tienda where id = :id")
+                    .setParameter("id", tienda.getId())
+                    .getSingleResult();
             estados = (List<PedidoEstado>) session.createQuery(
                     "from PedidoEstado where nombre='Venta'").list();
             if (estados.isEmpty()) {
                 throw new Exception("PedidoEstado[nombre='Venta'] no existe");
             }
             estado = estados.get(0);
-            vehiculoTipos = (List<Vehiculo.Tipo>) session.createQuery(
-                    "from Vehiculo$Tipo order by capacidad desc").list();
-            tiendas = (List<Tienda>) session.createQuery("from Tienda").list();
 
             List<Vehiculo> vehiculos = tienda.getVehiculos();
             pedidos = helperPedido.getPedidosPorTienda(tienda, estado,
@@ -71,14 +70,14 @@ public class AlgoritmoHelper extends BaseHelper {
             // FIXME
             // Si no hubiera vehiculos asignados para la tienda, se rompe.
             generarRepartos(tienda, pedidos,
-                    vehiculos.get(0).getTipo(), vehiculos);
+                    vehiculos.get(0).getTipo(), vehiculos, turno);
         } catch (Exception ex) {
             throw ex;
         }
     }
 
     public void generarRepartos(Tienda tienda, List<Pedido> pedidos,
-            Vehiculo.Tipo vehiculoTipo, List<Vehiculo> vehiculos)
+            Vehiculo.Tipo vehiculoTipo, List<Vehiculo> vehiculos, String turno)
             throws Exception {
         GraphHopperHelper hopperHelper;
         VRPProblem problem;
@@ -89,7 +88,7 @@ public class AlgoritmoHelper extends BaseHelper {
         List<Usuario> repartidores;
         Usuario repartidor;
         Random rand = new Random();
-        int i;
+        int i, j;
 
         // Resolver problema VRP
         locaciones = createLocaciones(tienda, pedidos);
@@ -108,6 +107,10 @@ public class AlgoritmoHelper extends BaseHelper {
                 .list();
         //repartidores.addAll();
         try {
+            PedidoEstado estadoPedido;
+            estadoPedido = (PedidoEstado) session
+                    .createQuery("from PedidoEstado where nombre='Despacho'")
+                    .getSingleResult();
             for (i = 0; i < solution.size(); i++) {
                 Vehiculo vehiculo = vehiculos.get(i % vehiculos.size());
                 List<Pedido> subpedidos;
@@ -120,8 +123,18 @@ public class AlgoritmoHelper extends BaseHelper {
                 Reparto reparto = new Reparto();
                 reparto.setVehiculo(vehiculo);
                 reparto.setPedidos(subpedidos);
+                reparto.setFecha(new Date());
                 reparto.setRepartidor(repartidor);
+                reparto.setTurno(turno);
+                reparto.setTienda(repartidor.getTienda());
                 session.save(reparto);
+                for (j = 0; j < subpedidos.size(); j++) {
+                    Pedido subpedido = subpedidos.get(j);
+                    subpedido.setReparto(reparto);
+                    subpedido.setEstado(estadoPedido);
+                    subpedido.setSecuenciaReparto(j);
+                    session.save(subpedido);
+                }
                 session.getTransaction().commit();
             }
         } catch (Exception ex) {
