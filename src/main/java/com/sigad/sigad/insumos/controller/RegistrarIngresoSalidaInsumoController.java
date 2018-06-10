@@ -216,7 +216,7 @@ public class RegistrarIngresoSalidaInsumoController implements Initializable {
         });
         
         LoteInsumoHelper helperli = new LoteInsumoHelper();
-        ArrayList<LoteInsumo> insumosSpecific = helperli.getLoteInsumosEspecific(LoginController.user.getTienda(),insumo);
+        ArrayList<LoteInsumo> insumosSpecific = helperli.getLoteInsumosEspecificPositive(LoginController.user.getTienda(),insumo);
         if(insumosSpecific !=null){
             insumosSpecific.forEach((i)->{
                 updateTable(i);
@@ -263,63 +263,79 @@ public class RegistrarIngresoSalidaInsumoController implements Initializable {
                 fillFields();
                 
                 Tienda currentStore = LoginController.user.getTienda();
+                Integer newCantidad = Integer.parseInt(cantidadTxt.getText());
                 double capacidadTotal = currentStore.getCapacidad();
                 double capacidadActual = 0.0;
                 
                 LoteInsumoHelper helperli = new LoteInsumoHelper();
                 MovimientoHelper helpermo = new MovimientoHelper();
+                InsumosHelper helperi = new InsumosHelper();
                 
-                LoteInsumo recentLote = helperli.getMostRecentLoteInsumo(currentStore);
-                ArrayList<LoteInsumo> lotes = helperli.getLoteInsumos(currentStore);
-                if(recentLote != null){
+                if(cbxTipo.getValue().getNombre().equals("Ingreso")){
+
+                    ArrayList<LoteInsumo> lotesInsumo = helperli.getLoteInsumos(currentStore);
                     
-                    //validate if insumo can enter to almacen
-                    if(lotes!=null){
-                        for (int i = 0; i < lotes.size(); i++) {
-                            LoteInsumo next = lotes.get(i);
-                            capacidadActual += next.getInsumo().getStockTotalFisico()* next.getInsumo().isVolumen();
+                    if(lotesInsumo !=null) {
+                        for (int i = 0; i < lotesInsumo.size(); i++) {
+                            LoteInsumo next = lotesInsumo.get(i);
+                            capacidadActual += next.getInsumo().getStockTotalLogico()* next.getInsumo().isVolumen();
                         }
-                    }
-                    capacidadActual += movimiento.getCantidadMovimiento()*insumo.isVolumen();
-                    if(capacidadActual > capacidadTotal){
-                        ErrorController error = new ErrorController();
-                        error.loadDialog("Error", "No puede agregar " + (capacidadActual) + " porque supera la capacidad actual de la tienda es " + (capacidadTotal), "Ok", hiddenSp);
-                        return;
-                    }
-                    
-                    //ajustar vencimiento(en lote) FALTAAAA
-                    Integer newCantidad = Integer.parseInt(cantidadTxt.getText());
-                    //ingreso
-                    if(cbxTipo.getValue().getNombre().equals("Ingreso")){
+                        capacidadActual += movimiento.getCantidadMovimiento()*insumo.isVolumen();
+                        if(capacidadActual > capacidadTotal){
+                            ErrorController error = new ErrorController();
+                            error.loadDialog("Error", "No puede agregar " + (capacidadActual) + " porque supera la capacidad actual de la tienda es " + (capacidadTotal), "Ok", hiddenSp);
+                            return;
+                        }
                         
+                        //siempre existira porque la lista no es vacia
+                        LoteInsumo recentLote = helperli.getMostRecentLoteInsumo(currentStore);
                         //realizar ingreso seleccionando el lote y  validar la cantidad que ingresa.
                         recentLote.setStockFisico(recentLote.getStockFisico() + newCantidad);
                         recentLote.setStockLogico(recentLote.getStockLogico() + newCantidad);
-                        helperli.updateLoteInsumo(recentLote);
+                        //stock de insumos de todas las tiendas
+                        insumo.setStockTotalFisico(insumo.getStockTotalFisico() - newCantidad );
+                        insumo.setStockTotalLogico(insumo.getStockTotalLogico() - newCantidad);
                         movimiento.setLoteInsumo(recentLote);
-                    }
-                    //salida
-                    else if(cbxTipo.getValue().getNombre().equals("Salida")) {
-                        LoteInsumo loteSelected = tblLotes.getSelectionModel().getSelectedItem().getValue().getLote();
-                        Integer stockFisico = loteSelected.getStockFisico();
                         
-                        if((stockFisico - newCantidad)<0){
-                            //show error message
-                        }
-                        else {
-                            loteSelected.setStockFisico(loteSelected.getStockFisico() - newCantidad);
-                            loteSelected.setStockLogico(loteSelected.getStockLogico() - newCantidad);
-                            helperli.updateLoteInsumo(loteSelected);
-                            movimiento.setLoteInsumo(loteSelected); 
-                        }
-                        //validar que se debe selecionar un lote insumo(falta)
-                        
+                        helperli.updateLoteInsumo(recentLote);
+                        helperi.updateInsumo(insumo);
+                        helpermo.saveMovement(movimiento);
                     }
-                    helpermo.saveMovement(movimiento);
-                }else {
-                    ErrorController error = new ErrorController();
-                    error.loadDialog("Error", helperli.getErrorMessage(), "Ok", hiddenSp);
+                    else {
+                        //Error en lista de lotes insumos o vacia
+                        
+                        //crear lote temporal
+                        ErrorController error = new ErrorController();
+                        error.loadDialog("Error", helperli.getErrorMessage(), "Ok", hiddenSp);
+                    }
                 }
+                else if(cbxTipo.getValue().getNombre().equals("Salida")){
+                    //validar que se debe selecionar un lote insumo(falta)
+                    LoteInsumo loteSelected = tblLotes.getSelectionModel().getSelectedItem().getValue().getLote();
+                    Integer stockFisico = loteSelected.getStockFisico();
+
+                    if((stockFisico - newCantidad)<0){
+                        //show error message
+                        ErrorController error = new ErrorController();
+                        error.loadDialog("Error", "Cantidad supera el stock", "Ok", hiddenSp);
+                        return;
+                    }
+                    else {
+                        loteSelected.setStockFisico(loteSelected.getStockFisico() - newCantidad);
+                        loteSelected.setStockLogico(loteSelected.getStockLogico() - newCantidad);
+                        //stock de insumos de todas las tiendas
+                        insumo.setStockTotalFisico(insumo.getStockTotalFisico() - newCantidad );
+                        insumo.setStockTotalLogico(insumo.getStockTotalLogico() - newCantidad);
+                        movimiento.setLoteInsumo(loteSelected);
+                        
+                        helperli.updateLoteInsumo(loteSelected);
+                        helperi.updateInsumo(insumo);
+                        helpermo.saveMovement(movimiento);
+                    }
+                    
+                }
+ 
+                helpermo.close();
                 helperli.close();
             }
         });

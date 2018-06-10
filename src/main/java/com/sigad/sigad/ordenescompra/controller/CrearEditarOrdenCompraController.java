@@ -35,6 +35,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.ResourceBundle;
@@ -105,10 +106,7 @@ public class CrearEditarOrdenCompraController implements Initializable {
     JFXTreeTableColumn<InsumoViewerOrden,String> precioCol = new JFXTreeTableColumn<>("Precio");
     JFXTreeTableColumn<InsumoViewerOrden,String> cantidadCol = new JFXTreeTableColumn<>("Cantidad");
     JFXTreeTableColumn<InsumoViewerOrden,String> subtotalCol = new JFXTreeTableColumn<>("Subtotal");
-    JFXTreeTableColumn<InsumoViewerOrden,String> fechaVencimientoCol = new JFXTreeTableColumn<>("Fecha venc");
     
-    Date inputDate = new Date();
-    LocalDate date = inputDate .toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     
     public static class InsumoViewerOrden extends RecursiveTreeObject<InsumoViewerOrden>{
 
@@ -243,24 +241,10 @@ public class CrearEditarOrdenCompraController implements Initializable {
                     insumosList.forEach((i)-> {
                         if(!i.getCantidad().getValue().equals("")){
                             LoteInsumo li = new LoteInsumo();
-
-                            //Double val = Double.parseDouble(i.getCantidad().getValue())*Double.parseDouble(i.getSubTotal().getValue());
+                            //setear datos lote insumo
                             li.setInsumo(i.insumoLocal);
-
-                            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-                            
-                            if(!i.getFechaVencimiento().getValue().equals("")){
-                                Date fvenc;
-                                try {
-                                    fvenc = formatter.parse(i.getFechaVencimiento().getValue());
-                                } catch (ParseException ex) {
-                                    Logger.getLogger(CrearEditarOrdenCompraController.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                                li.setFechaVencimiento(inputDate);
-                            }
-                            else {
-                                li.setFechaVencimiento(new Date());
-                            }
+                            //fecha de vencimiento temporal
+                            li.setFechaVencimiento(new Date());
                             li.setCostoUnitario(Double.parseDouble(i.getPrecio().getValue()));
                             li.setStockFisico(0);
                             li.setStockLogico(Integer.parseInt(i.getCantidad().getValue()));
@@ -357,37 +341,18 @@ public class CrearEditarOrdenCompraController implements Initializable {
         subtotalCol.setCellValueFactory((TreeTableColumn.CellDataFeatures<InsumoViewerOrden, String> param) -> param.getValue().getValue().getSubTotal()
         );
         
-        fechaVencimientoCol.setCellValueFactory((TreeTableColumn.CellDataFeatures<InsumoViewerOrden, String> param) -> param.getValue().getValue().getFechaVencimiento()
-        );
-        
-        fechaVencimientoCol.setCellFactory((TreeTableColumn<InsumoViewerOrden, String> param) -> new EditingCellText());
-        
-        fechaVencimientoCol.setOnEditCommit((TreeTableColumn.CellEditEvent<InsumoViewerOrden, String> event) -> {
-            Integer i = insumosList.indexOf(event.getRowValue().getValue());
-            insumosList.get(i).setFechaVencimiento(event.getNewValue());
-        });
-        
 
     }
     
     private void addColumns(){
         final TreeItem<InsumoViewerOrden> rootInsumo = new RecursiveTreeItem<>(insumosList,RecursiveTreeObject::getChildren);
         tblInsumos.setEditable(true);
-        tblInsumos.getColumns().setAll(nombreCol,volumenCol,precioCol,cantidadCol,subtotalCol,fechaVencimientoCol);
+        tblInsumos.getColumns().setAll(nombreCol,volumenCol,precioCol,cantidadCol,subtotalCol);
         tblInsumos.setRoot(rootInsumo);
         tblInsumos.setShowRoot(false);
     }
     
     private void fillData(){
-        
-//        ArrayList<Insumo> listaInsumos = helper.getInsumos();
-//        if(listaInsumos != null){
-//            listaInsumos.forEach((i)-> {
-//                updateTable(i);
-//            });
-//        }
-        
-        
         ProveedorHelper helperp = new ProveedorHelper();
         ArrayList<Proveedor> listaprov = helperp.getProveedores();
         if(listaprov != null) {
@@ -432,8 +397,8 @@ public class CrearEditarOrdenCompraController implements Initializable {
                 helper.close();
             }
         });
-        
-        //whats this?
+        Date inputDate = new Date();
+        LocalDate date = inputDate .toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         pckDate.setValue(date);
     }
     

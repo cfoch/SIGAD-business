@@ -29,8 +29,8 @@
                <children>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                      <children>
-                        <JFXComboBox fx:id="cbxProv" focusColor="#455a64" layoutX="121.0" layoutY="39.0" prefHeight="27.0" prefWidth="143.0" promptText="Proveedor" AnchorPane.bottomAnchor="104.0" />
-                        <JFXDatePicker fx:id="pckDate" defaultColor="#455a64" layoutX="319.0" layoutY="37.0" prefHeight="27.0" prefWidth="158.0" promptText="Fecha" AnchorPane.bottomAnchor="104.0" />
+                        <JFXComboBox fx:id="cbxProv" focusColor="#455a64" layoutX="109.0" layoutY="66.0" prefHeight="27.0" prefWidth="143.0" promptText="Proveedor" AnchorPane.bottomAnchor="77.0" />
+                        <JFXDatePicker fx:id="pckDate" defaultColor="#455a64" disable="true" editable="false" layoutX="295.0" layoutY="66.0" prefHeight="27.0" prefWidth="158.0" promptText="Fecha" AnchorPane.bottomAnchor="77.0" />
                      </children>
                   </AnchorPane>
                   <JFXTreeTableView fx:id="tblInsumos" prefHeight="216.0" prefWidth="589.0" GridPane.columnIndex="1" GridPane.rowIndex="2">

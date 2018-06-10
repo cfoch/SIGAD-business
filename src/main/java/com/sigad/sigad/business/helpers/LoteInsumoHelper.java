@@ -97,7 +97,23 @@ public class LoteInsumoHelper {
         ArrayList<LoteInsumo> listaLotes = null;
         Query query = null;
         try {
-            query = session.createQuery("from LoteInsumo where insumo_id =" + insumo.getId().toString() + "and tienda_id = "  + tienda.getId().toString());
+            query = session.createQuery("from LoteInsumo where insumo_id = " + insumo.getId().toString() + " and tienda_id = "  + tienda.getId().toString());
+            if (!query.list().isEmpty()) {
+                listaLotes = (ArrayList<LoteInsumo>) query.list();
+            }
+        } catch (Exception e) {
+            this.errorMessage = e.getMessage();
+        }
+        return listaLotes;
+    }
+    
+    
+            
+    public ArrayList<LoteInsumo> getLoteInsumosEspecificPositive(Tienda tienda,Insumo insumo){
+        ArrayList<LoteInsumo> listaLotes = null;
+        Query query = null;
+        try {
+            query = session.createQuery("from LoteInsumo where insumo_id = " + insumo.getId().toString() + " and tienda_id = "  + tienda.getId().toString() +" and stockfisico > 0");
             if (!query.list().isEmpty()) {
                 listaLotes = (ArrayList<LoteInsumo>) query.list();
             }
@@ -216,5 +232,22 @@ public class LoteInsumoHelper {
         }
         return null;
     }
-
+    
+    public Double getUsedCapacity(Tienda tienda){
+        ArrayList<LoteInsumo> listaLotes = null;
+        Query query = null;
+        Double totalUsed = 0.0;
+        try {
+            query = session.createQuery("from LoteInsumo where tienda_id = "  + tienda.getId().toString());
+            if (!query.list().isEmpty()) {
+                listaLotes = (ArrayList<LoteInsumo>) query.list();
+                for (int i = 0; i < listaLotes.size(); i++) {
+                    totalUsed += listaLotes.get(i).getStockLogico() * listaLotes.get(i).getInsumo().isVolumen();
+                }
+            }
+        } catch (Exception e) {
+            this.errorMessage = e.getMessage();
+        }
+        return totalUsed;
+    }
 }
