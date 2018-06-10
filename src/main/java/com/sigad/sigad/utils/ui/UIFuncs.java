@@ -9,14 +9,21 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialogLayout;
 import com.jfoenix.controls.JFXPopup;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  *
@@ -154,4 +161,63 @@ public class UIFuncs {
             return dialog;
         }
     }
+
+    public static <T> Node createNodeFromFXML(String pathFXML) {
+        Pair<Node, T> pair;
+        pair = createNodeControllerFromFXML(pathFXML);
+        if (pair == null) {
+            return null;
+        }
+        return pair.getLeft();
+    }
+
+    public static <T> Pair<Node, T> createNodeControllerFromFXML(
+            String pathFXML) {
+        Pair<Node, FXMLLoader> pair = createNodeLoaderFromFXML(pathFXML);
+        return Pair.of(pair.getLeft(), pair.getRight().<T>getController());
+    }
+
+    public static <T> Pair<Node, FXMLLoader> createNodeLoaderFromFXML(
+            String pathFXML) {
+        Node node;
+        URL resource;
+        String resourcePath;
+        FXMLLoader loader;
+
+        resource = UIFuncs.class.getResource(pathFXML);
+
+        loader = new FXMLLoader(resource);
+
+        try {
+            node = (Node) loader.load();
+        } catch (IOException ex) {
+            Logger.getLogger(UIFuncs.class.getName())
+                    .log(Level.SEVERE, null, ex);
+            return null;
+        }
+        return Pair.of(node, loader);
+    }
+
+    public static <T> Node createNodeFromControllerFXML(T controller,
+            String pathFXML) {
+        Node node;
+        URL resource;
+        String resourcePath;
+        FXMLLoader loader;
+
+        resource = UIFuncs.class.getResource(pathFXML);
+
+        loader = new FXMLLoader(resource);
+        loader.setController(controller);
+
+        try {
+            node = (Node) loader.load();
+        } catch (IOException ex) {
+            Logger.getLogger(UIFuncs.class.getName())
+                    .log(Level.SEVERE, null, ex);
+            return null;
+        }
+        return node;
+    }
+
 }
