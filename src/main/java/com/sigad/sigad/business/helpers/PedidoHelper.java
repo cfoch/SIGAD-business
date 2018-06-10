@@ -134,4 +134,15 @@ public class PedidoHelper {
         return pedidos;
     }
 
+    public static String stringifyTurno(String turno) {
+        String ret = "No definido";
+        if (turno.equals("M")) {
+            ret = "Mañana";
+        } else if (turno.equals("T")) {
+            ret = "Tarde";
+        } else if (turno.equals("N")) {
+            ret = "Noche";
+        }
+        return ret;
+    }
 }

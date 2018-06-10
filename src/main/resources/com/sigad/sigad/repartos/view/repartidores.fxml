@@ -45,6 +45,12 @@
                            </graphic>
                         </JFXButton>
                         <JFXTextField fx:id="filtro" layoutX="712.0" layoutY="7.0" prefHeight="29.0" prefWidth="203.0" promptText="Buscar" AnchorPane.bottomAnchor="11.0" AnchorPane.rightAnchor="61.0" AnchorPane.topAnchor="6.0" />
+                        <Label layoutX="29.0" layoutY="11.0" prefHeight="17.0" prefWidth="145.0" text="Repartidores" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="5.0" />
+                        <!--<JFXButton fx:id="moreBtn" layoutX="847.0" layoutY="-2.0" onAction="#handleAction" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
+                           <graphic>
+                              <MaterialDesignIconView glyphName="DOTS_VERTICAL" />
+                           </graphic>
+                        </JFXButton>-->
                      </children>
                   </AnchorPane>
                   <AnchorPane prefHeight="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
@@ -54,6 +60,7 @@
                               <MaterialDesignIconView glyphName="PLUS" />
                            </graphic>
                         </JFXButton>
+                        <JFXButton fx:id="genRutasBtn" onAction="#onGenRutasBtnClicked" alignment="CENTER" layoutX="833.0" layoutY="5.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0" text="Generar rutas"/>
                      </children>
                   </AnchorPane>
                </children>

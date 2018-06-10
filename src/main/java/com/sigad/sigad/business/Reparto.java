@@ -40,6 +40,12 @@ public class Reparto {
     
     @ManyToOne
     private Vehiculo vehiculo;
+
+    // "M", "T", "N": 'Mañana', 'Tarde', 'Noche'
+    @NotNull
+    private String turno;
+    @ManyToOne
+    private Tienda tienda;
     
     @OneToMany(mappedBy = "reparto", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<DetalleReparto> detallesReparto = new HashSet<>();
@@ -123,5 +129,33 @@ public class Reparto {
      */
     public void setPedidos(List<Pedido> pedidos) {
         this.pedidos = pedidos;
+    }
+
+    /**
+     * @return the turno
+     */
+    public String getTurno() {
+        return turno;
+    }
+
+    /**
+     * @param turno the turno to set
+     */
+    public void setTurno(String turno) {
+        this.turno = turno;
+    }
+
+    /**
+     * @return the tienda
+     */
+    public Tienda getTienda() {
+        return tienda;
+    }
+
+    /**
+     * @param tienda the tienda to set
+     */
+    public void setTienda(Tienda tienda) {
+        this.tienda = tienda;
     }
 }

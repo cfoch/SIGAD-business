@@ -54,6 +54,7 @@ public class Pedido {
     private double volumenTotal;
     @ManyToOne
     private Reparto reparto;
+    private Integer secuenciaReparto;
 
     //fk
     @ManyToOne
@@ -398,4 +399,17 @@ public class Pedido {
         this.documentos = documentos;
     }
 
+    /**
+     * @return the secuenciaReparto
+     */
+    public Integer getSecuenciaReparto() {
+        return secuenciaReparto;
+    }
+
+    /**
+     * @param secuenciaReparto the secuenciaReparto to set
+     */
+    public void setSecuenciaReparto(Integer secuenciaReparto) {
+        this.secuenciaReparto = secuenciaReparto;
+    }
 }

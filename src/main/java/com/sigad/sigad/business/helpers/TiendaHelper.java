@@ -10,7 +10,6 @@ import com.sigad.sigad.business.Insumo;
 import com.sigad.sigad.business.LoteInsumo;
 import com.sigad.sigad.business.Tienda;
 import java.util.ArrayList;
-import java.util.HashMap;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
@@ -25,7 +24,7 @@ public class TiendaHelper extends BaseHelper{
     
     /*Get all stores*/
     public ArrayList<Tienda> getStores(){
-        ArrayList<Tienda> stores = null;
+        ArrayList<Tienda> stores = new ArrayList<>();
         Query query = null;
         try {
             query = session.createQuery("from Tienda");
