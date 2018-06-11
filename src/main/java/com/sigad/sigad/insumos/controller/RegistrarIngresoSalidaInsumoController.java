@@ -33,9 +33,11 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.ResourceBundle;
 import javafx.beans.property.SimpleStringProperty;
@@ -176,9 +178,13 @@ public class RegistrarIngresoSalidaInsumoController implements Initializable {
        
         ArrayList<TipoMovimiento> tipos = null;
         tipos = helpertm.getTiposMovimientos();
+        LoteInsumoHelper helperli = new LoteInsumoHelper();
+        ArrayList<LoteInsumo> insumosSpecific = helperli.getLoteInsumosEspecificPositive(LoginController.user.getTienda(),insumo);
         if(tipos!= null) {
             tipos.forEach((i)->{
-                cbxTipo.getItems().add(i);
+                if(!(i.getNombre().equals("Salida") && insumosSpecific == null)){
+                   cbxTipo.getItems().add(i); 
+                }
             });
             cbxTipo.setPromptText("Tipo Movimiento");
             cbxTipo.setConverter(new StringConverter<TipoMovimiento>() {
@@ -215,23 +221,23 @@ public class RegistrarIngresoSalidaInsumoController implements Initializable {
             }
         });
         
-        LoteInsumoHelper helperli = new LoteInsumoHelper();
-        ArrayList<LoteInsumo> insumosSpecific = helperli.getLoteInsumosEspecificPositive(LoginController.user.getTienda(),insumo);
         if(insumosSpecific !=null){
             insumosSpecific.forEach((i)->{
                 updateTable(i);
             });
         }
-        
+        Date inputDate = new Date();
+        LocalDate date = inputDate .toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        pckDate.setValue(date);
         helperli.close();
     }
     
     private void setColumns(){
-        codigoCol.setCellValueFactory((TreeTableColumn.CellDataFeatures<LoteInsumoViewer, String> param) -> param.getValue().getValue().getCodigo() //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        codigoCol.setCellValueFactory((TreeTableColumn.CellDataFeatures<LoteInsumoViewer, String> param) -> param.getValue().getValue().getCodigo()
         );
-        fechaCol.setCellValueFactory((TreeTableColumn.CellDataFeatures<LoteInsumoViewer, String> param) -> param.getValue().getValue().getFechaVencimiento() //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        fechaCol.setCellValueFactory((TreeTableColumn.CellDataFeatures<LoteInsumoViewer, String> param) -> param.getValue().getValue().getFechaVencimiento()
         );        
-        stockCol.setCellValueFactory((TreeTableColumn.CellDataFeatures<LoteInsumoViewer, String> param) -> param.getValue().getValue().getStock() //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        stockCol.setCellValueFactory((TreeTableColumn.CellDataFeatures<LoteInsumoViewer, String> param) -> param.getValue().getValue().getStock()
         );        
     }
     
@@ -271,10 +277,10 @@ public class RegistrarIngresoSalidaInsumoController implements Initializable {
                 MovimientoHelper helpermo = new MovimientoHelper();
                 InsumosHelper helperi = new InsumosHelper();
                 
+                ArrayList<LoteInsumo> lotesInsumo = helperli.getLoteInsumosEspecific(currentStore, insumo);
+                
                 if(cbxTipo.getValue().getNombre().equals("Ingreso")){
 
-                    ArrayList<LoteInsumo> lotesInsumo = helperli.getLoteInsumos(currentStore);
-                    
                     if(lotesInsumo !=null) {
                         for (int i = 0; i < lotesInsumo.size(); i++) {
                             LoteInsumo next = lotesInsumo.get(i);
@@ -293,48 +299,141 @@ public class RegistrarIngresoSalidaInsumoController implements Initializable {
                         recentLote.setStockFisico(recentLote.getStockFisico() + newCantidad);
                         recentLote.setStockLogico(recentLote.getStockLogico() + newCantidad);
                         //stock de insumos de todas las tiendas
-                        insumo.setStockTotalFisico(insumo.getStockTotalFisico() - newCantidad );
-                        insumo.setStockTotalLogico(insumo.getStockTotalLogico() - newCantidad);
+                        insumo.setStockTotalFisico(insumo.getStockTotalFisico() + newCantidad );
+                        insumo.setStockTotalLogico(insumo.getStockTotalLogico() + newCantidad);
                         movimiento.setLoteInsumo(recentLote);
                         
-                        helperli.updateLoteInsumo(recentLote);
-                        helperi.updateInsumo(insumo);
-                        helpermo.saveMovement(movimiento);
+                        Boolean saveLote = helperli.updateLoteInsumo(recentLote);
+                        Boolean saveInsumo = helperi.updateInsumo(insumo);
+                        Boolean saveMov = helpermo.saveMovement(movimiento);
+                        
+                        if(saveLote) {
+                            if(saveInsumo) {
+                                if(saveMov) {
+                                    ListaInsumoController.insumosList.remove(ListaInsumoController.selectedInsumo);                                   
+                                    ListaInsumoController.updateTable(insumo);
+                                    ListaInsumoController.insumoDialog.close();
+                                }
+                                else{
+                                    ErrorController error = new ErrorController();
+                                    error.loadDialog("Error", helpermo.getErrorMessage(), "Ok", hiddenSp);
+                                }
+                            }
+                            else{
+                                ErrorController error = new ErrorController();
+                                error.loadDialog("Error", helperi.getErrorMessage(), "Ok", hiddenSp);
+                            }
+                        }
+                        else{
+                             ErrorController error = new ErrorController();
+                            error.loadDialog("Error", helperli.getErrorMessage(), "Ok", hiddenSp);
+                        }
                     }
                     else {
-                        //Error en lista de lotes insumos o vacia
+                        //crear lote default
+                        LoteInsumo loteDefault = new LoteInsumo();
+                        loteDefault.setCostoUnitario(0.0);
+                        Date date =  new Date();
+                        Calendar c = Calendar.getInstance();
+                        c.setTime(date);
                         
-                        //crear lote temporal
-                        ErrorController error = new ErrorController();
-                        error.loadDialog("Error", helperli.getErrorMessage(), "Ok", hiddenSp);
+                        c.add(Calendar.DATE, insumo.getTiempoVida());
+                        Date currentDatePlusOne = c.getTime();
+                        
+                        loteDefault.setFechaVencimiento(date);
+                        loteDefault.setInsumo(insumo);
+                        loteDefault.setStockFisico(newCantidad);
+                        loteDefault.setStockLogico(newCantidad);
+                        loteDefault.setTienda(currentStore);
+                        
+                        insumo.setStockTotalFisico(insumo.getStockTotalFisico() + newCantidad);
+                        insumo.setStockTotalLogico(insumo.getStockTotalLogico() + newCantidad);
+                        movimiento.setLoteInsumo(loteDefault);
+                        
+                        Long saveLote = helperli.saveLoteInsumo(loteDefault);
+                        helperli.close();
+                        Boolean saveInsumo = helperi.updateInsumo(insumo);
+                        Boolean saveMov = helpermo.saveMovement(movimiento);
+                        
+                        if(saveLote != null) {
+                            if(saveInsumo) {
+                                if(saveMov) {
+                                    ListaInsumoController.insumosList.remove(ListaInsumoController.selectedInsumo);                                   
+                                    ListaInsumoController.updateTable(insumo);
+                                    ListaInsumoController.insumoDialog.close();
+                                }
+                                else{
+                                    ErrorController error = new ErrorController();
+                                    error.loadDialog("Error", helpermo.getErrorMessage(), "Ok", hiddenSp);
+                                }
+                            }
+                            else{
+                                ErrorController error = new ErrorController();
+                                error.loadDialog("Error", helperi.getErrorMessage(), "Ok", hiddenSp);
+                            }
+                        }
+                        else{
+                             ErrorController error = new ErrorController();
+                            error.loadDialog("Error", helperli.getErrorMessage(), "Ok", hiddenSp);
+                        }
                     }
                 }
                 else if(cbxTipo.getValue().getNombre().equals("Salida")){
-                    //validar que se debe selecionar un lote insumo(falta)
-                    LoteInsumo loteSelected = tblLotes.getSelectionModel().getSelectedItem().getValue().getLote();
-                    Integer stockFisico = loteSelected.getStockFisico();
+                    
+                    if(lotesInsumo !=null){
+                        //validar que se debe selecionar un lote insumo(falta)
+                        LoteInsumo loteSelected = tblLotes.getSelectionModel().getSelectedItem().getValue().getLote();
+                        Integer stockFisico = loteSelected.getStockFisico();
 
-                    if((stockFisico - newCantidad)<0){
-                        //show error message
-                        ErrorController error = new ErrorController();
-                        error.loadDialog("Error", "Cantidad supera el stock", "Ok", hiddenSp);
-                        return;
+                        if((stockFisico - newCantidad)<0){
+                            //show error message
+                            ErrorController error = new ErrorController();
+                            error.loadDialog("Error", "Cantidad supera el stock", "Ok", hiddenSp);
+                            return;
+                        }
+                        else {
+                            loteSelected.setStockFisico(loteSelected.getStockFisico() - newCantidad);
+                            loteSelected.setStockLogico(loteSelected.getStockLogico() - newCantidad);
+                            //stock de insumos de todas las tiendas
+                            insumo.setStockTotalFisico(insumo.getStockTotalFisico() - newCantidad );
+                            insumo.setStockTotalLogico(insumo.getStockTotalLogico() - newCantidad);
+                            movimiento.setLoteInsumo(loteSelected);                        
+
+                            Boolean saveLote = helperli.updateLoteInsumo(loteSelected);
+                            Boolean saveInsumo = helperi.updateInsumo(insumo);
+                            Boolean saveMov = helpermo.saveMovement(movimiento);
+
+                            if(saveLote) {
+                                if(saveInsumo) {
+                                    if(saveMov) {
+                                        ListaInsumoController.insumosList.remove(ListaInsumoController.selectedInsumo);                                   
+                                        ListaInsumoController.updateTable(insumo);
+                                        ListaInsumoController.insumoDialog.close();
+                                    }
+                                    else{
+                                        ErrorController error = new ErrorController();
+                                        error.loadDialog("Error", helpermo.getErrorMessage(), "Ok", hiddenSp);
+                                    }
+                                }
+                                else{
+                                    ErrorController error = new ErrorController();
+                                    error.loadDialog("Error", helperi.getErrorMessage(), "Ok", hiddenSp);
+                                }
+                            }
+                            else{
+                                 ErrorController error = new ErrorController();
+                                error.loadDialog("Error", helperli.getErrorMessage(), "Ok", hiddenSp);
+                            }
+                        }
                     }
                     else {
-                        loteSelected.setStockFisico(loteSelected.getStockFisico() - newCantidad);
-                        loteSelected.setStockLogico(loteSelected.getStockLogico() - newCantidad);
-                        //stock de insumos de todas las tiendas
-                        insumo.setStockTotalFisico(insumo.getStockTotalFisico() - newCantidad );
-                        insumo.setStockTotalLogico(insumo.getStockTotalLogico() - newCantidad);
-                        movimiento.setLoteInsumo(loteSelected);
-                        
-                        helperli.updateLoteInsumo(loteSelected);
-                        helperi.updateInsumo(insumo);
-                        helpermo.saveMovement(movimiento);
+                        ErrorController error = new ErrorController();
+                        error.loadDialog("Error", "No puede realizar una salida, no existe ningun lote del insumo", "Ok", hiddenSp);
                     }
                     
+                    
                 }
- 
+                helperi.close();
                 helpermo.close();
                 helperli.close();
             }
@@ -353,26 +452,20 @@ public class RegistrarIngresoSalidaInsumoController implements Initializable {
     }
     
     public boolean validateFields() {
-//        if(!nombreTxt.validate()){
-//            nombreTxt.setFocusColor(new Color(0.58, 0.34, 0.09, 1));
-//            nombreTxt.requestFocus();
-//            return false;
-//        }else if(!tiempoTxt.validate()){
-//            tiempoTxt.setFocusColor(new Color(0.58, 0.34, 0.09, 1));
-//            tiempoTxt.requestFocus();
-//            return false;
-//        }else if(!descripcionTxt.validate()){
-//            descripcionTxt.setFocusColor(new Color(0.58, 0.34, 0.09, 1));
-//            descripcionTxt.requestFocus();
-//            return false;
-//        }
-//        else if(!volumenTxt.validate()){
-//            volumenTxt.setFocusColor(new Color(0.58, 0.34, 0.09, 1));
-//            volumenTxt.requestFocus();
-//            return false;
-//        }
-//        else 
+        Boolean cond = Boolean.TRUE;
+        if(tblLotes.getSelectionModel()== null){
+            ErrorController error = new ErrorController();
+            error.loadDialog("Error","Debe seleccionar un lote de insumos", "Ok", hiddenSp);
+            return false;
+        }
+        else if(!cantidadTxt.validate()){
+            cantidadTxt.setFocusColor(new Color(0.58, 0.34, 0.09, 1));
+            cantidadTxt.requestFocus();
+            return false;
+        }
+        else{
             return true;
+        } 
     }
     
     private void initValidator() {
@@ -383,57 +476,20 @@ public class RegistrarIngresoSalidaInsumoController implements Initializable {
         r = new RequiredFieldValidator();
         r.setIcon(new MaterialDesignIconView(MaterialDesignIcon.CLOSE_CIRCLE));
         r.setMessage("Campo obligatorio"); 
-//        nombreTxt.getValidators().add(r);
-//        nombreTxt.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-//            if (!newValue) {
-//                if(!nombreTxt.validate()){
-//                    nombreTxt.setFocusColor(new Color(0.58, 0.34, 0.09, 1));
-//                }
-//                else nombreTxt.setFocusColor(new Color(0.30,0.47,0.23, 1));
-//            }
-//        });
-//        
-//        /*Tiempo de vida*/
-//        r = new RequiredFieldValidator();
-//        r.setIcon(new MaterialDesignIconView(MaterialDesignIcon.CLOSE_CIRCLE));
-//        r.setMessage("Campo obligatorio");
-//        tiempoTxt.getValidators().add(r);
-//        
-//        n = new NumberValidator();
-//        n.setMessage("Campo numérico");
-//        n.setIcon(new MaterialDesignIconView(MaterialDesignIcon.CLOSE_CIRCLE));
-//        tiempoTxt.getValidators().add(n);
-//        
-//        tiempoTxt.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-//            if (!newValue) {
-//                if(!tiempoTxt.validate()){
-//                    tiempoTxt.setFocusColor(new Color(0.58, 0.34, 0.09, 1));
-//                }
-//                else tiempoTxt.setFocusColor(new Color(0.30,0.47,0.23, 1));
-//            }
-//        });
-//
-//        
-//        /*Volumen insumo*/
-//        r = new RequiredFieldValidator();
-//        r.setIcon(new MaterialDesignIconView(MaterialDesignIcon.CLOSE_CIRCLE));
-//        r.setMessage("Campo obligatorio");
-//        volumenTxt.getValidators().add(r);
-//        
-//        
-//        d = new DoubleValidator();
-//        d.setMessage("Campo numérico");
-//        d.setIcon(new MaterialDesignIconView(MaterialDesignIcon.CLOSE_CIRCLE));
-//        volumenTxt.getValidators().add(d);
-//        
-//        volumenTxt.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-//            if (!newValue) {
-//                if(!volumenTxt.validate()){
-//                    volumenTxt.setFocusColor(new Color(0.58, 0.34, 0.09, 1));
-//                }
-//                else volumenTxt.setFocusColor(new Color(0.30,0.47,0.23, 1));
-//            }
-//        });
+        cantidadTxt.getValidators().add(r);
+        
+        n = new NumberValidator();
+        n.setMessage("Campo numérico");
+        n.setIcon(new MaterialDesignIconView(MaterialDesignIcon.CLOSE_CIRCLE));
+        cantidadTxt.getValidators().add(n);
+        cantidadTxt.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+            if (!newValue) {
+                if(!cantidadTxt.validate()){
+                    cantidadTxt.setFocusColor(new Color(0.58, 0.34, 0.09, 1));
+                }
+                else cantidadTxt.setFocusColor(new Color(0.30,0.47,0.23, 1));
+            }
+        });
     }
     
     public void fillFields(){
@@ -446,11 +502,5 @@ public class RegistrarIngresoSalidaInsumoController implements Initializable {
         movimiento.setTipoMovimiento(cbxTipo.getValue());
         movimiento.setTrabajador(LoginController.user);
         
-        //validar que se debe seleccionar un lote si se esta produciendo una salida
-        
-        // ingreso por existencia añadir al lote mas reciente?
-        //movimiento.setsetLoteInsumo(LoteTienda);
-        
-        // salida por accidente añadir sacar de ? lote
     }
 }

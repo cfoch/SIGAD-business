@@ -13,6 +13,7 @@ import com.jfoenix.controls.JFXTreeTableColumn;
 import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
+import com.jfoenix.validation.NumberValidator;
 import com.sigad.sigad.app.controller.ErrorController;
 import com.sigad.sigad.app.controller.LoginController;
 import com.sigad.sigad.business.DetalleOrdenCompra;
@@ -243,8 +244,15 @@ public class CrearEditarOrdenCompraController implements Initializable {
                             LoteInsumo li = new LoteInsumo();
                             //setear datos lote insumo
                             li.setInsumo(i.insumoLocal);
-                            //fecha de vencimiento temporal
-                            li.setFechaVencimiento(new Date());
+                            
+                            Date date =  new Date();
+                            Calendar c = Calendar.getInstance();
+                            c.setTime(date);
+
+                            c.add(Calendar.DATE, i.getInsumoLocal().getTiempoVida());
+                            Date currentDatePlusOne = c.getTime();
+
+                            li.setFechaVencimiento(date);
                             li.setCostoUnitario(Double.parseDouble(i.getPrecio().getValue()));
                             li.setStockFisico(0);
                             li.setStockLogico(Integer.parseInt(i.getCantidad().getValue()));
@@ -585,14 +593,28 @@ public class CrearEditarOrdenCompraController implements Initializable {
         private void createTextField() {
             textField = new JFXTextField(getString());
             textField.setMinWidth(this.getWidth() - this.getGraphicTextGap() * 2);
-            textField.setOnKeyPressed(new EventHandler<KeyEvent>() {
-                @Override
-                public void handle(KeyEvent t) {
-                    if (t.getCode() == KeyCode.ENTER) {
+            textField.setOnKeyPressed((KeyEvent t) -> {
+                if (t.getCode() == KeyCode.ENTER) {
+                    NumberValidator n = new NumberValidator();
+                    textField.getValidators().add(n);
+                    if(textField.validate()){
+                        if(Double.parseDouble(textField.getText()) <0){
+                            ErrorController error = new ErrorController();
+                            error.loadDialog("Atención", "Debe escribir un valor positivo", "OK", hiddenSp);
+                        }
+                        else {
                             commitEdit(textField.getText());
-                    } else if (t.getCode() == KeyCode.ESCAPE) {
-                        cancelEdit();
+                        }
                     }
+                    else {
+                        textField.setFocusColor(new Color(0.58, 0.34, 0.09, 1));
+                        textField.requestFocus();
+                        ErrorController error = new ErrorController();
+                        error.loadDialog("Atención", "Debe escribir un valor numerico", "OK", hiddenSp);
+                    }
+                    commitEdit(textField.getText());
+                } else if (t.getCode() == KeyCode.ESCAPE) {
+                    cancelEdit();
                 }
             });
         }

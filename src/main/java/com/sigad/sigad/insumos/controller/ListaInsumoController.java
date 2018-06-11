@@ -274,9 +274,12 @@ public class ListaInsumoController implements Initializable {
         Integer stockFisico = 0;
         Integer stockLogico = 0;
         ArrayList<LoteInsumo> li = helperli.getLoteInsumosEspecific(LoginController.user.getTienda(), insumo);
-        for (LoteInsumo li1 : li) {
-            stockFisico += li1.getStockFisico();
-            stockLogico += li1.getStockLogico();
+        
+        if(li != null){
+            for (LoteInsumo li1 : li) {
+                stockFisico += li1.getStockFisico();
+                stockLogico += li1.getStockLogico();
+            }
         }
         
         insumosList.add(new InsumoViewer(insumo.getNombre(),
@@ -288,6 +291,7 @@ public class ListaInsumoController implements Initializable {
                                          insumo.isVolumen().toString(),
                                          insumo.getImagen(),0,insumo.getId(),insumo.getPrecio()));
     }
+    
     
     //botones
     @FXML
@@ -343,8 +347,6 @@ public class ListaInsumoController implements Initializable {
             } catch (IOException ex) {
                 Logger.getLogger(ListaInsumoController.class.getName()).log(Level.SEVERE, "initPopup(): registraringresoSalidaDialog()", ex);
             }
-            
-            
         });
         
         edit.setPadding(new Insets(20));

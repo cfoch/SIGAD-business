@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 
-<StackPane fx:id="hiddenSp" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="1010.0" style="-fx-background-color: #fff;" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sigad.sigad.insumos.controller.ListaInsumoController">
+<StackPane fx:id="hiddenSp" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="1010.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sigad.sigad.insumos.controller.ListaInsumoController">
    <children>
       <AnchorPane prefHeight="200.0" prefWidth="200.0">
          <children>
@@ -34,7 +34,7 @@
                      <columnResizePolicy>
                         <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                      </columnResizePolicy></JFXTreeTableView>
-                  <AnchorPane prefHeight="33.0" prefWidth="200.0" style="-fx-border-color: #C8C8C8;" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                  <AnchorPane prefHeight="33.0" prefWidth="200.0" style="-fx-border-color: #C8C8C8; -fx-background-color: #ffff;" GridPane.columnIndex="1" GridPane.rowIndex="1">
                      <children>
                         <Label layoutX="20.0" layoutY="11.0" text="Insumos" />
                         <JFXButton fx:id="moreBtn" layoutX="865.0" layoutY="6.0" onAction="#handleAction" prefHeight="27.0" prefWidth="26.0">

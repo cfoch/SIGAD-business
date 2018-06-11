@@ -19,17 +19,21 @@ import com.sigad.sigad.app.controller.LoginController;
 import com.sigad.sigad.business.DetalleOrdenCompra;
 import com.sigad.sigad.business.Insumo;
 import com.sigad.sigad.business.LoteInsumo;
+import com.sigad.sigad.business.MovimientosTienda;
 import com.sigad.sigad.business.OrdenCompra;
 import com.sigad.sigad.business.Tienda;
 import com.sigad.sigad.business.helpers.InsumosHelper;
 import com.sigad.sigad.business.helpers.LoteInsumoHelper;
+import com.sigad.sigad.business.helpers.MovimientoHelper;
 import com.sigad.sigad.business.helpers.OrdenCompraHelper;
+import com.sigad.sigad.business.helpers.TipoMovimientoHelper;
 import com.sigad.sigad.deposito.helper.DepositoHelper;
 import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -308,6 +312,8 @@ public class ListaOrdenesCompraController implements Initializable {
             
             InsumosHelper helperi = new InsumosHelper();
             OrdenCompraHelper helperoctemp = new OrdenCompraHelper();
+            MovimientoHelper helpermo= new MovimientoHelper();
+            TipoMovimientoHelper helpertm = new TipoMovimientoHelper();
             ArrayList<DetalleOrdenCompra> detallesOrdenes = helperoctemp.getDetalles(selectedOrdenCompra.getOrdenCompra().getId());
             if(detallesOrdenes!=null){
                 for (int i = 0; i < detallesOrdenes.size(); i++) {
@@ -321,6 +327,14 @@ public class ListaOrdenesCompraController implements Initializable {
                     Insumo insumoNew = helperi.getInsumo(loteNew.getInsumo().getId());
                     insumoNew.setStockTotalFisico(insumoNew.getStockTotalFisico() + loteNew.getStockLogico());
                     helperi.updateInsumo(insumoNew);
+                    
+                    //registrar movimiento
+                    MovimientosTienda movNew = new MovimientosTienda();
+                    movNew.setCantidadMovimiento(loteNew.getStockLogico());
+                    movNew.setFecha(new Date());
+                    movNew.setTienda(currentStore);
+                    movNew.setTipoMovimiento(helpertm.getTipoMov("Ingreso"));
+                    movNew.setTrabajador(LoginController.user);
 
                 }
             }

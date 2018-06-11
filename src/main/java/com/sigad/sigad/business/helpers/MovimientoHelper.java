@@ -36,16 +36,14 @@ public class MovimientoHelper {
         return errorMessage;
     }
     
-    public Long saveMovement(MovimientosTienda newMov){
-        Long id = null;
+    public Boolean saveMovement(MovimientosTienda newMov){
+        Boolean ok = false;
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
             session.save(newMov);
-            if(newMov.getId() != null) {
-                id = newMov.getId();
-            }
             tx.commit();
+            ok = true;
             LOGGER.log(Level.FINE, "Movimiento registrado con exito");
             this.errorMessage = "";
         } catch (Exception e) {
@@ -56,7 +54,7 @@ public class MovimientoHelper {
             System.out.println(e);
             System.out.println("====================================================================");
         }
-        return id;
+        return true;
     }
     
 }

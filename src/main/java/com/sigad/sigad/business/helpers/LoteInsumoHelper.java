@@ -15,6 +15,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
@@ -250,4 +251,30 @@ public class LoteInsumoHelper {
         }
         return totalUsed;
     }
+    
+    public Long saveLoteInsumo(LoteInsumo newLote) {
+        Long id = null;
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            session.save(newLote);
+            if(newLote.getId() != null) {
+                id = newLote.getId();
+            }
+            tx.commit();
+//            LOGGER.log(Level.FINE, "Insumo guardado con exito");
+            this.errorMessage = "";
+        } catch (Exception e) {
+            if (tx!=null)   tx.rollback();
+            this.errorMessage = e.getMessage();
+//            LOGGER.log(Level.SEVERE, String.format("Ocurrio un error al tratar de crear el loteinsumo %s", newLote.getId()));
+            System.out.println("====================================================================");
+            System.out.println(e);
+            System.out.println("====================================================================");
+        }
+        return id;
+    }
+            
+            
+            
 }

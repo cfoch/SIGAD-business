@@ -6,6 +6,7 @@
 package com.sigad.sigad.business.helpers;
 
 import com.sigad.sigad.app.controller.LoginController;
+import com.sigad.sigad.business.MovimientosTienda;
 import com.sigad.sigad.business.TipoMovimiento;
 import java.util.ArrayList;
 import java.util.logging.Logger;
@@ -47,5 +48,19 @@ public class TipoMovimientoHelper {
             errorMessage = e.getMessage();
         }
         return tipos;
+    }
+    
+    public TipoMovimiento getTipoMov(String nombre){
+        TipoMovimiento tipoMov = null;
+        Query query = null;
+        try {
+            query = session.createQuery("from MovimientosTienda where nombre = " + nombre);
+            if(!query.list().isEmpty()){
+                tipoMov = (TipoMovimiento) query.list().get(0);
+            }
+        } catch (Exception e) {
+            this.errorMessage = e.getMessage();
+        }
+        return tipoMov;
     }
 }
