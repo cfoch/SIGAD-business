@@ -17,6 +17,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -42,6 +43,8 @@ public class RepartidoresDialogGenRutasController implements Initializable {
     private JFXListView<Label> tiendasListView;
     @FXML
     private ProgressIndicator progress;
+    @FXML
+    private Label msgLabel;
 
     List<Tienda> tiendas;
 
@@ -88,20 +91,23 @@ public class RepartidoresDialogGenRutasController implements Initializable {
         progress.setVisible(false);
     }
 
-    public boolean runVRPAlgorithm(String turno) {
+    public void setLoadingState(boolean isLoading) {
+        if (isLoading) {
+            morningBtn.setDisable(true);
+            afternoonBtn.setDisable(true);
+            nightBtn.setDisable(true);
+        }
+        progress.setVisible(isLoading);
+        tiendasListView.setDisable(isLoading);
+    }
+
+    public void runVRPAlgorithm(String turno) throws Exception {
         boolean ret = true;
         AlgoritmoHelper helperAlgo;
         int index = tiendasListView.getSelectionModel().getSelectedIndex();
         Tienda tienda = tiendas.get(index);
         helperAlgo = new AlgoritmoHelper();
-        try {
-            helperAlgo.autogenerarRepartos(tienda, turno);
-        } catch (Exception ex) {
-            Logger.getLogger(this.getClass().getName())
-                    .log(Level.SEVERE, null, ex);
-            ret = false;
-        }
-        return ret;
+        helperAlgo.autogenerarRepartos(tienda, turno);
     }
 
     public void onTurnoBtnClicked(JFXButton button, String turno) {
@@ -114,45 +120,35 @@ public class RepartidoresDialogGenRutasController implements Initializable {
         if (tiendasListView.getSelectionModel().getSelectedItems().isEmpty()) {
             return;
         }
-
         tienda = tiendas.get(index);
-        disableButtonsThread = new Thread(
-            () -> {
-                morningBtn.setDisable(true);
-                afternoonBtn.setDisable(true);
-                nightBtn.setDisable(true);
-                progress.setVisible(true);
-                tiendasListView.setDisable(true);
-            }
-        );
-        algoThread = new Thread(
-            () -> {
+
+        setLoadingState(true);
+        Task<Void> taskRunAlgorithm = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
                 runVRPAlgorithm(turno);
+                return null;
             }
-        );
-        handlerThread = new Thread(
-            () -> {
-                disableButtonsThread.start();
-                algoThread.start();
-                try {
-                    disableButtonsThread.join();
-                    algoThread.join();
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(RepartidoresDialogGenRutasController.class.getName())
-                            .log(Level.SEVERE, null, ex);
-                    return;
-                }
+        };
+        taskRunAlgorithm.setOnFailed(e -> {
+            if (taskRunAlgorithm.getException() != null) {
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, null,
+                        taskRunAlgorithm.getException());
+                msgLabel.setVisible(true);
+                msgLabel.setText(taskRunAlgorithm.getException().getMessage());
+            }
+            setLoadingState(false);
+        });
+        taskRunAlgorithm.setOnSucceeded(e -> {
             try {
                 resetButtonVisibility(tienda);
             } catch (Exception ex) {
                 Logger.getLogger(RepartidoresDialogGenRutasController.class
                         .getName()).log(Level.SEVERE, null, ex);
             }
-                progress.setVisible(false);
-                tiendasListView.setDisable(false);
-            }
-        );
-        handlerThread.start();
+            setLoadingState(false);
+        });
+        new Thread(taskRunAlgorithm).start();
     }
 
     public void resetButtonVisibility(Tienda tienda) throws Exception {

@@ -9,7 +9,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="375.0" prefWidth="394.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sigad.sigad.app.repartos.controller.RepartidoresDialogGenRutasController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="407.0" prefWidth="394.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sigad.sigad.app.repartos.controller.RepartidoresDialogGenRutasController">
    <children>
       <Label prefHeight="53.0" prefWidth="314.0" text="Seleccione una tienda y haga clic en el boton de un turno para generar rutas de reparto:" wrapText="true">
          <VBox.margin>
@@ -35,7 +35,7 @@
             </VBox>
          </children>
       </HBox>
-      <Label prefHeight="63.0" prefWidth="314.0" text="Existe 424 pedidos no atendido en el turno mañana." visible="false" wrapText="true">
+      <Label fx:id="msgLabel" prefHeight="81.0" prefWidth="314.0" text="Existe 424 pedidos no atendido en el turno mañana." textFill="RED" visible="false" wrapText="true">
          <VBox.margin>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </VBox.margin>
