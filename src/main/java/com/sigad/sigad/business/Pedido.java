@@ -7,6 +7,7 @@ package com.sigad.sigad.business;
 
 import com.grupo1.simulated_annealing.Locacion;
 import com.grupo1.simulated_annealing.Servicio;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
@@ -31,6 +32,8 @@ public class Pedido {
     private Long id;
     @NotNull
     private Timestamp fechaVenta;
+    private Date fechaEntregaEsperada;
+    private Date fechaEntrega ;
     @NotNull
     private Double total;
     @NotNull
@@ -411,5 +414,33 @@ public class Pedido {
      */
     public void setSecuenciaReparto(Integer secuenciaReparto) {
         this.secuenciaReparto = secuenciaReparto;
+    }
+
+    /**
+     * @return the fechaEntregaEsperada
+     */
+    public Date getFechaEntregaEsperada() {
+        return fechaEntregaEsperada;
+    }
+
+    /**
+     * @param fechaEntregaEsperada the fechaEntregaEsperada to set
+     */
+    public void setFechaEntregaEsperada(Date fechaEntregaEsperada) {
+        this.fechaEntregaEsperada = fechaEntregaEsperada;
+    }
+
+    /**
+     * @return the fechaEntrega
+     */
+    public Date getFechaEntrega() {
+        return fechaEntrega;
+    }
+
+    /**
+     * @param fechaEntrega the fechaEntrega to set
+     */
+    public void setFechaEntrega(Date fechaEntrega) {
+        this.fechaEntrega = fechaEntrega;
     }
 }
