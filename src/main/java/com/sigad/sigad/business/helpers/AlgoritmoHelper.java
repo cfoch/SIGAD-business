@@ -69,7 +69,7 @@ public class AlgoritmoHelper extends BaseHelper {
 
             List<Vehiculo> vehiculos = tienda.getVehiculos();
             pedidos = helperPedido.getPedidosPorTienda(tienda, estado,
-                    turno);
+                    turno, new Date());
             // FIXME
             // Si no hubiera vehiculos asignados para la tienda, se rompe.
             try {
