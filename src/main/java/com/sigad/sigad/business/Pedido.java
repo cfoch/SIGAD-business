@@ -5,6 +5,7 @@
  */
 package com.sigad.sigad.business;
 
+import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.HashSet;
@@ -32,6 +33,8 @@ public class Pedido {
     private Long id;
     @NotNull
     private Timestamp fechaVenta;
+    private Date fechaEntregaEsperada;
+    private Date fechaEntrega ;
     @NotNull
     private Double total;
     @NotNull
@@ -400,6 +403,34 @@ public class Pedido {
      */
     public void setDocumentos(Set<DocumentoLegal> documentos) {
         this.documentos = documentos;
+    }
+
+    /**
+     * @return the fechaEntregaEsperada
+     */
+    public Date getFechaEntregaEsperada() {
+        return fechaEntregaEsperada;
+    }
+
+    /**
+     * @param fechaEntregaEsperada the fechaEntregaEsperada to set
+     */
+    public void setFechaEntregaEsperada(Date fechaEntregaEsperada) {
+        this.fechaEntregaEsperada = fechaEntregaEsperada;
+    }
+
+    /**
+     * @return the fechaEntrega
+     */
+    public Date getFechaEntrega() {
+        return fechaEntrega;
+    }
+
+    /**
+     * @param fechaEntrega the fechaEntrega to set
+     */
+    public void setFechaEntrega(Date fechaEntrega) {
+        this.fechaEntrega = fechaEntrega;
     }
 
 }
