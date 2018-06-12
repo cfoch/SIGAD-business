@@ -5,8 +5,10 @@
  */
 package com.sigad.sigad.business;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -31,13 +33,19 @@ public class Reparto {
     private Date fecha;
     
     @OneToMany(mappedBy="reparto")
-    private Set<Pedido> pedidos = new HashSet<Pedido>();
+    private List<Pedido> pedidos = new ArrayList<Pedido>();
     //fk
     @ManyToOne
     private Usuario repartidor;
     
     @ManyToOne
     private Vehiculo vehiculo;
+
+    // "M", "T", "N": 'Mañana', 'Tarde', 'Noche'
+    @NotNull
+    private String turno;
+    @ManyToOne
+    private Tienda tienda;
     
     @OneToMany(mappedBy = "reparto", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<DetalleReparto> detallesReparto = new HashSet<>();
@@ -112,14 +120,42 @@ public class Reparto {
     /**
      * @return the pedidos
      */
-    public Set<Pedido> getPedidos() {
+    public List<Pedido> getPedidos() {
         return pedidos;
     }
 
     /**
      * @param pedidos the pedidos to set
      */
-    public void setPedidos(Set<Pedido> pedidos) {
+    public void setPedidos(List<Pedido> pedidos) {
         this.pedidos = pedidos;
+    }
+
+    /**
+     * @return the turno
+     */
+    public String getTurno() {
+        return turno;
+    }
+
+    /**
+     * @param turno the turno to set
+     */
+    public void setTurno(String turno) {
+        this.turno = turno;
+    }
+
+    /**
+     * @return the tienda
+     */
+    public Tienda getTienda() {
+        return tienda;
+    }
+
+    /**
+     * @param tienda the tienda to set
+     */
+    public void setTienda(Tienda tienda) {
+        this.tienda = tienda;
     }
 }

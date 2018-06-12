@@ -24,6 +24,8 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -39,6 +41,7 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -83,6 +86,7 @@ public class PersonalController implements Initializable {
     public static void updateTable(Usuario u) {
         data.add(
                 new User(
+                        new SimpleIntegerProperty(u.getId().intValue()),
                         new SimpleStringProperty(u.getNombres()),
                         new SimpleStringProperty(u.getApellidoMaterno()),
                         new SimpleStringProperty(u.getApellidoPaterno()),
@@ -98,7 +102,7 @@ public class PersonalController implements Initializable {
     }
 
     //usar para llenar LISTA
-    private void getDataFromDB() {
+    protected void getDataFromDB() {
         UsuarioHelper userHelper = new UsuarioHelper();
         
         ArrayList<Usuario> lista = userHelper.getUsers();
@@ -218,7 +222,7 @@ public class PersonalController implements Initializable {
         userDialog.show();
     }
 
-    private void initUserTbl() {
+    protected void initUserTbl() {
         JFXTreeTableColumn<PersonalController.User, String> name = new JFXTreeTableColumn<>("Nombre");
         name.setPrefWidth(120);
         name.setCellValueFactory((TreeTableColumn.CellDataFeatures<PersonalController.User, String> param) -> param.getValue().getValue().nombres);
@@ -277,19 +281,7 @@ public class PersonalController implements Initializable {
         userTbl.setRowFactory(ord -> {
             JFXTreeTableRow<PersonalController.User> row = new JFXTreeTableRow<>();
             row.setOnMouseClicked((event) -> {
-                if (! row.isEmpty() && event.getButton()==MouseButton.PRIMARY 
-                     && event.getClickCount() == 2) {
-                    PersonalController.User clickedRow = row.getItem();
-                    System.out.println(clickedRow.nombres);
-                    
-                    selectedUser = clickedRow;
-                    //data.remove(selectedUser);
-                    try {
-                        CreateEdditUserDialog(false);
-                    } catch (IOException ex) {
-                        Logger.getLogger(PersonalController.class.getName()).log(Level.SEVERE, "initUserTbl(): CreateEdditUserDialog()", ex);
-                    }
-                }
+                onRowClicked(event);
             });
             return row;
         });
@@ -302,10 +294,30 @@ public class PersonalController implements Initializable {
         userTbl.setRoot(root);
         userTbl.setShowRoot(false);
     }
+
+    private void onRowClicked(MouseEvent event) {
+        JFXTreeTableRow<PersonalController.User> row;
+        row = (JFXTreeTableRow<PersonalController.User>) event.getSource();
+        if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY
+             && event.getClickCount() == 2) {
+            PersonalController.User clickedRow = row.getItem();
+            selectedUser = clickedRow;
+            rowDoubleClickFunc(clickedRow);
+        }
+    }
+
+    protected void rowDoubleClickFunc(PersonalController.User selectedUser) {
+        try {
+            CreateEdditUserDialog(false);
+        } catch (IOException ex) {
+            Logger.getLogger(PersonalController.class.getName()).log(
+                    Level.SEVERE, "initUserTbl(): CreateEdditUserDialog()", ex);
+        }
+    }
     
     /*Class for table*/
     public static class User extends RecursiveTreeObject<User> {
-
+        private IntegerProperty id;
         StringProperty nombres;
         StringProperty apellidoMaterno;
         StringProperty apellidoPaterno;
@@ -318,7 +330,8 @@ public class PersonalController implements Initializable {
         StringProperty tienda;
         StringProperty activo;
 
-        public User(StringProperty nombres, StringProperty apellidoMaterno, StringProperty apellidoPaterno, StringProperty correo, StringProperty dni, StringProperty telefono, StringProperty celular, StringProperty profileName, StringProperty profileDesc, StringProperty tienda, StringProperty activo) {
+        public User(IntegerProperty id, StringProperty nombres, StringProperty apellidoMaterno, StringProperty apellidoPaterno, StringProperty correo, StringProperty dni, StringProperty telefono, StringProperty celular, StringProperty profileName, StringProperty profileDesc, StringProperty tienda, StringProperty activo) {
+            this.id = id;
             this.nombres = nombres;
             this.apellidoMaterno = apellidoMaterno;
             this.apellidoPaterno = apellidoPaterno;
@@ -347,6 +360,14 @@ public class PersonalController implements Initializable {
             hash = 29 * hash + Objects.hashCode(this.dni);
             return hash;
         }
+
+        /**
+         * @return the id
+         */
+        public Long getId() {
+            return id.getValue().longValue();
+        }
+
 
     }
 }

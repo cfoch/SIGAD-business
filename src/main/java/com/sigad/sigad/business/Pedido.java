@@ -5,20 +5,20 @@
  */
 package com.sigad.sigad.business;
 
-import java.sql.Time;
+import com.grupo1.simulated_annealing.Locacion;
+import com.grupo1.simulated_annealing.Servicio;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.validation.constraints.NotNull;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
 
 /**
  *
@@ -32,6 +32,8 @@ public class Pedido {
     private Long id;
     @NotNull
     private Timestamp fechaVenta;
+    private Date fechaEntregaEsperada;
+    private Date fechaEntrega ;
     @NotNull
     private Double total;
     @NotNull
@@ -52,6 +54,7 @@ public class Pedido {
     private double volumenTotal;
     @ManyToOne
     private Reparto reparto;
+    private Integer secuenciaReparto;
 
     //fk
     @ManyToOne(optional = false)
@@ -76,10 +79,15 @@ public class Pedido {
     private Set<DocumentoLegal> documentos = new HashSet<>();
 
     private Timestamp horaEntrega;
-    private Time horaIniEntrega;
-    private Time horaFinEntrega;
 
     public Pedido() {
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(long id) {
+        this.id = id;
     }
 
     /**
@@ -143,34 +151,6 @@ public class Pedido {
      */
     public void setModificable(boolean modificable) {
         this.modificable = modificable;
-    }
-
-    /**
-     * @return the horaIniEntrega
-     */
-    public Time getHoraIniEntrega() {
-        return horaIniEntrega;
-    }
-
-    /**
-     * @param horaIniEntrega the horaIniEntrega to set
-     */
-    public void setHoraIniEntrega(Time horaIniEntrega) {
-        this.horaIniEntrega = horaIniEntrega;
-    }
-
-    /**
-     * @return the horaFinEntrega
-     */
-    public Time getHoraFinEntrega() {
-        return horaFinEntrega;
-    }
-
-    /**
-     * @param horaFinEntrega the horaFinEntrega to set
-     */
-    public void setHoraFinEntrega(Time horaFinEntrega) {
-        this.horaFinEntrega = horaFinEntrega;
     }
 
     /**
@@ -328,6 +308,20 @@ public class Pedido {
     }
 
     /**
+     * Obtiene la Locacion de un pedido en la estructura de SimmulatedAnnealing.
+     * @return Una locacion de SimulatedAnnealing.
+     */
+    public Locacion getLocacion() {
+        Locacion locacion;
+        Servicio servicio;
+        locacion = new Locacion(id, direccionDeEnvio, Locacion.Tipo.OTRO,
+                cooXDireccion, cooYDireccion);
+        servicio = new Servicio("", locacion, (int) volumenTotal);
+        locacion.setServicio(servicio);
+        return locacion;
+    }
+
+    /**
      * @return the volumen
      */
     public double getVolumenTotal() {
@@ -402,4 +396,45 @@ public class Pedido {
         this.documentos = documentos;
     }
 
+    /**
+     * @return the secuenciaReparto
+     */
+    public Integer getSecuenciaReparto() {
+        return secuenciaReparto;
+    }
+
+    /**
+     * @param secuenciaReparto the secuenciaReparto to set
+     */
+    public void setSecuenciaReparto(Integer secuenciaReparto) {
+        this.secuenciaReparto = secuenciaReparto;
+    }
+
+    /**
+     * @return the fechaEntregaEsperada
+     */
+    public Date getFechaEntregaEsperada() {
+        return fechaEntregaEsperada;
+    }
+
+    /**
+     * @param fechaEntregaEsperada the fechaEntregaEsperada to set
+     */
+    public void setFechaEntregaEsperada(Date fechaEntregaEsperada) {
+        this.fechaEntregaEsperada = fechaEntregaEsperada;
+    }
+
+    /**
+     * @return the fechaEntrega
+     */
+    public Date getFechaEntrega() {
+        return fechaEntrega;
+    }
+
+    /**
+     * @param fechaEntrega the fechaEntrega to set
+     */
+    public void setFechaEntrega(Date fechaEntrega) {
+        this.fechaEntrega = fechaEntrega;
+    }
 }

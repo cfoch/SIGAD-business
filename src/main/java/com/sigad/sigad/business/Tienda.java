@@ -5,9 +5,12 @@
  */
 package com.sigad.sigad.business;
 
+import com.grupo1.simulated_annealing.Locacion;
+import com.grupo1.simulated_annealing.Servicio;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -15,7 +18,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
@@ -42,6 +44,9 @@ public class Tienda {
     private Set<Usuario> empleadosTienda = new HashSet<Usuario>();
     @OneToMany(mappedBy = "tienda")
     private Set<LoteInsumo> lotesInsumo = new HashSet<LoteInsumo>();
+    @OneToMany
+    private List<Vehiculo> vehiculos;
+
     /**
      * Constructor.
      */
@@ -188,6 +193,31 @@ public class Tienda {
             
         }
         return hm;
+    }
     
+    /**
+     * Obtiene la Locacion de un pedido en la estructura de SimmulatedAnnealing.
+     * @return Una locacion de SimulatedAnnealing.
+     */
+    public Locacion getLocacion() {
+        Locacion locacion;
+        Servicio servicio;
+        locacion = new Locacion(id, direccion, Locacion.Tipo.DEPOSITO,
+                cooXDireccion, cooYDireccion);
+        return locacion;
+    }
+
+    /**
+     * @return the vehiculos
+     */
+    public List<Vehiculo> getVehiculos() {
+        return vehiculos;
+    }
+
+    /**
+     * @param vehiculos the vehiculos to set
+     */
+    public void setVehiculos(List<Vehiculo> vehiculos) {
+        this.vehiculos = vehiculos;
     }
 }

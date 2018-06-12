@@ -7,7 +7,12 @@ package com.sigad.sigad.business.helpers;
 
 import com.sigad.sigad.app.controller.LoginController;
 import com.sigad.sigad.business.Pedido;
+import com.sigad.sigad.business.PedidoEstado;
+import com.sigad.sigad.business.Tienda;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
@@ -76,4 +81,56 @@ public class PedidoHelper {
         }
     }
 
+    public List<Pedido> getPedidosPorTienda(Tienda tienda, PedidoEstado estado,
+            String turno, Date fecha) throws Exception {
+        String hql;
+        Query query;
+        String hqlBase = "from Pedido where tienda_id = :tienda_id";
+        List<Pedido> pedidos = new ArrayList<>();
+
+        hql = hqlBase;
+        if (turno != null) {
+            hql = hql + " and turno = :turno";
+        }
+        if (estado != null) {
+            hql = hql + " and estado_id = :estado_id";
+        }
+        if (fecha != null) {
+            hql = hql
+                    + " and fechaentregaesperada BETWEEN :today and :tomorrow";
+        }
+
+        query = session.createQuery(hql);
+
+        if (turno != null) {
+            query.setParameter("turno", turno);
+        }
+        if (estado != null) {
+            query.setParameter("estado_id", estado.getId());
+        }
+        if (fecha != null) {
+            Calendar calTomorrow = Calendar.getInstance();
+            Date tomorrow = new Date();
+            calTomorrow.setTime(tomorrow);
+            calTomorrow.add(Calendar.DATE, 1);
+            tomorrow = calTomorrow.getTime();
+            query.setDate("today", fecha);
+            query.setDate("tomorrow", tomorrow);
+        }
+        query.setParameter("tienda_id", tienda.getId());
+        pedidos = query.list();
+        return pedidos;
+    }
+
+    public static String stringifyTurno(String turno) {
+        String ret = "No definido";
+        if (turno.equals("M")) {
+            ret = "Mañana";
+        } else if (turno.equals("T")) {
+            ret = "Tarde";
+        } else if (turno.equals("N")) {
+            ret = "Noche";
+        }
+        return ret;
+    }
 }
