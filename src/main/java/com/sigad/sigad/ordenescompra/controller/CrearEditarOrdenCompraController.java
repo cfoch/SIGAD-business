@@ -252,7 +252,7 @@ public class CrearEditarOrdenCompraController implements Initializable {
                             c.add(Calendar.DATE, i.getInsumoLocal().getTiempoVida());
                             Date currentDatePlusOne = c.getTime();
 
-                            li.setFechaVencimiento(date);
+                            li.setFechaVencimiento(currentDatePlusOne);
                             li.setCostoUnitario(Double.parseDouble(i.getPrecio().getValue()));
                             li.setStockFisico(0);
                             li.setStockLogico(Integer.parseInt(i.getCantidad().getValue()));

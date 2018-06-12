@@ -187,21 +187,21 @@ public class ListaOrdenesCompraController implements Initializable {
                 param.getValue().getValue().getPrecio() //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         );
         //Double click on row
-        tblOrdenesCompra.setRowFactory(ord -> {
-            JFXTreeTableRow<OrdenCompraViewer> row = new JFXTreeTableRow<>();
-            row.setOnMouseClicked((event) -> {
-                if (! row.isEmpty() && event.getButton()==MouseButton.PRIMARY 
-                     && event.getClickCount() == 2) {
-                    OrdenCompraViewer clickedRow = row.getItem();
-                    try {
-                        createEditOrdenDialog(false);
-                    } catch (IOException ex) {
-                        Logger.getLogger(ListaOrdenesCompraController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            });
-            return row;
-        });
+//        tblOrdenesCompra.setRowFactory(ord -> {
+//            JFXTreeTableRow<OrdenCompraViewer> row = new JFXTreeTableRow<>();
+//            row.setOnMouseClicked((event) -> {
+//                if (! row.isEmpty() && event.getButton()==MouseButton.PRIMARY 
+//                     && event.getClickCount() == 2) {
+//                    OrdenCompraViewer clickedRow = row.getItem();
+//                    try {
+//                        createEditOrdenDialog(false);
+//                    } catch (IOException ex) {
+//                        Logger.getLogger(ListaOrdenesCompraController.class.getName()).log(Level.SEVERE, null, ex);
+//                    }
+//                }
+//            });
+//            return row;
+//        });
         recibidoCol.setCellValueFactory((TreeTableColumn.CellDataFeatures<OrdenCompraViewer, String> param) -> param.getValue().getValue().getRecibido()
         );
     }
@@ -370,12 +370,12 @@ public class ListaOrdenesCompraController implements Initializable {
         
         VBox vBox;
         if(!selectedOrdenCompra.getOrdenCompra().isRecibido()){
-           vBox = new VBox(edit, io, delete);
+           vBox = new VBox(io, delete);
            popup = new JFXPopup();
            popup.setPopupContent(vBox);
         }
         else {
-           vBox = new VBox(edit, delete);
+           vBox = new VBox( delete);
            popup = new JFXPopup();
            popup.setPopupContent(vBox);
         }

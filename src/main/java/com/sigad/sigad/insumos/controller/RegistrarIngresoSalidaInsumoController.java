@@ -213,7 +213,7 @@ public class RegistrarIngresoSalidaInsumoController implements Initializable {
         
         cbxTipo.valueProperty().addListener((ObservableValue<? extends Object> observable, Object oldValue, Object newValue) -> {
             TipoMovimiento li = (TipoMovimiento) newValue;
-            if(li.getNombre().equals("Ingreso")){
+            if(li.getNombre().equals("Entrada")){
                 tblLotes.setDisable(true);
             }
             else if(li.getNombre().equals("Salida")){

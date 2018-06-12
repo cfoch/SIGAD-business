@@ -356,7 +356,7 @@ public class ListaInsumoController implements Initializable {
         io.setPadding(new Insets(20));
         io.setPrefSize(145, 40);
         
-        VBox vBox = new VBox(edit, io,delete);
+        VBox vBox = new VBox(io,delete);
         
         popup = new JFXPopup();
         popup.setPopupContent(vBox);
