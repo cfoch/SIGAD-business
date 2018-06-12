@@ -7,6 +7,7 @@ package com.sigad.sigad.business;
 
 import java.util.HashSet;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import javax.persistence.GeneratedValue;
@@ -30,6 +31,9 @@ public class ProductoCategoria {
     private boolean activo;
     @OneToMany(mappedBy = "categoria")
     private Set<Producto> productos = new HashSet<Producto>();
+    @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ProductoCategoriaDescuento> descuentos = new HashSet<ProductoCategoriaDescuento>();
+    
     
     /**
      * Constructor.
@@ -105,5 +109,19 @@ public class ProductoCategoria {
      */
     public void setProductos(Set<Producto> productos) {
         this.productos = productos;
+    }
+
+    /**
+     * @return the descuentos
+     */
+    public Set<ProductoCategoriaDescuento> getDescuentos() {
+        return descuentos;
+    }
+
+    /**
+     * @param descuentos the descuentos to set
+     */
+    public void setDescuentos(Set<ProductoCategoriaDescuento> descuentos) {
+        this.descuentos = descuentos;
     }
 }

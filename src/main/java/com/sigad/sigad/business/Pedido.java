@@ -71,6 +71,9 @@ public class Pedido {
 
     @ManyToOne
     private Tienda tienda;
+    
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<DocumentoLegal> documentos = new HashSet<>();
 
     private Timestamp horaEntrega;
     private Time horaIniEntrega;
@@ -383,6 +386,20 @@ public class Pedido {
      */
     public void setTienda(Tienda tienda) {
         this.tienda = tienda;
+    }
+
+    /**
+     * @return the documentos
+     */
+    public Set<DocumentoLegal> getDocumentos() {
+        return documentos;
+    }
+
+    /**
+     * @param documentos the documentos to set
+     */
+    public void setDocumentos(Set<DocumentoLegal> documentos) {
+        this.documentos = documentos;
     }
 
 }

@@ -37,12 +37,12 @@ import com.sigad.sigad.perfil.controller.PerfilController;
 import com.sigad.sigad.personal.controller.CrearEditarUsuarioController;
 import com.sigad.sigad.personal.controller.PersonalController;
 import com.sigad.sigad.deposito.controller.FXMLAlmacenIngresoListaOrdenCompraController;
+
 /**
  *
  * @author cfoch
  */
-
-public class SIGADBusinessMain extends Application{
+public class SIGADBusinessMain extends Application {
 //    public static void main(String[] args) throws NoSuchAlgorithmException {
 //        Configuration config;
 //        SessionFactory sessionFactory;
@@ -69,20 +69,27 @@ public class SIGADBusinessMain extends Application{
 //        session.close();
 //        sessionFactory.close();
 //    }
-     @Override
-	public void start(Stage stage) {
-            try {
-                    Parent root = FXMLLoader.load(getClass().getResource(LoginController.viewPath));
-                    Scene scene = new Scene(root);
-                    //scene.getStylesheets().add(getClass().getResource("/stylesheet.css").toExternalForm());
-                    stage.setScene(scene);
-                    stage.show();
-            } catch(Exception e) {
-                    e.printStackTrace();
-            }
-	}
-	
-	public static void main(String[] args) {        
-            launch(args);
-	}
+
+    @Override
+    public void start(Stage stage) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource(LoginController.viewPath));
+            Scene scene = new Scene(root);
+            //scene.getStylesheets().add(getClass().getResource("/stylesheet.css").toExternalForm());
+            stage.setScene(scene);
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    @Override
+    public void stop() throws Exception {
+        System.exit(0);
+    }
+
 }

@@ -7,6 +7,7 @@ package com.sigad.sigad.business;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -63,7 +64,9 @@ public class Usuario {
     private Set<Pedido> pedidoCliente = new HashSet<Pedido>();
     @ManyToMany(mappedBy = "usuarios", cascade = {CascadeType.ALL})
     private Set<ProductoDescuento> descuentos = new HashSet<ProductoDescuento>();
-
+    @ManyToMany(mappedBy = "usuarios", cascade = {CascadeType.ALL})
+    private Set<Producto> favoritos = new HashSet<>();
+            
     @ManyToOne
     private Tienda tienda;
 
@@ -379,5 +382,19 @@ public class Usuario {
      */
     public void setDescuentos(Set<ProductoDescuento> descuentos) {
         this.descuentos = descuentos;
+    }
+
+    /**
+     * @return the favoritos
+     */
+    public Set<Producto> getFavoritos() {
+        return favoritos;
+    }
+
+    /**
+     * @param favoritos the favoritos to set
+     */
+    public void setFavoritos(Set<Producto> favoritos) {
+        this.favoritos = favoritos;
     }
 }

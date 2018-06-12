@@ -5,6 +5,7 @@
  */
 package com.sigad.sigad.business;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -13,6 +14,7 @@ import javax.validation.constraints.NotNull;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
@@ -23,6 +25,7 @@ import javax.persistence.OneToMany;
 @Entity
 public class Producto {
 
+  
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
@@ -49,6 +52,9 @@ public class Producto {
 
     @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ProductoInsumo> insumos = new HashSet<>();
+    
+    @ManyToMany
+    private Set<Usuario> usuarios = new HashSet<>();
 
     /**
      * Constructor.
@@ -278,5 +284,20 @@ public class Producto {
     public void setInsumos(Set<ProductoInsumo> insumos) {
         this.insumos = insumos;
     }
+    
+      /**
+     * @return the usuarios
+     */
+    public Set<Usuario> getUsuarios() {
+        return usuarios;
+    }
+
+    /**
+     * @param usuarios the usuarios to set
+     */
+    public void setUsuarios(Set<Usuario> usuarios) {
+        this.usuarios = usuarios;
+    }
+
     
 }
