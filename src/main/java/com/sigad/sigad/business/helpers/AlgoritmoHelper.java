@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.ArrayUtils;
 import org.hibernate.Session;
@@ -278,5 +279,23 @@ public class AlgoritmoHelper extends BaseHelper {
         }
 
         return new VRPProblem(grafo, locaciones[0], vehiculoTipo.getTipo());
+    }
+
+    public List<Locacion> repartoToRoute(Reparto reparto) {
+        int i;
+        ArrayList<Locacion> ruta = new ArrayList<>();
+        Tienda tienda = reparto.getTienda();
+        List<Pedido> pedidos = reparto.getPedidos();
+        pedidos = pedidos.stream()
+                .sorted((a, b) -> a.getSecuenciaReparto() - b.getSecuenciaReparto())
+                .collect(Collectors.toList());
+
+        ruta.add(tienda.getLocacion());
+        for (i = 0; i < pedidos.size(); i++) {
+            Pedido pedido = pedidos.get(i);
+            ruta.add(pedido.getLocacion());
+        }
+        ruta.add(tienda.getLocacion());
+        return ruta;
     }
 }

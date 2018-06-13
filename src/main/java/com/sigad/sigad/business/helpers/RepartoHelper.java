@@ -26,6 +26,26 @@ public class RepartoHelper extends BaseHelper {
         return repartos;
     }
 
+    public List<Reparto> getRepartos(Date fecha, Long tiendaId, String turno) {
+        List<Reparto> repartos;
+        Date tomorrow = new Date();
+        Calendar calTomorrow = Calendar.getInstance();
+        calTomorrow.setTime(fecha);
+        calTomorrow.add(Calendar.DATE, 1);
+        tomorrow = calTomorrow.getTime();
+
+        repartos = (List<Reparto>) session
+                .createQuery("from Reparto where tienda_id = :tienda_id and "
+                        + "turno = :turno and "
+                        + "fecha BETWEEN :today and :tomorrow")
+                .setParameter("tienda_id", tiendaId)
+                .setDate("today", fecha)
+                .setDate("tomorrow", tomorrow)
+                .setParameter("turno", turno)
+                .list();
+        return repartos;
+    }
+
     public boolean esPosibleGenerarReparto(long tiendaId, String turno) throws Exception {
         Query query;
         Long count;

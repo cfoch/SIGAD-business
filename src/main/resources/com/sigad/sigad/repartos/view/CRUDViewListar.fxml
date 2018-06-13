@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import com.jfoenix.controls.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane fx:id="stackPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox fx:id="box">
+         <children>
+            <VBox prefHeight="277.0" prefWidth="521.0">
+               <children>
+                  <JFXTreeTableView fx:id="treeView" style="-fx-background-insets: 0;" />
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </children>
+</StackPane>

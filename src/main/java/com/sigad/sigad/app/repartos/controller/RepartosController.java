@@ -7,6 +7,8 @@ package com.sigad.sigad.app.repartos.controller;
 
 import com.jfoenix.controls.JFXListView;
 import com.sigad.sigad.app.controller.HomeController;
+import com.sigad.sigad.utils.ui.UICRUDViewWrapperController;
+import com.sigad.sigad.utils.ui.UIFuncs;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
@@ -56,6 +58,12 @@ public class RepartosController implements Initializable {
 //                return "Tipos de vehículos";
 //            }
 //        },
+        REPARTOS {
+            @Override
+            public final String toString() {
+                return "Repartos";
+            }
+        },
         VEHICULOS {
             @Override
             public final String toString() {
@@ -171,6 +179,29 @@ public class RepartosController implements Initializable {
                                 .log(Level.SEVERE, null, ex);
                     }
                     break;
+                case REPARTOS:
+                {
+                    try {
+                        Node nodeWrapper;
+
+                        System.out.println("cls: " + UICRUDViewWrapperController.VIEW_PATH);
+
+                        GrupoRepartosController controllerWrapper =
+                            new GrupoRepartosController(
+                                    GrupoRepartosLista.class);
+                        controllerWrapper.setParentStackPane(
+                                homeController.getStackPane());
+
+                        nodeWrapper = UIFuncs.<GrupoRepartosController>
+                                createNodeFromControllerFXML(controllerWrapper,
+                                        GrupoRepartosController.VIEW_PATH);
+                        homeController.getFirstPanel().getChildren().setAll(nodeWrapper);
+                    } catch (InstantiationException | IllegalAccessException ex) {
+                        Logger.getLogger(RepartosController.class.getName())
+                                .log(Level.SEVERE, null, ex);
+                    }
+                    break;
+                }
             }
         });
     }
