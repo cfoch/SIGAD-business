@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import com.jfoenix.controls.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane fx:id="stackPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="315.0" prefWidth="850.0" style="-fx-border-color: #C8C8C8;">
+         <center>
+            <VBox fx:id="box" prefHeight="200.0" prefWidth="0.0" style="-fx-background-color: #FFFFFF;" BorderPane.alignment="CENTER" />
+         </center>
+         <top>
+            <VBox style="-fx-background-color: #FFFFFF;">
+               <children>
+                  <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="0.0" spacing="10.0" style="-fx-background-color: #FFFFFF; -fx-background-insets: #FFFFFF;" BorderPane.alignment="CENTER">
+                     <children>
+                        <Label fx:id="labelTitulo" text="Título" />
+                        <!--<JFXButton fx:id="menuBtn" onMouseClicked="#onMenuBtnClicked" prefHeight="25.0" prefWidth="25.0" text=":" />-->
+                        <JFXNodesList />
+                     </children>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <VBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <VBox prefHeight="25.0" prefWidth="0.0" style="-fx-background-color: #ECEFF1; -fx-border-width: 1 0 1 0; -fx-border-color: #C8C8C8;" />
+               </children>
+            </VBox>
+         </top>
+      </BorderPane>
+   </children>
+</StackPane>

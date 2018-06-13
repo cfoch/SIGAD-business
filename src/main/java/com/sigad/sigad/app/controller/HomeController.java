@@ -11,13 +11,11 @@ import com.sigad.sigad.app.repartos.controller.RepartosController;
 import com.sigad.sigad.business.Perfil;
 import com.sigad.sigad.business.Permiso;
 import com.sigad.sigad.controller.cargaMasiva.CargaMasivaViewController;
-import com.sigad.sigad.deposito.controller.FXMLAlmacenIngresoListaOrdenCompraController;
 import com.sigad.sigad.descuentos.controller.MantenimientoDescuentosController;
-import com.sigad.sigad.pedido.controller.MantenimientoPedidosController;
-import com.sigad.sigad.pedido.controller.SeleccionarProductosController;
 import com.sigad.sigad.insumos.controller.ListaInsumoController;
 import com.sigad.sigad.movimientos.controller.MovimientosController;
 import com.sigad.sigad.ordenescompra.controller.ListaOrdenesCompraController;
+import com.sigad.sigad.pedido.controller.MantenimientoPedidosController;
 import com.sigad.sigad.perfil.controller.PerfilController;
 import com.sigad.sigad.personal.controller.PersonalController;
 import com.sigad.sigad.productos.controller.ProductosIndexController;
@@ -49,6 +47,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
@@ -77,6 +76,8 @@ public class HomeController implements Initializable {
     private JFXButton menuBtn,menuProfile;
     @FXML
     private AnchorPane containerPane, firstPanel;
+    @FXML
+    private StackPane stackPane;
     @FXML
     private AnchorPane sidebarPane;
     @FXML
@@ -340,6 +341,13 @@ public class HomeController implements Initializable {
 //    public static void changeChildren(Node node){
 //        firstPanel.getChildren().setAll(node);
 //    }
+
+    /**
+     * @return the stackPane
+     */
+    public StackPane getStackPane() {
+        return stackPane;
+    }
     
     
 }
