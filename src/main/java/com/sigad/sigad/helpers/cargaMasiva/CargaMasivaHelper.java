@@ -19,7 +19,6 @@ import com.sigad.sigad.business.TipoMovimiento;
 import com.sigad.sigad.business.TipoPago;
 import com.sigad.sigad.business.Usuario;
 import com.sigad.sigad.business.Vehiculo;
-import com.sigad.sigad.business.helpers.TipoVehiculoHelper;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
