@@ -6,6 +6,7 @@
 package com.sigad.sigad.app.repartos.controller;
 
 import com.jfoenix.controls.JFXButton;
+import com.sigad.sigad.app.controller.LoginController;
 import com.sigad.sigad.business.Perfil;
 import com.sigad.sigad.business.Usuario;
 import com.sigad.sigad.business.helpers.PerfilHelper;
@@ -38,11 +39,19 @@ public class RepartidoresInnerController extends PersonalController {
     @Override
     protected void getDataFromDB() {
         Perfil perfil;
+        Long tiendaId;
+        ArrayList<Usuario> lista;
         PerfilHelper perfilHelper = new PerfilHelper();
         UsuarioHelper userHelper = new UsuarioHelper();
         perfil = perfilHelper.getProfile("Repartidor");
 
-        ArrayList<Usuario> lista = userHelper.getUsers(perfil);
+        if (LoginController.user.getTienda() != null) {
+            tiendaId = LoginController.user.getTienda().getId();
+            lista = userHelper.getUsersByTiendaId(perfil,
+                    tiendaId);
+        } else {
+            lista = userHelper.getUsers(perfil);
+        }
         if(lista != null){
             lista.forEach((p) -> {
                 updateTable(p);

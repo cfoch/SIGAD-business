@@ -7,6 +7,7 @@ package com.sigad.sigad.app.repartos.controller;
 
 import com.grupo1.simulated_annealing.Locacion;
 import com.jfoenix.controls.JFXButton;
+import com.sigad.sigad.app.controller.LoginController;
 import com.sigad.sigad.business.Reparto;
 import com.sigad.sigad.business.helpers.AlgoritmoHelper;
 import com.sigad.sigad.business.helpers.GrupoRepartoHelper;
@@ -46,7 +47,12 @@ public class GrupoRepartosLista extends UICRUDViewListarController {
         List<?> res;
         int i;
         GrupoRepartoHelper helper = new GrupoRepartoHelper();
-        res = helper.getRepartoGrupos();
+        if (LoginController.user.getTienda() != null) {
+            Long tiendaId = LoginController.user.getTienda().getId();
+            res = helper.getRepartoGrupos(tiendaId);
+        } else {
+            res = helper.getRepartoGrupos(null);
+        }
         System.out.println("res: " + res.size());
         for (i = 0; i < res.size(); i++) {
             Info info;

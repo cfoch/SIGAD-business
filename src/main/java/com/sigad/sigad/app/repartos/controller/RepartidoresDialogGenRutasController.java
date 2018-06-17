@@ -7,11 +7,13 @@ package com.sigad.sigad.app.repartos.controller;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
+import com.sigad.sigad.app.controller.LoginController;
 import com.sigad.sigad.business.Tienda;
 import com.sigad.sigad.business.helpers.AlgoritmoHelper;
 import com.sigad.sigad.business.helpers.RepartoHelper;
 import com.sigad.sigad.business.helpers.TiendaHelper;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -57,7 +59,12 @@ public class RepartidoresDialogGenRutasController implements Initializable {
         int i;
 
         helperTienda = new TiendaHelper();
-        tiendas = helperTienda.getStores();
+        if (LoginController.user.getTienda() == null) {
+            tiendas = helperTienda.getStores();
+        } else {
+            tiendas = new ArrayList<>();
+            tiendas.add(LoginController.user.getTienda());
+        }
         helperTienda.close();
 
         for (i = 0; i < tiendas.size(); i++) {
