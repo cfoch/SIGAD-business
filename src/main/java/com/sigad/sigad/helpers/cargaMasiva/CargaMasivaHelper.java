@@ -19,6 +19,7 @@ import com.sigad.sigad.business.TipoMovimiento;
 import com.sigad.sigad.business.TipoPago;
 import com.sigad.sigad.business.Usuario;
 import com.sigad.sigad.business.Vehiculo;
+import com.sigad.sigad.business.helpers.TipoVehiculoHelper;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
@@ -726,7 +727,9 @@ public class CargaMasivaHelper {
                     index++;
                     String nombreTipoVehiculoAsociado = StringUtils.trimToEmpty(dataFormatter.formatCellValue(row.getCell(index)));
                     if(StringUtils.isNotBlank(nombreTipoVehiculoAsociado)){
-                        Vehiculo.Tipo tipoVehiculoAsociado = (Vehiculo.Tipo) CargaMasivaHelper.busquedaGeneralString(session, "vehiculo$tipo", new String[] {"nombre"}, new String[] {nombreTipoVehiculoAsociado});    
+                        //Vehiculo.Tipo tipoVehiculoAsociado = (Vehiculo.Tipo) CargaMasivaHelper.busquedaGeneralString(session, "vehiculo$tipo", new String[] {"nombre"}, new String[] {nombreTipoVehiculoAsociado});    
+                        TipoVehiculoHelper vehiculoTipoHelper = new TipoVehiculoHelper();
+                        Vehiculo.Tipo tipoVehiculoAsociado = vehiculoTipoHelper.getTipoVehiculo(nombreTipoVehiculoAsociado);
                         if(tipoVehiculoAsociado != null){
                             Vehiculo nuevoVehiculo = new Vehiculo(tipoVehiculoAsociado, placaVehiculo);
                             nuevoVehiculo.setNombre(nombreVehiculo);
