@@ -22,23 +22,17 @@ import com.sigad.sigad.business.Vehiculo;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.hibernate.HibernateException;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
 
 /**
  *
@@ -229,14 +223,7 @@ public class CargaMasivaHelper {
             //Iterator<Cell> cellIterator;
             int casosExitosos, casosFallidos;
             int hojasReconocidas = 0;
-            // Abriendo conexion a Base de Datos
-            Configuration config;
-            SessionFactory sessionFactory;
-            Session session;
-            config = new Configuration();
-            config.configure("hibernate.cfg.xml");
-            sessionFactory = config.buildSessionFactory();
-            session = sessionFactory.openSession();
+            Session session = LoginController.serviceInit();
             LOGGER.log(Level.INFO, "Se procede a inspeccionar archivo ...");
             // se itera sobre la prioridad establecida en CargaMasivaConstantes
             List<HojaReporte> reporteFinal = new ArrayList<>();
@@ -269,7 +256,6 @@ public class CargaMasivaHelper {
             }
             // Cerrando conexion a Base de Datos
             session.close();
-            sessionFactory.close();
             workbook.close();
             LOGGER.log(Level.INFO, "Procesamiento Finalizado, reporte final :");
             LOGGER.log(Level.INFO, String.format("Cantidad de Hojas Procesadas : %s", hojasReconocidas));
