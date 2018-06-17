@@ -34,7 +34,7 @@ public class CargaMasivaConstantes {
     /* mantener esta lista ordenada de la siguiente manera : primero aquellas entidades que no tienen FK, luego aquellas que si tiene FK */
     public static ObservableList<String> getList(){
         return FXCollections.observableArrayList(
-                TABLA_PRODUCTOCATEGORIA, TABLA_TIPOPAGO,TABLA_PERFILES, TABLA_USUARIOS, TABLA_PROVEEDORES, TABLA_INSUMOS, TABLA_TIENDAS, 
+                TABLA_PRODUCTOCATEGORIA, TABLA_TIPOPAGO,TABLA_TIENDAS,TABLA_PERFILES, TABLA_USUARIOS, TABLA_PROVEEDORES, TABLA_INSUMOS, 
                 TABLA_TIPOMOV, TABLA_PERMISOS, TABLA_FRAGILIDAD, TABLA_PRODUCTOS,TABLA_PERFILXPERMISO, TABLA_PRODXINSUMO, TABLA_TIPOVEHICULOS, TABLA_VEHICULOS
         );
     };

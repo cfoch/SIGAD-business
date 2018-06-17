@@ -93,6 +93,8 @@ public class CargaMasivaHelper {
                         rowhead.createCell(rowIndex).setCellValue("Contraseña");
                         rowIndex++;
                         rowhead.createCell(rowIndex).setCellValue("Intereses");
+                        rowIndex++;
+                        rowhead.createCell(rowIndex).setCellValue("Tienda");
                         break;
                     case CargaMasivaConstantes.TABLA_PROVEEDORES:
                         rowhead.createCell(rowIndex).setCellValue("Nombre");
@@ -420,6 +422,22 @@ public class CargaMasivaHelper {
                 }
                 index++;
                 nuevoUsuario.setIntereses(StringUtils.trimToEmpty(dataFormatter.formatCellValue(row.getCell(index))));
+                index++;
+                String tiendaUsuario = StringUtils.trimToEmpty(dataFormatter.formatCellValue(row.getCell(index)));
+                if(StringUtils.isNotBlank(tiendaUsuario)){
+                    Tienda tiendaBuscada = (Tienda) CargaMasivaHelper.busquedaGeneralString(session, "Tienda", new String [] {"direccion"}, new String [] {tiendaUsuario});    
+                    if(tiendaBuscada != null){
+                        nuevoUsuario.setTienda(tiendaBuscada);
+                    }
+                    else{
+                        LOGGER.log(Level.SEVERE, String.format("No se introdujo una tienda existente"));
+                        return false;
+                    }
+                }
+                else{
+                    LOGGER.log(Level.SEVERE, String.format("No se introdujo una tienda para el usuario"));
+                    return false;
+                }
                 return CargaMasivaHelper.guardarObjeto(nuevoUsuario, session);
             case CargaMasivaConstantes.TABLA_PROVEEDORES:
                 Proveedor nuevoProv = new Proveedor();
@@ -727,9 +745,7 @@ public class CargaMasivaHelper {
                     index++;
                     String nombreTipoVehiculoAsociado = StringUtils.trimToEmpty(dataFormatter.formatCellValue(row.getCell(index)));
                     if(StringUtils.isNotBlank(nombreTipoVehiculoAsociado)){
-                        //Vehiculo.Tipo tipoVehiculoAsociado = (Vehiculo.Tipo) CargaMasivaHelper.busquedaGeneralString(session, "vehiculo$tipo", new String[] {"nombre"}, new String[] {nombreTipoVehiculoAsociado});    
-                        TipoVehiculoHelper vehiculoTipoHelper = new TipoVehiculoHelper();
-                        Vehiculo.Tipo tipoVehiculoAsociado = vehiculoTipoHelper.getTipoVehiculo(nombreTipoVehiculoAsociado);
+                        Vehiculo.Tipo tipoVehiculoAsociado = (Vehiculo.Tipo) CargaMasivaHelper.busquedaGeneralString(session, "Vehiculo$Tipo", new String[] {"nombre"}, new String[] {nombreTipoVehiculoAsociado});    
                         if(tipoVehiculoAsociado != null){
                             Vehiculo nuevoVehiculo = new Vehiculo(tipoVehiculoAsociado, placaVehiculo);
                             nuevoVehiculo.setNombre(nombreVehiculo);
