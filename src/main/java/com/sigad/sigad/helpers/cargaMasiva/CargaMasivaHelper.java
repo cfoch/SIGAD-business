@@ -18,6 +18,7 @@ import com.sigad.sigad.business.Tienda;
 import com.sigad.sigad.business.TipoMovimiento;
 import com.sigad.sigad.business.TipoPago;
 import com.sigad.sigad.business.Usuario;
+import com.sigad.sigad.business.Vehiculo;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
@@ -169,6 +170,26 @@ public class CargaMasivaHelper {
                         break;
                     case CargaMasivaConstantes.TABLA_TIPOPAGO:
                         rowhead.createCell(rowIndex).setCellValue("Descripcion del Tipo de Pago");
+                        break;
+                    case CargaMasivaConstantes.TABLA_TIPOVEHICULOS:
+                        rowhead.createCell(rowIndex).setCellValue("Capacidad");
+                        rowIndex++;
+                        rowhead.createCell(rowIndex).setCellValue("Descripcion");
+                        rowIndex++;
+                        rowhead.createCell(rowIndex).setCellValue("Marca");
+                        rowIndex++;
+                        rowhead.createCell(rowIndex).setCellValue("Modelo");
+                        rowIndex++;
+                        rowhead.createCell(rowIndex).setCellValue("Nombre");
+                        break;
+                    case CargaMasivaConstantes.TABLA_VEHICULOS:
+                        rowhead.createCell(rowIndex).setCellValue("Descripcion");
+                        rowIndex++;
+                        rowhead.createCell(rowIndex).setCellValue("Nombre");
+                        rowIndex++;
+                        rowhead.createCell(rowIndex).setCellValue("Placa");
+                        rowIndex++;
+                        rowhead.createCell(rowIndex).setCellValue("Tipo");
                         break;
                     // agregar aqui el resto de casos
                     default:
@@ -658,6 +679,72 @@ public class CargaMasivaHelper {
                 }
                 else {
                     LOGGER.log(Level.SEVERE, "No se identifica una descripcion valida de tipo de pago");
+                    return false;
+                }
+            case CargaMasivaConstantes.TABLA_TIPOVEHICULOS:
+                Double capacidadTipoVehiculo = (Double) CargaMasivaHelper.validarParsing(StringUtils.trimToEmpty(dataFormatter.formatCellValue(row.getCell(index))), false);
+                if (capacidadTipoVehiculo != null){
+                    index++;
+                    String descripcionTipoVehiculo = StringUtils.trimToEmpty(dataFormatter.formatCellValue(row.getCell(index)));
+                    if(StringUtils.isNotBlank(descripcionTipoVehiculo)){
+                        index++;
+                        String marcaTipoVehiculo = StringUtils.trimToEmpty(dataFormatter.formatCellValue(row.getCell(index)));
+                        index++;
+                        String modeloTipoVehiculo = StringUtils.trimToEmpty(dataFormatter.formatCellValue(row.getCell(index)));
+                        index++;
+                        String nombreTipoVehiculo = StringUtils.trimToEmpty(dataFormatter.formatCellValue(row.getCell(index)));
+                        if(StringUtils.isNotBlank(nombreTipoVehiculo)){
+                            Vehiculo.Tipo nuevoTipoVehiculo = new Vehiculo.Tipo();
+                            nuevoTipoVehiculo.setCapacidad(capacidadTipoVehiculo);
+                            nuevoTipoVehiculo.setDescripcion(descripcionTipoVehiculo);
+                            nuevoTipoVehiculo.setMarca(marcaTipoVehiculo);
+                            nuevoTipoVehiculo.setModelo(modeloTipoVehiculo);
+                            nuevoTipoVehiculo.setNombre(nombreTipoVehiculo);
+                            return CargaMasivaHelper.guardarObjeto(nuevoTipoVehiculo, session);
+                        }
+                        else{
+                            LOGGER.log(Level.SEVERE, "No se identifica un nombre valido de tipo de vehiculo");
+                            return false;    
+                        }
+                    }
+                    else{
+                        LOGGER.log(Level.SEVERE, "No se identifica una descripcion valida de tipo de vehiculo");
+                        return false;
+                    }
+                }
+                else{
+                    LOGGER.log(Level.SEVERE, "No se identifica una capacidad valida de tipo de vehiculo");
+                    return false;
+                }
+            case CargaMasivaConstantes.TABLA_VEHICULOS:
+                String descripcionVehiculo = StringUtils.trimToEmpty(dataFormatter.formatCellValue(row.getCell(index)));
+                index++;
+                String nombreVehiculo = StringUtils.trimToEmpty(dataFormatter.formatCellValue(row.getCell(index)));
+                index++;
+                String placaVehiculo = StringUtils.trimToEmpty(dataFormatter.formatCellValue(row.getCell(index)));
+                if(StringUtils.isNotBlank(placaVehiculo)){
+                    index++;
+                    String nombreTipoVehiculoAsociado = StringUtils.trimToEmpty(dataFormatter.formatCellValue(row.getCell(index)));
+                    if(StringUtils.isNotBlank(nombreTipoVehiculoAsociado)){
+                        Vehiculo.Tipo tipoVehiculoAsociado = (Vehiculo.Tipo) CargaMasivaHelper.busquedaGeneralString(session, "vehiculo$tipo", new String[] {"nombre"}, new String[] {nombreTipoVehiculoAsociado});    
+                        if(tipoVehiculoAsociado != null){
+                            Vehiculo nuevoVehiculo = new Vehiculo(tipoVehiculoAsociado, placaVehiculo);
+                            nuevoVehiculo.setNombre(nombreVehiculo);
+                            nuevoVehiculo.setDescripcion(descripcionVehiculo);
+                            return CargaMasivaHelper.guardarObjeto(nuevoVehiculo, session);
+                        }
+                        else{
+                            LOGGER.log(Level.SEVERE, "No se identifica un tipo de vehiculo valido para el vehiculo");
+                            return false;    
+                        }
+                    }
+                    else{
+                        LOGGER.log(Level.SEVERE, "No se identifica un nombre de tipo de vehiculo para el vehiculo");
+                        return false;
+                    }
+                }
+                else{
+                    LOGGER.log(Level.SEVERE, "No se identifica una placa correcta para el vehiculo");
                     return false;
                 }
             // colocar aqui los demas casos para el resto de tablas de carga masiva
