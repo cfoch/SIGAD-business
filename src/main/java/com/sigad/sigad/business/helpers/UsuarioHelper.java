@@ -186,6 +186,22 @@ public class UsuarioHelper extends BaseHelper{
             return users;
         }
     }
-    
+
+    public ArrayList<Usuario> getUsersByTiendaId(Perfil perfil, Long tiendaId) {
+        ArrayList<Usuario> users = new ArrayList<>();
+        Query query = null;
+        try {
+            users = (ArrayList<Usuario>) session.createQuery("from Usuario where "
+                    + "perfil_id = :perfil_id and tienda_id = :tienda_id")
+                    .setParameter("perfil_id", perfil.getId())
+                    .setParameter("tienda_id", tiendaId)
+                    .list();
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex.getMessage());
+            session.getTransaction().rollback();
+            this.errorMessage = ex.getMessage();
+        }
+        return users;
+    }
     
 }
