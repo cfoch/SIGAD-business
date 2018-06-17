@@ -8,6 +8,8 @@ package com.sigad.sigad.app.repartos.controller;
 import com.grupo1.simulated_annealing.Locacion;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
+import com.sigad.sigad.business.Reparto;
+import com.sigad.sigad.business.helpers.AlgoritmoHelper;
 import com.sigad.sigad.fx.utils.Utils;
 import com.sigad.sigad.fx.widgets.VRPMapView;
 import com.sigad.sigad.utils.ui.UIBaseController;
@@ -53,28 +55,52 @@ public class RepartoMapaController extends UIBaseController
     VRPMapView browser;
     private int selectedIndex = NO_SELECTED_INDEX;
 
+    private List<Reparto> repartos;
     private List<List<Locacion>> solucion;
 
-    public RepartoMapaController(List<List<Locacion>> solucion) {
-        this.solucion = solucion;
+    public RepartoMapaController(List<Reparto> repartos) {
+        this.repartos = repartos;
+        this.solucion = repartos2solution(repartos);
+    }
+
+    List<List<Locacion>> repartos2solution(List<Reparto> repartos) {
+        int i;
+        String marshallizedSolution;
+        AlgoritmoHelper helperAlgoritmo = new AlgoritmoHelper();
+        List<List<Locacion>> solucion = new ArrayList<>();
+        for (i = 0; i < repartos.size(); i++) {
+            List<Locacion> ruta;
+            Reparto reparto = repartos.get(i);
+            ruta = helperAlgoritmo.repartoToRoute(reparto);
+            solucion.add(ruta);
+        }
+        return solucion;
     }
 
     @FXML
     private void handleButtonAction(ActionEvent event) {
+        List<Reparto> uniqueReparto = new ArrayList<>();
+        List<List<Locacion>> selectedSolution;
         boolean validSolution;
         if (selectedIndex == NO_SELECTED_INDEX) {
             return;
         }
         resetRoutesListView(true);
+        uniqueReparto.add(repartos.get(selectedIndex));
+        selectedSolution = repartos2solution(uniqueReparto);
+        System.out.println("Marshallize solutions");
+
         validSolution =
-                browser.setSolution(Utils.marshallLocationSolution(solucion));
+                browser.setSolution(
+                        Utils.marshallLocationSolution(selectedSolution));
         System.out.println("solution: " + validSolution);
         if (!validSolution) {
             return;
         }
+        System.out.println("Calling javascript rest funcs");
         browser.createMarkers();
         browser.drawMarkers();
-        browser.drawRoute(selectedIndex, true);
+        browser.drawRoute(0, true);
     }
 
     public void resetRoutesListView(boolean showCost) {
@@ -89,8 +115,14 @@ public class RepartoMapaController extends UIBaseController
         System.out.println("Solution route size: " + locaciones.size());
         for (i = 0; i < locaciones.size(); i++) {
             Label label;
+            String text;
             System.out.println(locaciones.get(i).getNombre());
-            label = new Label(locaciones.get(i).getNombre());
+            if (locaciones.get(i).getTipo() == Locacion.Tipo.DEPOSITO) {
+                text = String.format("Tienda #%d", locaciones.get(i).getId());
+            } else {
+                text = String.format("Pedido #%d", locaciones.get(i).getId());
+            }
+            label = new Label(text);
             label.setTooltip(new Tooltip(locaciones.get(i).getNombre()));
             routesListView.getItems().add(label);
             if (showCost && locaciones.get(i).getServicio() != null) {
@@ -107,9 +139,10 @@ public class RepartoMapaController extends UIBaseController
             selectedIndex = NO_SELECTED_INDEX;
             return;
         }
-        for (i = 0; i < solucion.size(); i++) {
+        for (i = 0; i < repartos.size(); i++) {
+            Reparto reparto = repartos.get(i);
             Label label;
-            label = new Label(String.format("Solución %d", i + 1));
+            label = new Label(String.format("Reparto #%d", reparto.getId()));
             listView.getItems().add(label);
         }
         prop = listView.getSelectionModel().selectedItemProperty();

@@ -14,7 +14,6 @@ import com.sigad.sigad.business.helpers.GrupoRepartoHelper;
 import com.sigad.sigad.business.helpers.PedidoHelper;
 import com.sigad.sigad.business.helpers.RepartoHelper;
 import com.sigad.sigad.business.helpers.TiendaHelper;
-import com.sigad.sigad.fx.utils.Utils;
 import com.sigad.sigad.utils.ui.UICRUDViewListarController;
 import com.sigad.sigad.utils.ui.UIFuncs;
 import java.text.DateFormat;
@@ -91,16 +90,8 @@ public class GrupoRepartosLista extends UICRUDViewListarController {
 
                 repartos = helperReparto.getRepartos(fecha, info.tiendaId,
                         info.turno);
-                for (i = 0; i < repartos.size(); i++) {
-                    List<Locacion> ruta;
-                    Reparto reparto = repartos.get(i);
-                    ruta = helperAlgoritmo.repartoToRoute(reparto);
-                    solucion.add(ruta);
-                }
-                marshallizedSolution = Utils.marshallLocationSolution(solucion);
-                System.out.println(marshallizedSolution);
 
-                controllerMapa = new RepartoMapaController(solucion);
+                controllerMapa = new RepartoMapaController(repartos);
                 nodeMapa = UIFuncs.createNodeFromControllerFXML(controllerMapa,
                         RepartoMapaController.VIEW_PATH);
                 UIFuncs.Dialogs.showDialog(sp,

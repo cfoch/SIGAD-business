@@ -8,7 +8,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<HBox prefHeight="400.0" prefWidth="699.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<HBox minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="749.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <VBox prefHeight="400.0" prefWidth="400.0">
          <children>
@@ -19,20 +19,20 @@
             </AnchorPane>
          </children>
       </VBox>
-      <VBox prefHeight="400.0" prefWidth="296.0" spacing="10.0">
+      <VBox alignment="TOP_CENTER" prefHeight="400.0" prefWidth="373.0" spacing="10.0">
          <children>
-            <HBox prefHeight="351.0" prefWidth="276.0" spacing="10.0">
+            <HBox prefHeight="400.0" prefWidth="400.0" spacing="10.0">
                <children>
-                  <JFXListView fx:id="listView" prefHeight="345.0" prefWidth="165.0" />
-                  <JFXListView fx:id="routesListView" prefHeight="222.0" prefWidth="163.0" />
+                  <JFXListView fx:id="listView" prefHeight="268.0" prefWidth="180.0" />
+                  <JFXListView fx:id="routesListView" prefHeight="222.0" prefWidth="180.0" />
                </children>
             </HBox>
             <AnchorPane prefHeight="200.0" prefWidth="200.0">
                <children>
-                  <Label fx:id="costLabel" layoutX="58.0" layoutY="24.0" prefHeight="44.0" prefWidth="140.0" text="Costo: %d" AnchorPane.leftAnchor="58.0" AnchorPane.rightAnchor="78.0" />
+                  <Label fx:id="costLabel" layoutX="68.0" layoutY="12.0" prefHeight="44.0" prefWidth="140.0" text="Costo: %d" AnchorPane.leftAnchor="68.0" AnchorPane.rightAnchor="68.0" />
                </children>
             </AnchorPane>
-            <JFXButton fx:id="button" onAction="#handleButtonAction" prefHeight="25.0" prefWidth="288.0" style="-fx-background-color: gray;" text="Ver solución" textFill="WHITE" />
+            <JFXButton fx:id="button" onAction="#handleButtonAction" prefHeight="25.0" prefWidth="288.0" style="-fx-background-color: gray;" text="Ver solución" textAlignment="CENTER" textFill="WHITE" />
          </children>
          <HBox.margin>
             <Insets />
