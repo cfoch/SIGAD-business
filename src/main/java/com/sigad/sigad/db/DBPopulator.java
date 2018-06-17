@@ -625,6 +625,8 @@ public class DBPopulator {
                     pedido.setCooXDireccion(coords.get(0).getLeft());
                     pedido.setCooYDireccion(coords.get(0).getRight());
                     pedido.setTienda(tiendas.get(rand.nextInt(tiendas.size())));
+                    pedido.setFechaEntregaEsperada(
+                            new java.sql.Date((new Date()).getTime()));
                     System.out.println("Saving pedido: ");
                     session.save(pedido);
                     System.out.println("Saving " + detallesPedido.size() + " detalles");
