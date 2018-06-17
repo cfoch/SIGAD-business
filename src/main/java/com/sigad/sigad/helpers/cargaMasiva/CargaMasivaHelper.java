@@ -70,6 +70,8 @@ public class CargaMasivaHelper {
                         rowhead.createCell(rowIndex).setCellValue("Nombre");
                         rowIndex++;
                         rowhead.createCell(rowIndex).setCellValue("Descripcion");
+                        rowIndex++;
+                        rowhead.createCell(rowIndex).setCellValue("Editable (S/N)");
                         break;
                     case CargaMasivaConstantes.TABLA_USUARIOS:
                         rowhead.createCell(rowIndex).setCellValue("Nombre(s)");
@@ -328,6 +330,12 @@ public class CargaMasivaHelper {
                 }
                 index++;
                 nuevoPerfil.setDescripcion(StringUtils.trimToEmpty(dataFormatter.formatCellValue(row.getCell(index))));
+                index++;
+                String editableTxtPerfil = StringUtils.trimToEmpty(dataFormatter.formatCellValue(row.getCell(index)));
+                Boolean editable = false;
+                if(StringUtils.equals(editableTxtPerfil, "S"))
+                    editable = true;
+                nuevoPerfil.setEditable(editable);
                 return CargaMasivaHelper.guardarObjeto(nuevoPerfil, session);
             case CargaMasivaConstantes.TABLA_USUARIOS:
                 Usuario nuevoUsuario = new Usuario();
