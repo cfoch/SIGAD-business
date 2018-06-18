@@ -25,6 +25,7 @@ public class ProductoCategoriaDescuento {
     private Double value;
     private Date fechaInicio;
     private Date fechaFin;
+    private Boolean activo;
     @ManyToOne
     private ProductoCategoria categoria;
 

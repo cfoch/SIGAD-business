@@ -5,8 +5,6 @@ import com.sigad.sigad.business.Perfil;
 import com.sigad.sigad.business.Usuario;
 import java.util.ArrayList;
 import java.util.HashSet;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
@@ -20,27 +18,10 @@ import org.hibernate.query.Query;
  *
  * @author jorgeespinoza
  */
-public class UsuarioHelper {
-
-    Session session = null;
-    private String errorMessage = "";
-    
+public class UsuarioHelper extends BaseHelper{
     public UsuarioHelper() {
-        session = LoginController.serviceInit();
     }
-    
-    /*Close session*/
-    public void close(){
-        session.close();
-    }
-
-    /**
-     * @return the errorMessage
-     */
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-    
+        
     /*Get all the users*/
     public ArrayList<Usuario> getUsers(){
         ArrayList<Usuario> users = null;

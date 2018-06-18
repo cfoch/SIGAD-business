@@ -17,27 +17,10 @@ import org.hibernate.query.Query;
  *
  * @author jorgeespinoza
  */
-public class PerfilHelper {
-
-    Session session = null;
-    private static String errorMessage = "";
-    
+public class PerfilHelper extends BaseHelper{
     public PerfilHelper() {
-        session = LoginController.serviceInit();
     }
-    
-    /*Close session*/
-    public void close(){
-        session.close();
-    }
-
-    /**
-     * @return the errorMessage
-     */
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-    
+        
     /*Get all*/
     public ArrayList<Perfil> getProfiles(){
         ArrayList<Perfil> profiles = null;

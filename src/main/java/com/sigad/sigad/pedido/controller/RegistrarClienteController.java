@@ -62,6 +62,9 @@ public class RegistrarClienteController implements Initializable {
     private JFXTextField txtApp;
 
     @FXML
+    private StackPane hiddenSp;
+
+    @FXML
     private JFXTextField txtApm;
 
     @FXML
@@ -186,6 +189,11 @@ public class RegistrarClienteController implements Initializable {
 
         /**/
  /*TELEPHONE*/
+        r = new RequiredFieldValidator();
+        r.setIcon(new MaterialDesignIconView(MaterialDesignIcon.CLOSE_CIRCLE));
+        r.setMessage("Campo obligatorio");
+        txttel.getValidators().add(r);
+
         n = new NumberValidator();
         n.setMessage("Campo numérico");
         n.setIcon(new MaterialDesignIconView(MaterialDesignIcon.CLOSE_CIRCLE));
@@ -239,7 +247,76 @@ public class RegistrarClienteController implements Initializable {
             }
         });
         /**/
+        
+        r = new RequiredFieldValidator();
+        r.setIcon(new MaterialDesignIconView(MaterialDesignIcon.CLOSE_CIRCLE));
+        r.setMessage("Agrega una direccion");
+        txtnuevaDir.getValidators().add(r);
+        
+        r = new RequiredFieldValidator();
+        r.setIcon(new MaterialDesignIconView(MaterialDesignIcon.CLOSE_CIRCLE));
+        r.setMessage("Agrega una direccion");
+        txtnuevoNom.getValidators().add(r);
 
+    }
+
+    public boolean validateFields() {
+        if (!txtNombre.validate()) {
+            txtNombre.setFocusColor(new Color(0.58, 0.34, 0.09, 1));
+            txtNombre.requestFocus();
+            return false;
+        } else if (!txtApp.validate()) {
+            txtApp.setFocusColor(new Color(0.58, 0.34, 0.09, 1));
+            txtApp.requestFocus();
+            return false;
+        } else if (!txtApm.validate()) {
+            txtApm.setFocusColor(new Color(0.58, 0.34, 0.09, 1));
+            txtApm.requestFocus();
+            return false;
+        } else if (!txtdni.validate()) {
+            txtdni.setFocusColor(new Color(0.58, 0.34, 0.09, 1));
+            txtdni.requestFocus();
+            return false;
+        } else if (txtdni.getText().length() < 8) {
+            ErrorController r = new ErrorController();
+            r.loadDialog("Error", "Debe el dni debe tener 8 dígitos", "Ok", hiddenSp);
+            txtdni.setFocusColor(new Color(0.58, 0.34, 0.09, 1));
+            txtdni.requestFocus();
+            return false;
+        } else if (!txttel.validate()) {
+            txttel.setFocusColor(new Color(0.58, 0.34, 0.09, 1));
+            txttel.requestFocus();
+            return false;
+        } else if (!txtcel.validate()) {
+            txtcel.setFocusColor(new Color(0.58, 0.34, 0.09, 1));
+            txtcel.requestFocus();
+            return false;
+        } else if (txtcel.getText().length() < 9) {
+            ErrorController r = new ErrorController();
+            r.loadDialog("Error", "El celular debe tener 9 dígitos", "Ok", hiddenSp);
+            txtcel.setFocusColor(new Color(0.58, 0.34, 0.09, 1));
+            txtcel.requestFocus();
+            return false;
+        } else if (!txtcorreo.validate()) {
+            txtcorreo.setFocusColor(new Color(0.58, 0.34, 0.09, 1));
+            txtcorreo.requestFocus();
+            return false;
+        } else if (!txtcorreo.getText().contains("@")) {
+            ErrorController r = new ErrorController();
+            r.loadDialog("Error", "El correo no es válido", "Ok", hiddenSp);
+            txtcorreo.setFocusColor(new Color(0.58, 0.34, 0.09, 1));
+            txtcorreo.requestFocus();
+            return false;
+        } else if (direcciones.size() <= 0) {
+            ErrorController r = new ErrorController();
+            r.loadDialog("Error", "Ingrese al menos una dirección", "Ok", hiddenSp);
+            txtnuevaDir.setFocusColor(new Color(0.58, 0.34, 0.09, 1));
+            txtnuevaDir.requestFocus();
+            txtnuevoNom.setFocusColor(new Color(0.58, 0.34, 0.09, 1));
+            txtnuevoNom.requestFocus();
+            return false;
+        }
+        return true;
     }
 
     public void agregarColumnasDireccion() {
@@ -253,7 +330,7 @@ public class RegistrarClienteController implements Initializable {
         PerfilHelper perfilHeler = new PerfilHelper();
         Perfil perfil = perfilHeler.getProfile("Cliente");
         perfilHeler.close();
-        if (!isValido()) {
+        if (!validateFields()) {
             ErrorController err = new ErrorController();
             err.loadDialog("Alerta", "Complete los campos", "Ok", stackPane);
         } else {
@@ -283,6 +360,7 @@ public class RegistrarClienteController implements Initializable {
         cliente.setCelular(txtcel.getText());
         cliente.setCorreo(txtcorreo.getText());
         cliente.getClienteDireccionesSet().clear();
+        cliente.cleanClienteDirecciones();
         direcciones.forEach((t) -> {
             cliente.addClienteDirecciones(new ClienteDireccion(t.direccion.getValue(), t.nombre.getValue(), Boolean.FALSE, cliente));
         });
@@ -299,10 +377,10 @@ public class RegistrarClienteController implements Initializable {
 
     @FXML
     void guardarUsuario(ActionEvent event) {
-        if(!isValido()){
+        if (!validateFields()) {
             return;
         }
-        if (SeleccionarClienteController.isClientCreate ) {
+        if (SeleccionarClienteController.isClientCreate) {
             crearUsuario();
             UsuarioHelper usuariohelper = new UsuarioHelper();
             usuariohelper.saveUser(cliente);

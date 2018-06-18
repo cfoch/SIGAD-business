@@ -108,7 +108,7 @@ public class SeleccionarProductosController implements Initializable {
     @FXML
     JFXTreeTableColumn<ProductoLista, String> precio = new JFXTreeTableColumn<>("Precio");
     @FXML
-    JFXTreeTableColumn<ProductoLista, String> stock = new JFXTreeTableColumn<>("Stock");
+    JFXTreeTableColumn<ProductoLista, String> stock = new JFXTreeTableColumn<>("Max.Stock");
     @FXML
     JFXTreeTableColumn<ProductoLista, String> categoria = new JFXTreeTableColumn<>("Categoria");
     @FXML
@@ -135,7 +135,7 @@ public class SeleccionarProductosController implements Initializable {
     @FXML
     private Label lbligv;
 
-    private Pedido pedido = new Pedido();
+    private Pedido pedido;
     private HashMap<Insumo, Integer> insumos = new HashMap<>();
     private HashMap<Insumo, Integer> insumosCambiantes;
     private final ObservableList<PedidoLista> pedidos = FXCollections.observableArrayList();
@@ -167,7 +167,7 @@ public class SeleccionarProductosController implements Initializable {
         if (productosDB != null) {
             productosDB.forEach((p) -> {
                 Producto t = p;
-                prod.add(new ProductoLista(t.getNombre(), t.getPrecio().toString(), "0", t.getCategoria().getNombre(), "", t.getImagen(), t.getId().intValue(), t));
+                prod.add(new ProductoLista(t.getNombre(), t.getPrecio().toString(), "0", t.getCategoria().getNombre(), tienda.getDescripcion(), t.getImagen(), t.getId().intValue(), t));
             });
 
         }
@@ -310,7 +310,7 @@ public class SeleccionarProductosController implements Initializable {
                         event.getRowValue().getValue().codigoDescuento, event.getRowValue().getValue().producto, event.getRowValue().getValue().descuentoProducto);
                 Integer i = pedidos.indexOf(nuevo);
                 Integer oldValue = event.getOldValue();
-                if (event.getNewValue() <= stock + event.getOldValue()) {
+                if (event.getNewValue() <= stock + oldValue) {
                     System.out.println("rec->" + event.getNewValue().toString());
                     recalcularStock(p, event.getNewValue(), event.getOldValue());
                     mostrarMaximoStock();
@@ -320,6 +320,9 @@ public class SeleccionarProductosController implements Initializable {
                 pedidos.add(i, nuevo);
                 if (event.getNewValue() <= stock + oldValue) {
                     calcularTotal();
+                } else {
+                    ErrorController err = new ErrorController();
+                    err.loadDialog("Aviso", "No hay suficientes insumos para la cantidad de producto que solicita", "Ok", stackPane);
                 }
 
             }
@@ -349,11 +352,7 @@ public class SeleccionarProductosController implements Initializable {
             System.out.println(nuevoValor + " + " + viejoValor);
             Double nuevoStockInsumo = insumosCambiantes.get(get.getInsumo()) - nuevoValor * get.getCantidad() + (viejoValor) * get.getCantidad();
             insumosCambiantes.put(get.getInsumo(), nuevoStockInsumo.intValue());
-//            ArrayList<Producto> productosAfectados = new ArrayList(get.getInsumo().getProductos());
-//            productosAfectados.forEach((t) -> {
-//                t.getProductoxInsumos();
-//                prod.get(prod.indexOf(t));
-//            });
+
         }
         insumosCambiantes.forEach((t, u) -> {
             System.out.println(t.getNombre() + "->" + u.toString());
@@ -365,7 +364,9 @@ public class SeleccionarProductosController implements Initializable {
         prod.forEach((t) -> {
             Integer st = Integer.MAX_VALUE;
             for (ProductoInsumo p : t.getProducto().getProductoxInsumos()) {
-                Double posStock = insumosCambiantes.get(p.getInsumo()) / p.getCantidad();
+                Integer cantidadInsumo = insumosCambiantes.get(p.getInsumo());
+                cantidadInsumo = (cantidadInsumo == null) ? 0 : cantidadInsumo;
+                Double posStock = cantidadInsumo / p.getCantidad();// Si no tengo insumos que se requiere no se debe caer
                 st = (posStock.intValue() < st) ? posStock.intValue() : st;
 
             }
@@ -456,8 +457,9 @@ public class SeleccionarProductosController implements Initializable {
         }
     }
 
-    public void initModel(StackPane stack) {
+    public void initModel(Pedido pedido, StackPane stack) {
         stackPane = stack;
+        this.pedido = pedido;
     }
 
     public void calcularTotal() {
@@ -478,6 +480,7 @@ public class SeleccionarProductosController implements Initializable {
         treeViewPedido.setRoot(rootPedido);
         treeViewPedido.setShowRoot(false);
     }
+
     class ProductoLista extends RecursiveTreeObject<ProductoLista> {
 
         ImageView imagen;
@@ -498,7 +501,13 @@ public class SeleccionarProductosController implements Initializable {
             this.stockFijo = Integer.valueOf(stock);
             this.categoria = new SimpleStringProperty(categoria);
             this.almacen = new SimpleStringProperty(almacen);
-            this.imagen = new ImageView(new Image(pathImagen));
+            try {
+                Image im = new Image(pathImagen);
+                this.imagen = new ImageView(im);
+            } catch (Exception e) {
+                Image im = new Image("/images/producto_generico.jpg");
+                this.imagen = new ImageView(im);
+            }
             this.seleccion = new SimpleBooleanProperty(false);
             this.codigo = codigo;
             this.producto = producto;

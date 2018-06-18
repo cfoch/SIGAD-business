@@ -12,6 +12,7 @@ import com.jfoenix.controls.JFXPopup;
 import com.jfoenix.controls.JFXPopup.PopupHPosition;
 import com.jfoenix.controls.JFXPopup.PopupVPosition;
 import com.jfoenix.controls.JFXTreeTableColumn;
+import com.jfoenix.controls.JFXTreeTableRow;
 import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
@@ -43,9 +44,12 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.TreeItem;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 /**
@@ -54,29 +58,60 @@ import javafx.scene.text.Text;
  * @author jorgito-stark
  */
 public class ProductosIndexController implements Initializable {
-    public static  String viewPath = "/com/sigad/sigad/productos/view/ProductosIndex.fxml";
+    public static  String viewPath = "/com/sigad/sigad/productos/view/productos.fxml";
     
     @FXML
     private JFXTreeTableView<ProductoLista> productosTabla;
+    static ObservableList<ProductoLista> data;
     @FXML
     private JFXButton addBtn;
-    @FXML
-    private JFXButton deleteBtn;
-    @FXML
     private JFXButton editBtn;
     @FXML
     private StackPane hiddenSp;
     /*Extras*/
-    @FXML
     public static JFXDialog productDialog;
+    
+    @FXML
+    private JFXButton moreBtn;
+    private JFXPopup popup;
+    
+    public static boolean isProductCreate;
+    public static ProductoLista selectedProductList = null;
     public static Producto selectedProduct = null;
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        data = FXCollections.observableArrayList();
         initializeMainTable();
-        initEvents();
+//        initEvents();
+    }
+    
+    
+    private static void updateTable(Producto p) {
+        data.add(new ProductoLista(
+                    String.valueOf(p.getId()),
+                    p.getNombre(),
+                    p.getDescripcion(),
+                    p.isActivo()? "Activo":"Inactivo",
+                    String.valueOf(p.getPrecio())
+                ));
+    }
+    
+    private void getDataFromDB() {
+        ProductoHelper productoHelper = new ProductoHelper();
+        
+        ArrayList<Producto> productos = productoHelper.getProducts();
+        
+        if(productos != null){
+            productos.forEach((p) ->{
+                Producto t = p;
+                updateTable(p);
+            });
+        }
+        
+        productoHelper.close();
     }
     
     private void initializeMainTable(){
@@ -90,7 +125,7 @@ public class ProductosIndexController implements Initializable {
         });        
         
         JFXTreeTableColumn<ProductoLista,String> productoNombre = new JFXTreeTableColumn<>("Nombre");
-        productoNombre.setPrefWidth(300);
+        productoNombre.setPrefWidth(100);
         productoNombre.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<ProductoLista, String>, ObservableValue<String>>(){
             @Override
             public ObservableValue<String> call(TreeTableColumn.CellDataFeatures<ProductoLista,String> param){
@@ -99,7 +134,7 @@ public class ProductosIndexController implements Initializable {
         });
         
         JFXTreeTableColumn<ProductoLista,String> productoDescripcion = new JFXTreeTableColumn<>("Descripcion");
-        productoDescripcion.setPrefWidth(500);
+        productoDescripcion.setPrefWidth(70);
         productoDescripcion.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<ProductoLista, String>, ObservableValue<String>>(){
             @Override
             public ObservableValue<String> call(TreeTableColumn.CellDataFeatures<ProductoLista,String> param){
@@ -117,7 +152,7 @@ public class ProductosIndexController implements Initializable {
         });        
         
         JFXTreeTableColumn<ProductoLista,String> productoPrecio = new JFXTreeTableColumn<>("Precio");
-        productoPrecio.setPrefWidth(100);
+        productoPrecio.setPrefWidth(50);
         productoPrecio.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<ProductoLista, String>, ObservableValue<String>>(){
             @Override
             public ObservableValue<String> call(TreeTableColumn.CellDataFeatures<ProductoLista,String> param){
@@ -125,25 +160,30 @@ public class ProductosIndexController implements Initializable {
             }
         });
         
-        ObservableList<ProductoLista> productosList = FXCollections.observableArrayList();
-        ProductoHelper productoHelper = new ProductoHelper();
+        //DB
+        getDataFromDB();
         
-        ArrayList<Producto> productos = productoHelper.getProducts();
-        
-        if(productos != null){
-            productos.forEach((p) ->{
-                Producto t = p;
-                productosList.add(new ProductoLista(
-                    String.valueOf(t.getId()),
-                    t.getNombre(),
-                    t.getDescripcion(),
-                    t.isActivo()? "Activo":"Inactivo",
-                    String.valueOf(t.getPrecio())
-                ));
+        //Double click on row
+        productosTabla.setRowFactory(ord -> {
+            JFXTreeTableRow<ProductoLista> row = new JFXTreeTableRow<>();
+            row.setOnMouseClicked((event) -> {
+                if (! row.isEmpty() && event.getButton()==MouseButton.PRIMARY 
+                     && event.getClickCount() == 2) {
+                    ProductoLista clickedRow = row.getItem();
+                    System.out.println(clickedRow.nombre);
+                    
+                    selectedProductList = clickedRow;
+                    
+                    //data.remove(selectedUser);
+                    try {
+                        CreateEdditProductDialog(false);
+                    } catch (IOException ex) {
+                        Logger.getLogger(PersonalController.class.getName()).log(Level.SEVERE, "initUserTbl(): CreateEdditProductDialog()", ex);
+                    }
+                }
             });
-        }
-        
-        productoHelper.close();
+            return row;
+        });
         /*
         JFXButton popupButton = new JFXButton("Popup");
         StackPane main = new StackPane();
@@ -152,58 +192,133 @@ public class ProductosIndexController implements Initializable {
         JFXPopup popup = new JFXPopup(productosTabla);
         popupButton.setOnAction(e -> popup.show(popupButton, PopupVPosition.TOP, PopupHPosition.LEFT));
         */
-        final TreeItem<ProductoLista> root = new RecursiveTreeItem<ProductoLista>(productosList, RecursiveTreeObject::getChildren);
+        final TreeItem<ProductoLista> root = new RecursiveTreeItem<ProductoLista>(data, RecursiveTreeObject::getChildren);
         productosTabla.getColumns().setAll(productoId,productoNombre,productoDescripcion,productoActivo,productoPrecio);
         productosTabla.setRoot(root);
         productosTabla.setShowRoot(false);        
     }
     
-    private void initEvents(){
-        addBtn.setOnMouseClicked(new EventHandler<Event>() {
-
-            @Override
-            public void handle(Event event) {
-                try {
-                    System.out.println("Go Dialog");
-                    ManageProduct(true);
-                } catch (IOException ex) {
-                    Logger.getLogger(PersonalController.class.getName()).log(Level.SEVERE, "handleAction()", ex);
-                }
-             }
-         });
-        
-        editBtn.setOnMouseClicked(new EventHandler<Event>(){
-            @Override
-            public void handle(Event event) {
-                try {
-                    int selected  = productosTabla.getSelectionModel().getSelectedIndex();
-                    ProductoLista selectedProduct = (ProductoLista) productosTabla.getSelectionModel().getModelItem(selected).getValue();
-                    setCurrentProduct(selectedProduct);
-                    ManageProduct(false);
-                } catch (IOException ex) {
-                    Logger.getLogger(PersonalController.class.getName()).log(Level.SEVERE, "handleAction()", ex);
-                }
-             }            
-        });
+//    private void initEvents(){
+//        addBtn.setOnMouseClicked(new EventHandler<Event>() {
+//
+//            @Override
+//            public void handle(Event event) {
+//                try {
+//                    System.out.println("Go Dialog");
+//                    CreateEdditProductDialog(true);
+//                } catch (IOException ex) {
+//                    Logger.getLogger(PersonalController.class.getName()).log(Level.SEVERE, "handleAction()", ex);
+//                }
+//             }
+//         });
+//        
+//        editBtn.setOnMouseClicked(new EventHandler<Event>(){
+//            @Override
+//            public void handle(Event event) {
+//                try {
+//                    int selected  = productosTabla.getSelectionModel().getSelectedIndex();
+//                    ProductoLista selectedProduct = (ProductoLista) productosTabla.getSelectionModel().getModelItem(selected).getValue();
+//                    setCurrentProduct(selectedProduct);
+//                    CreateEdditProductDialog(false);
+//                } catch (IOException ex) {
+//                    Logger.getLogger(PersonalController.class.getName()).log(Level.SEVERE, "handleAction()", ex);
+//                }
+//             }            
+//        });
+//    }
+    
+    //usar para botones
+    @FXML
+    private void handleAction(ActionEvent event) {
+        if(event.getSource() == addBtn){
+            try {
+                CreateEdditProductDialog(true);
+            } catch (IOException ex) {
+                Logger.getLogger(PersonalController.class.getName()).log(Level.SEVERE, "handleAction()", ex);
+            }
+        }else if(event.getSource() == moreBtn){
+            int count = productosTabla.getSelectionModel().getSelectedCells().size();
+            if( count > 1){
+                ErrorController error = new ErrorController();
+                error.loadDialog("Atención", "Debe seleccionar solo un registro de la tabla", "Ok", hiddenSp);
+            }else if(count<=0){
+                ErrorController error = new ErrorController();
+                error.loadDialog("Atención", "Debe seleccionar al menos un registro de la tabla", "Ok", hiddenSp);
+            }else{
+                int selected  = productosTabla.getSelectionModel().getSelectedIndex();
+                selectedProductList = (ProductoLista) productosTabla.getSelectionModel().getModelItem(selected).getValue();
+                
+                initPopup();
+                popup.show(moreBtn, JFXPopup.PopupVPosition.TOP, JFXPopup.PopupHPosition.RIGHT);
+            }
+            
+        }
     }
     
-    public void ManageProduct(boolean iscreate) throws IOException {
+    private void initPopup(){
+        JFXButton edit = new JFXButton("Editar");
+        JFXButton delete = new JFXButton("Activar/Desactivar");
+        
+        edit.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                popup.hide();
+                try {
+                    CreateEdditProductDialog(false);
+                } catch (IOException ex) {
+                    Logger.getLogger(PersonalController.class.getName()).log(Level.SEVERE, "initPopup(): CreateEdditUserDialog()", ex);
+                }
+            }
+        });
+        
+        delete.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+//                data.remove(PersonalController.selectedUser);
+//                
+//                UsuarioHelper helper = new UsuarioHelper();
+//                Usuario temp = helper.getUser(selected.correo.getValue());
+//                temp.setActivo(!temp.isActivo());
+//                helper.close();
+//                
+//                UsuarioHelper helper1 = new UsuarioHelper();
+//                boolean ok = helper1.updateUser(temp);
+//                if(!ok){
+//                    ErrorController error = new ErrorController();
+//                    error.loadDialog("Eror", "No se pudo actualizar el estado", "Ok", hiddenSp);
+//                    return;
+//                }
+//                updateTable(temp);
+//                
+//                helper1.close();
+//                popup.hide();
+                
+            }
+        });
+        
+        edit.setPadding(new Insets(20));
+        edit.setPrefSize(145, 40);
+        delete.setPadding(new Insets(20));
+        delete.setPrefSize(145, 40);
+        
+        VBox vBox = new VBox(edit, delete);
+        
+        popup = new JFXPopup();
+        popup.setPopupContent(vBox);
+    }
+    
+    public void CreateEdditProductDialog(boolean iscreate) throws IOException {
+        isProductCreate = iscreate;
+        
         JFXDialogLayout content =  new JFXDialogLayout();
         
         if(iscreate){
             content.setHeading(new Text("Crear Producto"));
         }else{
             content.setHeading(new Text("Editar Producto"));
-            /*
-            UsuarioHelper helper = new UsuarioHelper();
-            Usuario u = helper.getUser(PersonalController.selectedStore.correo.getValue());
-            if(u == null){
-                ErrorController error = new ErrorController();
-                error.loadDialog("Error", "No se pudo obtener el usuario", "Ok", hiddenSp);
-                System.out.println("Error al obtener el usuario");
+            if(!setCurrentProduct(selectedProductList)){
                 return;
             }
-            */
         }
         Node node;
         node = (Node) FXMLLoader.load(ProductosIndexController.this.getClass().getResource(ProductosManagementController.viewPath));
@@ -214,14 +329,24 @@ public class ProductosIndexController implements Initializable {
         productDialog.show();
     }
     
-    private void setCurrentProduct(ProductoLista selectedProduct) {
+    private boolean setCurrentProduct(ProductoLista selectedProduct) {
         Long currentId = Long.parseLong(selectedProduct.id.getValue());
         ProductoHelper helper = new ProductoHelper();
         this.selectedProduct = helper.getProducto(currentId);
-        helper.close();
+        
+        if(this.selectedProduct == null){
+            ErrorController error = new ErrorController();
+            error.loadDialog("Error", "No se logró obtener el producto", "Ok", hiddenSp);
+            System.out.println("Error al obtener el usuario");
+            
+            helper.close();
+            return false;
+        }
+        
+        return true;
     }
     
-    class ProductoLista extends RecursiveTreeObject<ProductoLista>{
+    public static class ProductoLista extends RecursiveTreeObject<ProductoLista>{
         StringProperty id;
         StringProperty nombre;
         StringProperty descripcion;

@@ -7,12 +7,14 @@ package com.sigad.sigad.personal.controller;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
+import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXScrollPane;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleButton;
 import com.jfoenix.validation.NumberValidator;
 import com.jfoenix.validation.RequiredFieldValidator;
 import com.sigad.sigad.app.controller.ErrorController;
+import com.sigad.sigad.app.controller.LoginController;
 import com.sigad.sigad.business.Perfil;
 import com.sigad.sigad.business.Tienda;
 import com.sigad.sigad.business.Usuario;
@@ -42,7 +44,9 @@ public class CrearEditarUsuarioController implements Initializable {
     public static final String viewPath = "/com/sigad/sigad/personal/view/crearEditarUsuario.fxml";
     public static Usuario user = null;
     @FXML
-    private JFXTextField nameTxt,appTxt,apmTxt,dniTxt,telephoneTxt,cellphoneTxt,emailTxt,passwordTxt;
+    private JFXTextField nameTxt,appTxt,apmTxt,dniTxt,telephoneTxt,cellphoneTxt,emailTxt;
+    @FXML 
+    private JFXPasswordField passwordTxt;
     @FXML
     private StackPane hiddenSp;
     @FXML
@@ -159,11 +163,11 @@ public class CrearEditarUsuarioController implements Initializable {
             telephoneTxt.setText(user.getTelefono());
             cellphoneTxt.setText(user.getCelular());
             emailTxt.setText(user.getCorreo());
-            passwordTxt.setText(user.getPassword());
+            passwordTxt.setText(LoginController.encrypt(user.getPassword()));
             isActiveBtn.setSelected(user.isActivo());
             //styles
-            passwordTxt.setEditable(false);
-            passwordTxt.setOpacity(0.5);
+            //passwordTxt.setEditable(false);
+            //passwordTxt.setOpacity(0.5);
         }
     }
     

@@ -25,6 +25,7 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,6 +39,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.control.DateCell;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
@@ -104,6 +106,13 @@ public class DatosPedidoController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
+//        dpFechaEntrega.setDayCellFactory(picker -> new DateCell(){
+//           @Override
+//            public void updateItem(LocalDate date, boolean empty) {
+//                super.updateItem(date, empty);
+//                setDisable(empty || date.getDayOfWeek() == DayOfWeek.MONDAY);
+//            }
+//        });
 
     }
 
@@ -179,10 +188,9 @@ public class DatosPedidoController implements Initializable {
     void gotoInicio() {
         try {
             Node node;
-            FXMLLoader loader = new FXMLLoader(DatosPedidoController.this.getClass().getResource(SeleccionarProductosController.viewPath));
+            FXMLLoader loader = new FXMLLoader(DatosPedidoController.this.getClass().getResource(MantenimientoPedidosController.viewPath));
             node = (Node) loader.load();
-            SeleccionarProductosController desc = loader.getController();
-            desc.initModel(stackPane);
+            MantenimientoPedidosController desc = loader.getController();
             stackPane.getChildren().setAll(node);
         } catch (IOException ex) {
             Logger.getLogger(DatosPedidoController.class.getName()).log(Level.SEVERE, null, ex);

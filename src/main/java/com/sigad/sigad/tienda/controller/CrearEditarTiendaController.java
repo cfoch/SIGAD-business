@@ -102,7 +102,6 @@ public class CrearEditarTiendaController implements Initializable {
                         error.loadDialog("Error", helper.getErrorMessage(), "Ok", hiddenSp);
                     }
                 }else{
-                    
                     Long id = helper.saveStore(tienda);
                     if(id != null){
                         TiendaController.updateTable(tienda);

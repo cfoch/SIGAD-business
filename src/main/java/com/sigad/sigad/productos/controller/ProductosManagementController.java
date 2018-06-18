@@ -78,7 +78,7 @@ public class ProductosManagementController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         initializeResources();
-        if(ProductosIndexController.selectedProduct != null){
+        if(ProductosIndexController.selectedProductList != null){
             this.update = true;
             loadProduct(ProductosIndexController.selectedProduct);
         }

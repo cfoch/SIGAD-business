@@ -73,7 +73,7 @@ public class MantenimientoPedidosController implements Initializable {
     JFXTreeTableColumn<PedidoOrdenLista, String> estado = new JFXTreeTableColumn<>("Estado");
     @FXML
     private JFXTreeTableView<PedidoOrdenLista> tablaPedidos;
-    Pedido pedido;
+    Pedido pedido = new Pedido();
 
     private final ObservableList<PedidoOrdenLista> pedidos = FXCollections.observableArrayList();
     public static final String viewPath = "/com/sigad/sigad/pedido/view/mantenimientoPedidos.fxml";
@@ -117,32 +117,31 @@ public class MantenimientoPedidosController implements Initializable {
         tablaPedidos.getColumns().setAll(id, cliente, destino, fecha, estado);
         tablaPedidos.setRoot(rootPedido);
         tablaPedidos.setShowRoot(false);
-//        tablaPedidos.setRowFactory(new Callback<TreeTableView<ProductoLista>, TreeTableRow<ProductoLista>>() {
-//            @Override
-//            public TreeTableRow<ProductoLista> call(TreeTableView<ProductoLista> param) {
-//                TreeTableRow<ProductoLista> row = new TreeTableRow<>();
-//                row.setOnMouseClicked((event) -> {
-//                    if (event.getClickCount() == 2 && (!row.isEmpty())) {
-//                        ProductoLista rowData = row.getItem();
-//                        mostrarInfoProducto(rowData.getCodigo());
-//
-//                    }
-//                });
-//                return row; //To change body of generated lambdas, choose Tools | Templates.
-//            }
-//        });
 
     }
 
     public void initPopup() {
         JFXButton edit = new JFXButton("Editar");
+        JFXButton eliminar = new JFXButton("Eliminar");
 
         edit.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 popup.hide();
                 try {
+                    //editarPedido();
+                } catch (Exception ex) {
 
+                }
+            }
+        });
+        
+        eliminar.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                popup.hide();
+                try {
+                  
                 } catch (Exception ex) {
 
                 }
@@ -151,8 +150,11 @@ public class MantenimientoPedidosController implements Initializable {
 
         edit.setPadding(new Insets(20));
         edit.setPrefSize(145, 40);
+        
+        eliminar.setPadding(new Insets(20));
+        eliminar.setPrefSize(145, 40);
 
-        VBox vBox = new VBox(edit);
+        VBox vBox = new VBox(edit, eliminar);
 
         popup = new JFXPopup();
         popup.setPopupContent(vBox);
@@ -165,12 +167,17 @@ public class MantenimientoPedidosController implements Initializable {
             FXMLLoader loader = new FXMLLoader(MantenimientoPedidosController.this.getClass().getResource(SeleccionarProductosController.viewPath));
             node = (Node) loader.load();
             SeleccionarProductosController sel = loader.getController();
-            sel.initModel(hiddenSp);
+            sel.initModel(pedido, hiddenSp);
             hiddenSp.getChildren().setAll(node);
         } catch (IOException ex) {
             Logger.getLogger(MantenimientoPedidosController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+    }
+    
+    void editarPedido(){
+    
+    
     }
 
     @FXML
@@ -193,6 +200,7 @@ public class MantenimientoPedidosController implements Initializable {
 
         }
     }
+    
 
     class PedidoOrdenLista extends RecursiveTreeObject<PedidoOrdenLista> {
 

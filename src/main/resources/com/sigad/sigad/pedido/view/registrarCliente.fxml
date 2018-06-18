@@ -7,6 +7,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.effect.Blend?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane id="AnchorPane" prefHeight="451.0" prefWidth="760.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sigad.sigad.pedido.controller.RegistrarClienteController">
@@ -14,88 +15,78 @@
         <URL value="@/styles/registrarcliente.css" />
     </stylesheets>
     <children>
-        <Label layoutX="86.0" layoutY="35.0" text="Nombres">
-         <font>
-            <Font size="10.0" />
-         </font></Label>
-        <Label layoutX="86.0" layoutY="93.0" text="Apellido Paterno">
-         <font>
-            <Font size="10.0" />
-         </font></Label>
-        <Label layoutX="86.0" layoutY="149.0" text="Apellido Materno">
-         <font>
-            <Font size="10.0" />
-         </font></Label>
-        <Label layoutX="86.0" layoutY="205.0" text="DNI">
-         <font>
-            <Font size="10.0" />
-         </font></Label>
-        <Label layoutX="86.0" layoutY="261.0" text="Telefono">
-         <font>
-            <Font size="10.0" />
-         </font></Label>
-        <Label layoutX="86.0" layoutY="319.0" text="Celular">
-         <font>
-            <Font size="10.0" />
-         </font></Label>
-        <Label layoutX="86.0" layoutY="377.0" text="Correo">
-         <font>
-            <Font size="10.0" />
-         </font></Label>
-        <JFXTextField fx:id="txtNombre" layoutX="86.0" layoutY="50.0" prefColumnCount="16">
-         <font>
-            <Font size="11.0" />
-         </font></JFXTextField>
-        <JFXTextField fx:id="txtApp" layoutX="86.0" layoutY="108.0" prefColumnCount="16">
-         <font>
-            <Font size="11.0" />
-         </font></JFXTextField>
-        <JFXTextField fx:id="txtApm" layoutX="86.0" layoutY="164.0" prefColumnCount="16">
-         <font>
-            <Font size="11.0" />
-         </font></JFXTextField>
-        <JFXTextField fx:id="txtdni" layoutX="86.0" layoutY="220.0" prefColumnCount="16">
-         <font>
-            <Font size="11.0" />
-         </font></JFXTextField>
-        <JFXTextField fx:id="txttel" layoutX="86.0" layoutY="276.0" prefColumnCount="16">
-         <font>
-            <Font size="11.0" />
-         </font></JFXTextField>
-        <JFXTextField fx:id="txtcel" layoutX="86.0" layoutY="336.0" prefColumnCount="16">
-         <font>
-            <Font size="11.0" />
-         </font></JFXTextField>
-        <JFXTextField fx:id="txtcorreo" layoutX="86.0" layoutY="392.0" prefColumnCount="16">
-         <font>
-            <Font size="11.0" />
-         </font></JFXTextField>
-        <JFXTreeTableView id="tablaDirecciones" fx:id="tablaDirecciones" layoutX="297.0" layoutY="68.0" prefHeight="257.0" prefWidth="400.0" AnchorPane.leftAnchor="297.0" AnchorPane.rightAnchor="70.0" />
-      <Label layoutX="297.0" layoutY="339.0" text="Agregar direccion">
-         <font>
-            <Font name="System Italic" size="11.0" />
-         </font>
-      </Label>
-      <Label layoutX="297.0" layoutY="21.0" text="Direcciones registradas" textAlignment="JUSTIFY">
-         <font>
-            <Font size="18.0" />
-         </font>
-         <effect>
-            <Blend />
-         </effect>
-      </Label>
-      <JFXTextField fx:id="txtnuevaDir" layoutX="295.0" layoutY="354.0" prefHeight="25.0" prefWidth="234.0" />
-      <JFXTextField fx:id="txtnuevoNom" layoutX="549.0" layoutY="354.0" prefHeight="25.0" prefWidth="133.0" />
-      <JFXButton fx:id="btnAgregarDireccion" buttonType="RAISED" layoutX="688.0" layoutY="354.0" onAction="#agregarDireccion" ripplerFill="BLACK" style="-fx-background-color: #FFFFFF; -fx-background-radius: 50;" text="+" />
-      <JFXButton buttonType="RAISED" layoutX="464.0" layoutY="390.0" onAction="#close" style="-fx-background-color: #FFFFFF;" text="Cancelar">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </JFXButton>
-      <JFXButton fx:id="btnRegistrar" buttonType="RAISED" layoutX="578.0" layoutY="390.0" onAction="#guardarUsuario" style="-fx-background-color: #FFFFFF;" text="Registrar">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </JFXButton>
+      <StackPane layoutX="86.0" layoutY="21.0">
+         <children>
+            <AnchorPane>
+               <children>
+                    <JFXTextField fx:id="txtNombre" layoutY="29.0" prefColumnCount="16" promptText="Nombres">
+                     <font>
+                        <Font size="11.0" />
+                     </font>
+                  </JFXTextField>
+                    <JFXTextField fx:id="txtApp" layoutY="87.0" prefColumnCount="16" promptText="Apellido Paterno">
+                     <font>
+                        <Font size="11.0" />
+                     </font>
+                  </JFXTextField>
+                    <JFXTextField fx:id="txtApm" layoutY="143.0" prefColumnCount="16" promptText="Apellido Materno">
+                     <font>
+                        <Font size="11.0" />
+                     </font>
+                  </JFXTextField>
+                    <JFXTextField fx:id="txtdni" layoutY="199.0" prefColumnCount="16" promptText="DNI">
+                     <font>
+                        <Font size="11.0" />
+                     </font>
+                  </JFXTextField>
+                    <JFXTextField fx:id="txttel" layoutY="255.0" prefColumnCount="16" promptText="Telefono">
+                     <font>
+                        <Font size="11.0" />
+                     </font>
+                  </JFXTextField>
+                    <JFXTextField fx:id="txtcel" layoutY="315.0" prefColumnCount="16" promptText=" Celular">
+                     <font>
+                        <Font size="11.0" />
+                     </font>
+                  </JFXTextField>
+                    <JFXTextField fx:id="txtcorreo" layoutY="371.0" prefColumnCount="16" promptText="Correo">
+                     <font>
+                        <Font size="11.0" />
+                     </font>
+                  </JFXTextField>
+                    <JFXTreeTableView id="tablaDirecciones" fx:id="tablaDirecciones" layoutX="211.0" layoutY="47.0" prefHeight="257.0" prefWidth="400.0" />
+                  <Label layoutX="211.0" text="Direcciones registradas" textAlignment="JUSTIFY">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                     <effect>
+                        <Blend />
+                     </effect>
+                  </Label>
+                  <JFXTextField fx:id="txtnuevaDir" layoutX="209.0" layoutY="333.0" prefHeight="25.0" prefWidth="234.0" promptText="Direccion">
+                     <font>
+                        <Font name="System Italic" size="12.0" />
+                     </font>
+                  </JFXTextField>
+                  <JFXTextField fx:id="txtnuevoNom" layoutX="463.0" layoutY="333.0" prefHeight="25.0" prefWidth="133.0" promptText="Nombre">
+                     <font>
+                        <Font name="System Italic" size="12.0" />
+                     </font>
+                  </JFXTextField>
+                  <JFXButton fx:id="btnAgregarDireccion" buttonType="RAISED" layoutX="602.0" layoutY="333.0" onAction="#agregarDireccion" ripplerFill="BLACK" style="-fx-background-color: #FFFFFF; -fx-background-radius: 50;" text="+" />
+                  <JFXButton buttonType="RAISED" layoutX="378.0" layoutY="369.0" onAction="#close" style="-fx-background-color: #FFFFFF;" text="Cancelar">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </JFXButton>
+                  <JFXButton fx:id="btnRegistrar" buttonType="RAISED" layoutX="492.0" layoutY="369.0" onAction="#guardarUsuario" style="-fx-background-color: #FFFFFF;" text="Registrar">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </JFXButton>
+               </children>
+            </AnchorPane>
+         </children>
+      </StackPane>
     </children>
 </AnchorPane>

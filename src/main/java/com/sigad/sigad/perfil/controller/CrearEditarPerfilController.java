@@ -22,6 +22,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -48,6 +49,8 @@ public class CrearEditarPerfilController implements Initializable {
     private StackPane hiddenSp;
     @FXML
     private JFXToggleButton activeBtn;
+    @FXML
+    private Label messageLbl;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -60,6 +63,7 @@ public class CrearEditarPerfilController implements Initializable {
             loadFields();
         }else{
             perfil = new Perfil();
+            messageLbl.setVisible(false);
         }
         
         //Inmediate validations
@@ -90,6 +94,16 @@ public class CrearEditarPerfilController implements Initializable {
                             error.loadDialog("Error", helper.getErrorMessage(), "Ok", hiddenSp);
                         }
                     }else{
+                        for (PerfilController.Profile profile : PerfilController.dataPerfilTbl) {
+                            if(profile.name.getValue().equals(nameTxt.getText())){
+                                ErrorController error = new ErrorController();
+                                error.loadDialog("Erro", "No se puede crear este perfil porque ya existe este nombre", "Ok", hiddenSp);
+
+                                nameTxt.requestFocus();
+
+                                return;
+                            }
+                        }
                         Long id = helper.saveProfile(CrearEditarPerfilController.perfil);
                         if(id != null){
                             PerfilController.updateProfileData(CrearEditarPerfilController.perfil);
@@ -124,7 +138,9 @@ public class CrearEditarPerfilController implements Initializable {
             nameTxt.setFocusColor(new Color(0.58, 0.34, 0.09, 1));
             nameTxt.requestFocus();
             return false;
-        }else return true;
+        }else{
+            return true;
+        }
     }
     
     public void updateFields() {
@@ -145,6 +161,14 @@ public class CrearEditarPerfilController implements Initializable {
             perfil.setPermisos(temp.getPermisos());
             perfil.setActivo(temp.isActivo());
             
+            if(temp.getEditable()!=null && !temp.getEditable()){
+                messageLbl.setVisible(true);
+                nameTxt.setEditable(false);
+                descriptionTXt.setEditable(false);
+                activeBtn.setDisable(true);
+            }else{
+                messageLbl.setVisible(false);
+            }
             nameTxt.setText(perfil.getNombre());
             descriptionTXt.setText(perfil.getDescripcion());
             activeBtn.setSelected(perfil.isActivo());

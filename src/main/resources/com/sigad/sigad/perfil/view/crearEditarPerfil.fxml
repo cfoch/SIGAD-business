@@ -4,6 +4,7 @@
 <?import com.jfoenix.controls.JFXTextField?>
 <?import com.jfoenix.controls.JFXToggleButton?>
 <?import java.net.URL?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.StackPane?>
 
@@ -14,10 +15,11 @@
               <URL value="@/styles/perfil.css" />
           </stylesheets>
          <children>
-            <JFXTextField fx:id="nameTxt" layoutX="35.0" layoutY="34.0" promptText="Nombre del perfil" />
-            <JFXTextArea fx:id="descriptionTXt" layoutX="33.0" layoutY="97.0" prefHeight="63.0" prefWidth="272.0" promptText="Descripción del perfil" wrapText="true" />
-            <JFXToggleButton fx:id="activeBtn" layoutX="200.0" layoutY="14.0" text="Activo" />
+            <JFXTextField fx:id="nameTxt" layoutX="37.0" layoutY="78.0" promptText="Nombre del perfil" />
+            <JFXTextArea fx:id="descriptionTXt" layoutX="35.0" layoutY="141.0" prefHeight="63.0" prefWidth="272.0" promptText="Descripción del perfil" wrapText="true" />
+            <JFXToggleButton fx:id="activeBtn" layoutX="202.0" layoutY="58.0" text="Activo" />
             <AnchorPane layoutX="9.0" layoutY="228.0" prefHeight="52.0" prefWidth="443.0" />
+            <Label fx:id="messageLbl" layoutX="35.0" layoutY="14.0" prefHeight="44.0" prefWidth="413.0" text="Nota: Este perfil no se puede editar porque es necesario para el funcionamiento del sistema" textFill="#c61b1b" wrapText="true" />
          </children>
       </AnchorPane>
    </children>

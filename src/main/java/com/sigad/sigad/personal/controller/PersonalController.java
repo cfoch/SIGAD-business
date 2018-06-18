@@ -228,35 +228,35 @@ public class PersonalController implements Initializable {
         apellidoPaterno.setCellValueFactory((TreeTableColumn.CellDataFeatures<PersonalController.User, String> param) -> param.getValue().getValue().apellidoPaterno);
         
         JFXTreeTableColumn<PersonalController.User, String> apellidoMaterno = new JFXTreeTableColumn<>("Appelido Materno");
-        apellidoMaterno.setPrefWidth(50);
+        apellidoMaterno.setPrefWidth(70);
         apellidoMaterno.setCellValueFactory((TreeTableColumn.CellDataFeatures<PersonalController.User, String> param) -> param.getValue().getValue().apellidoMaterno);
         
         JFXTreeTableColumn<PersonalController.User, String> dni = new JFXTreeTableColumn<>("DNI");
-        dni.setPrefWidth(50);
+        dni.setPrefWidth(70);
         dni.setCellValueFactory((TreeTableColumn.CellDataFeatures<PersonalController.User, String> param) -> param.getValue().getValue().dni);
         
         JFXTreeTableColumn<PersonalController.User, String> telephone = new JFXTreeTableColumn<>("Teléfono");
-        telephone.setPrefWidth(50);
+        telephone.setPrefWidth(70);
         telephone.setCellValueFactory((TreeTableColumn.CellDataFeatures<PersonalController.User, String> param) -> param.getValue().getValue().telefono);
         
         JFXTreeTableColumn<PersonalController.User, String> cellphone = new JFXTreeTableColumn<>("Celular");
-        cellphone.setPrefWidth(50);
+        cellphone.setPrefWidth(70);
         cellphone.setCellValueFactory((TreeTableColumn.CellDataFeatures<PersonalController.User, String> param) -> param.getValue().getValue().celular);
         
         JFXTreeTableColumn<PersonalController.User, String> profile = new JFXTreeTableColumn<>("Perfil");
-        profile.setPrefWidth(50);
+        profile.setPrefWidth(70);
         profile.setCellValueFactory((TreeTableColumn.CellDataFeatures<PersonalController.User, String> param) -> param.getValue().getValue().profileName);
         
         JFXTreeTableColumn<PersonalController.User, String> profileDesc = new JFXTreeTableColumn<>("Descripción");
-        profileDesc.setPrefWidth(50);
+        profileDesc.setPrefWidth(70);
         profileDesc.setCellValueFactory((TreeTableColumn.CellDataFeatures<PersonalController.User, String> param) -> param.getValue().getValue().profileDesc);
         
         JFXTreeTableColumn<PersonalController.User, String> tienda = new JFXTreeTableColumn<>("Tienda");
-        tienda.setPrefWidth(50);
+        tienda.setPrefWidth(70);
         tienda.setCellValueFactory((TreeTableColumn.CellDataFeatures<PersonalController.User, String> param) -> param.getValue().getValue().tienda);
         
         JFXTreeTableColumn<PersonalController.User, String> active = new JFXTreeTableColumn<>("Activo");
-        active.setPrefWidth(50);
+        active.setPrefWidth(70);
         active.setCellValueFactory((TreeTableColumn.CellDataFeatures<PersonalController.User, String> param) -> param.getValue().getValue().activo);
         
         userTbl.getColumns().add(name);

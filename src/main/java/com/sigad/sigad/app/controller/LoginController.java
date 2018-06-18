@@ -86,24 +86,25 @@ public class LoginController implements Initializable {
                     tx = session.beginTransaction();
                 }
                 //Crear un perfil de cliente
-                PerfilHelper helper = new PerfilHelper();
-                Perfil cliente = new Perfil("Cliente", "Cliente de aplicación móvil", true, null);
-                helper.saveProfile(cliente);
-                helper.close();
+//                PerfilHelper helper = new PerfilHelper();
+//                Perfil cliente = new Perfil("Cliente", "Cliente de aplicación móvil", true, null);
+//                helper.saveProfile(cliente);
+//                helper.close();
                 
                 Set<Permiso> list = new HashSet<>();
-                list.add(new Permiso("Ventas", "SALE"));
-                list.add(new Permiso("Descuentos", "SALE"));
-                list.add(new Permiso("Insumos", "ARRANGE_SEND_BACKWARD"));
-                list.add(new Permiso("Personal", "ACCOUNT_MULTIPLE"));
-                list.add(new Permiso("Repartos", "CAR"));
-                list.add(new Permiso("Pedidos", "CART"));
-                list.add(new Permiso("Tiendas", "STORE"));
-                list.add(new Permiso("Perfiles", "FINGERPRINT"));
-                list.add(new Permiso("Estadísticas", "ELEVATION_RISE"));
-                list.add(new Permiso("Carga Masiva", "ARROW_UP_BOLD_CIRCLE"));
-                list.add(new Permiso("Configuraciones", "SETTINGS"));
-                list.add(new Permiso("Productos", "STORE"));
+                list.add(new Permiso(8, "Ventas", "BASKET"));
+                list.add(new Permiso(7, "Descuentos", "SALE"));
+                list.add(new Permiso(4, "Insumos", "ARRANGE_SEND_BACKWARD"));
+                list.add(new Permiso(3, "Usuarios", "ACCOUNT_MULTIPLE"));
+                list.add(new Permiso(9, "Repartos", "CAR"));
+                list.add(new Permiso(5, "Pedidos", "CART_PLUS"));
+                list.add(new Permiso(1, "Tiendas", "STORE"));
+                list.add(new Permiso(2, "Perfiles", "FINGERPRINT"));
+                list.add(new Permiso(11, "Estadísticas", "ELEVATION_RISE"));
+                list.add(new Permiso(0, "Carga Masiva", "ARROW_UP_BOLD_CIRCLE"));
+                list.add(new Permiso(12, "Configuraciones", "SETTINGS"));
+                list.add(new Permiso(6, "Productos", "STORE"));
+                list.add(new Permiso(10, "Movimientos", "CLOCK_FAST"));
                 
                 for (Permiso p : list) {
                     PermisoHelper helper1 = new PermisoHelper();

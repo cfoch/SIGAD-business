@@ -21,6 +21,7 @@ import javax.persistence.OneToMany;
  */
 @Entity
 public class ProductoCategoria {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
@@ -33,14 +34,13 @@ public class ProductoCategoria {
     private Set<Producto> productos = new HashSet<Producto>();
     @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ProductoCategoriaDescuento> descuentos = new HashSet<ProductoCategoriaDescuento>();
-    
-    
+
     /**
      * Constructor.
      */
     public ProductoCategoria() {
     }
-    
+
     /**
      * @return the id
      */
@@ -123,5 +123,10 @@ public class ProductoCategoria {
      */
     public void setDescuentos(Set<ProductoCategoriaDescuento> descuentos) {
         this.descuentos = descuentos;
+    }
+
+    @Override
+    public String toString() {
+        return this.nombre;
     }
 }

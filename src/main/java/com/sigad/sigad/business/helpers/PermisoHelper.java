@@ -16,24 +16,8 @@ import org.hibernate.query.Query;
  *
  * @author jorgeespinoza
  */
-public class PermisoHelper {
-    Session session = null;
-    private static String errorMessage = "";
-    
+public class PermisoHelper extends BaseHelper{
     public PermisoHelper() {
-        session = LoginController.serviceInit();
-    }
-    
-    /*Close session*/
-    public void close(){
-        session.close();
-    }
-
-    /**
-     * @return the errorMessage
-     */
-    public String getErrorMessage() {
-        return errorMessage;
     }
     
     /*Get all*/

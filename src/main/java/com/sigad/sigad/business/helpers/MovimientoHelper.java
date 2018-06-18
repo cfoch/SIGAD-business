@@ -7,10 +7,13 @@ package com.sigad.sigad.business.helpers;
 
 import com.sigad.sigad.app.controller.LoginController;
 import com.sigad.sigad.business.MovimientosTienda;
+import com.sigad.sigad.business.Tienda;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
 /**
  *
@@ -34,6 +37,42 @@ public class MovimientoHelper {
     
     public String getErrorMessage(){
         return errorMessage;
+    }
+    
+    /*Get all the movements*/
+    public ArrayList<MovimientosTienda> getMovements(){
+        ArrayList<MovimientosTienda> movements = null;
+        Query query = null;
+        try {
+            query = session.createQuery("from MovimientosTienda");
+            
+            if(!query.list().isEmpty()){
+               movements = (ArrayList<MovimientosTienda>)( query.list());
+            }
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            errorMessage = e.getMessage();
+        } finally{
+            return movements;
+        }
+    }
+    
+    /*Get all the movements filtered by store*/
+    public ArrayList<MovimientosTienda> getMovements(Tienda tienda){
+        ArrayList<MovimientosTienda> movements = null;
+        Query query = null;
+        try {
+            query = session.createQuery("from MovimientosTienda where tienda_id =" + tienda.getId().toString());
+            
+            if(!query.list().isEmpty()){
+               movements = (ArrayList<MovimientosTienda>)( query.list());
+            }
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            errorMessage = e.getMessage();
+        } finally{
+            return movements;
+        }
     }
     
     public Boolean saveMovement(MovimientosTienda newMov){

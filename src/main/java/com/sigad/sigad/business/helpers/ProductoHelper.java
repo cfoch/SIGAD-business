@@ -57,14 +57,7 @@ public class ProductoHelper {
             return list;
         }
 
-    }
-
-    ;
-//    public HashMap<Producto, Integer> recalculateStocks(HashMap<Integer, Integer> pedido){
-//    
-//    
-//    }
-
+    };
 
     public HashMap<Producto, Integer> getProductsByTend(Tienda tienda) {
         try {

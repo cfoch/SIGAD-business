@@ -160,7 +160,7 @@ public class CrearEditarPermisoController implements Initializable {
             perfil.setPermisos(temp.getPermisos());
             perfil.setActivo(temp.isActivo());
             
-            profileName.setText(perfil.getNombre());
+            profileName.setText("Selecciona un permiso para " + perfil.getNombre());
         }
         helper.close();
     }
@@ -173,16 +173,20 @@ public class CrearEditarPermisoController implements Initializable {
             error.loadDialog("Error", "No se pudo obtener el perfil seleccionado", "Ok", hiddenSp);
             return;
         }
-        Set<Permiso> currPermissions= ptemp.getPermisos();
-        
         permissionListView = new JFXListView<>();
+        
+        Set<Permiso> currPermissions= ptemp.getPermisos();
+        ArrayList<Permiso> permisoActualList = new ArrayList<Permiso>();
+        currPermissions.forEach((currPermission) -> {
+            permisoActualList.add(new Permiso(currPermission.getOrden(), currPermission.getMenu(), currPermission.getIcono()));
+        });
         
         //load profiles
         PermisoHelper helper = new PermisoHelper();
         ArrayList<Permiso> permisoList = helper.getPermissions();
         
         if(permisoList != null){
-            if(currPermissions.isEmpty()){
+            if(permisoActualList.isEmpty()){
                 permisoList.forEach((p)-> {
                     Label lbl = new Label(p.getMenu());
                     lbl.setPrefSize(200, 30);
@@ -190,7 +194,7 @@ public class CrearEditarPermisoController implements Initializable {
                 });
             }else{
                 permisoList.forEach((p)-> {
-                    if(!ExistInSet(p, currPermissions)){
+                    if(!ExistInSet(p, permisoActualList)){
                         Label lbl = new Label(p.getMenu());
                         lbl.setPrefSize(200, 30);
                         permissionListView.getItems().add(lbl);
@@ -205,7 +209,7 @@ public class CrearEditarPermisoController implements Initializable {
         permissionPane.getChildren().add(permissionListView);
     }
 
-    private boolean ExistInSet(Permiso p, Set<Permiso> currPermissions) {
+    private boolean ExistInSet(Permiso p, ArrayList<Permiso> currPermissions) {
         for (Permiso curr : currPermissions) {
             if(curr.getMenu() == null ? p.getMenu() == null : curr.getMenu().equals(p.getMenu())){
                 return true;

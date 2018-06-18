@@ -41,28 +41,32 @@
                   <AnchorPane prefHeight="33.0" prefWidth="927.0" style="-fx-background-color: white; -fx-border-color: #C8C8C8;" GridPane.columnIndex="2" GridPane.rowIndex="1">
                      <children>
                         <Label layoutX="29.0" layoutY="11.0" prefHeight="17.0" prefWidth="145.0" text="Perfiles" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="5.0" />
-                        <JFXButton fx:id="perfilMoreBtn" layoutX="847.0" layoutY="-2.0" onAction="#handleAction" text=" " AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
-                        </JFXButton>
+                        <JFXButton fx:id="perfilMoreBtn" contentDisplay="RIGHT" layoutX="847.0" layoutY="-2.0" onAction="#handleAction" text=" " AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
+                           <graphic>
+                              <MaterialDesignIconView glyphName="DOTS_VERTICAL" />
+                           </graphic></JFXButton>
                      </children>
                   </AnchorPane>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="4">
                      <children>
-                        <JFXButton fx:id="perfilAddBtn" alignment="CENTER" layoutX="833.0" layoutY="5.0" onAction="#handleAction" text=" " AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
+                        <JFXButton fx:id="perfilAddBtn" alignment="CENTER" layoutX="833.0" layoutY="5.0" onAction="#handleAction" text="+" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
                         </JFXButton>
                      </children>
                   </AnchorPane>
                   <AnchorPane prefHeight="33.0" prefWidth="927.0" style="-fx-background-color: white; -fx-border-color: #C8C8C8;" GridPane.columnIndex="4" GridPane.rowIndex="1">
                      <children>
                         <Label layoutX="29.0" layoutY="11.0" prefHeight="17.0" prefWidth="145.0" text="Permiso" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="5.0" />
-                        <JFXButton fx:id="permisoMoreBtn" layoutX="847.0" layoutY="-2.0" onAction="#handleAction" text=" " AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
-                        </JFXButton>
+                        <JFXButton fx:id="permisoMoreBtn" contentDisplay="RIGHT" layoutX="847.0" layoutY="-2.0" onAction="#handleAction" text=" " AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
+                           <graphic>
+                              <MaterialDesignIconView glyphName="DOTS_VERTICAL" />
+                           </graphic></JFXButton>
                      </children>
                   </AnchorPane>
                   <AnchorPane prefHeight="56.0" prefWidth="927.0" style="-fx-background-color: #ECEFF1; -fx-border-color: #C8C8C8;" GridPane.columnIndex="4" GridPane.rowIndex="2" />
                   <JFXTreeTableView fx:id="permissionTbl" GridPane.columnIndex="4" GridPane.rowIndex="3" />
                   <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="4" GridPane.rowIndex="4">
                      <children>
-                        <JFXButton fx:id="permisoAddBtn" alignment="CENTER" layoutX="248.0" layoutY="1.0" onAction="#handleAction" text=" " AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
+                        <JFXButton fx:id="permisoAddBtn" alignment="CENTER" layoutX="248.0" layoutY="1.0" onAction="#handleAction" text="+" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
                         </JFXButton>
                      </children></AnchorPane>
                </children>

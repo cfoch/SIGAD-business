@@ -38,7 +38,7 @@
                   <AnchorPane prefHeight="33.0" prefWidth="927.0" style="-fx-background-color: white; -fx-border-color: #C8C8C8;" GridPane.columnIndex="1" GridPane.rowIndex="1">
                      <children>
                         <Label layoutX="29.0" layoutY="11.0" prefHeight="17.0" prefWidth="145.0" text="Tiendas" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="5.0" />
-                        <JFXButton fx:id="moreBtn" layoutX="847.0" layoutY="-2.0" onAction="#handleAction" text="Button" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
+                        <JFXButton fx:id="moreBtn" layoutX="847.0" layoutY="-2.0" onAction="#handleAction" text=" " AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
                            <graphic>
                               <MaterialDesignIconView glyphName="DOTS_VERTICAL" />
                            </graphic>

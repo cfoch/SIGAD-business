@@ -49,9 +49,15 @@
       <JFXTreeTableView id="tablaStock" fx:id="tablaPromociones" layoutX="369.0" layoutY="262.0" prefHeight="130.0" prefWidth="360.0" />
       <Label layoutX="369.0" layoutY="227.0" text="Promociones activas">
          <font>
-            <Font name="System Bold" size="20.0" />
+            <Font name="System Bold" size="16.0" />
          </font>
       </Label>
       <JFXButton id="btnBack" fx:id="btnCerrar" buttonType="RAISED" layoutX="613.0" layoutY="407.0" onMouseClicked="#clickCerrar" prefHeight="17.0" prefWidth="97.0" style="-fx-background-color: #FFFFFF;" text="Cerrar" />
+      <JFXTreeTableView id="tablaStock" fx:id="tablaInsumos" layoutX="37.0" layoutY="262.0" prefHeight="130.0" prefWidth="314.0" />
+      <Label layoutX="37.0" layoutY="227.0" text="Insumos">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

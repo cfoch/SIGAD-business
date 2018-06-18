@@ -5,6 +5,7 @@
 <?import com.jfoenix.controls.JFXTextField?>
 <?import com.jfoenix.controls.JFXToggleButton?>
 <?import java.net.URL?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -18,7 +19,7 @@
    <children>
       <AnchorPane id="AnchorPane" fx:id="containerPane" prefHeight="356.0" prefWidth="569.0" styleClass="mainFxmlClass">
           <stylesheets>
-              <URL value="@/styles/crearEditartienda.css" />
+              <URL value="@/styles/crearEditarTienda.css" />
           </stylesheets>
          <children>
             <AnchorPane id="AnchorPane" prefHeight="356.0" prefWidth="569.0" styleClass="mainFxmlClass">
@@ -59,8 +60,9 @@
                               </JFXButton>
                               <JFXTextField fx:id="coordXText" editable="false" layoutX="19.0" layoutY="111.0" minWidth="-Infinity" opacity="0.5" prefHeight="27.0" prefWidth="150.0" promptText="Corrdenada X" />
                               <JFXTextField fx:id="coordYText" editable="false" layoutX="196.0" layoutY="111.0" minWidth="-Infinity" opacity="0.5" prefWidth="150.0" promptText="Corrdenada Y" />
-                              <JFXTextField fx:id="capacidadTxt" layoutX="19.0" layoutY="154.0" promptText="Capacidad" />
+                              <JFXTextField fx:id="capacidadTxt" layoutX="19.0" layoutY="154.0" prefHeight="27.0" prefWidth="89.0" promptText="Capacidad" />
                               <JFXToggleButton fx:id="isActiveBtn" layoutX="196.0" layoutY="138.0" text="Activo" />
+                              <Label layoutX="116.0" layoutY="160.0" text="(m^3)" />
                            </children>
                         </AnchorPane>
                      </children>

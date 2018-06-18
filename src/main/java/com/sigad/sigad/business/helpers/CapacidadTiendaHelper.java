@@ -19,10 +19,11 @@ import org.hibernate.Session;
  * @author Alexandra
  */
 public class CapacidadTiendaHelper {
-    Session session = null;
+    static Session session = null;
     private String errorMessage = "";
 
     public CapacidadTiendaHelper() {
+        if(this.session!= null) this.close();
         session = LoginController.serviceInit();
     }
 

@@ -9,72 +9,69 @@
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="647.0" prefWidth="881.0" style="-fx-background-color: white;" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sigad.sigad.productos.controller.ProductosManagementController">
+
+<AnchorPane style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sigad.sigad.productos.controller.ProductosManagementController">
    <children>
-      <Label layoutX="278.0" layoutY="39.0" prefHeight="16.0" prefWidth="200.0" text="Nombre">
-         <font>
-            <Font size="10.0" />
-         </font></Label>
-      <JFXTextField id="txtNombre" fx:id="txtNombre" layoutX="278.0" layoutY="58.0" prefHeight="26.0" prefWidth="224.0">
-         <font>
-            <Font size="10.0" />
-         </font></JFXTextField>
-      <Label layoutX="277.0" layoutY="106.0" prefHeight="17.0" prefWidth="200.0" text="Categoria">
-         <font>
-            <Font size="10.0" />
-         </font></Label>
-      <Label layoutX="277.0" layoutY="179.0" text="Fragilidad">
-         <font>
-            <Font size="10.0" />
-         </font></Label>
-      <Label layoutX="566.0" layoutY="58.0" text="Descripcion">
-         <font>
-            <Font size="10.0" />
-         </font></Label>
-      <ImageView id="imageProducto" fx:id="imageProducto" fitHeight="150.0" fitWidth="200.0" layoutX="36.0" layoutY="66.0" pickOnBounds="true" preserveRatio="true">
-         <effect>
-            <DropShadow color="#000000bc" />
-         </effect>
-      </ImageView>
-      <JFXTextArea fx:id="txtDescripcion" layoutX="568.0" layoutY="88.0" prefHeight="119.0" prefWidth="234.0">
-         <font>
-            <Font size="10.0" />
-         </font></JFXTextArea>
-      <Label layoutX="279.0" layoutY="258.0" text="Peso">
-         <font>
-            <Font size="10.0" />
-         </font></Label>
-      <JFXComboBox fx:id="selectCategoria" layoutX="275.0" layoutY="132.0" prefHeight="26.0" prefWidth="224.0" />
-      <JFXComboBox fx:id="selectFragilidad" layoutX="278.0" layoutY="209.0" prefHeight="26.0" prefWidth="224.0" />
-      <JFXTreeTableView fx:id="insumoTable" layoutX="90.0" layoutY="372.0" prefHeight="150.0" prefWidth="713.0" />
-      <Label layoutX="92.0" layoutY="334.0" prefHeight="16.0" prefWidth="234.0" text="INSUMOS">
-         <font>
-            <Font size="17.0" />
-         </font>
-      </Label>
-      <Label layoutX="563.0" layoutY="301.0" text="Buscar">
-         <font>
-            <Font size="10.0" />
-         </font></Label>
-      <JFXTextField layoutX="619.0" layoutY="289.0" prefHeight="26.0" prefWidth="184.0">
-         <font>
-            <Font size="10.0" />
-         </font></JFXTextField>
-      <JFXTextField fx:id="txtPeso" layoutX="274.0" layoutY="285.0" prefHeight="26.0" prefWidth="234.0">
-         <font>
-            <Font size="10.0" />
-         </font></JFXTextField>
-      <JFXTextField fx:id="finalPrice" disable="true" layoutX="474.0" layoutY="566.0" prefHeight="26.0" prefWidth="200.0" />
-      <Label layoutX="392.0" layoutY="574.0" text="Precio Base" />
-      <JFXButton fx:id="saveBtn" buttonType="RAISED" layoutX="710.0" layoutY="565.0" style="-fx-background-color: #FFFFFF;" text="Guardar">
-         <font>
-            <Font size="15.0" />
-         </font>
-         <effect>
-            <DropShadow />
-         </effect>
-      </JFXButton>
+      <GridPane prefHeight="591.0" prefWidth="884.0" style="-fx-background-color: white;">
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints maxHeight="492.7929992675781" minHeight="10.0" prefHeight="290.87841796875" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="492.7929992675781" minHeight="10.0" prefHeight="22.586029052734375" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="492.7929992675781" minHeight="10.0" prefHeight="40.534271240234375" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="492.7929992675781" minHeight="3.551116943359375" prefHeight="30.27557373046875" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="492.7929992675781" minHeight="10.0" prefHeight="164.20697021484375" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="107.81240844726562" minHeight="10.0" prefHeight="40.79302978515625" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="107.81240844726562" minHeight="10.0" prefHeight="26.43084716796875" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <AnchorPane id="AnchorPane" prefHeight="565.0" prefWidth="881.0" style="-fx-background-color: white;" styleClass="mainFxmlClass" GridPane.columnIndex="1">
+               <children>
+                  <JFXTextField id="txtNombre" fx:id="txtNombre" layoutX="281.0" layoutY="45.0" prefHeight="26.0" prefWidth="224.0" promptText="Nombre" AnchorPane.leftAnchor="281.0" AnchorPane.topAnchor="45.0" />
+                  <ImageView id="imageProducto" fx:id="imageProducto" fitHeight="196.0" fitWidth="222.0" layoutX="30.0" layoutY="41.0" pickOnBounds="true" preserveRatio="true">
+                     <effect>
+                        <DropShadow color="#000000bc" />
+                     </effect>
+                  </ImageView>
+                  <JFXTextArea fx:id="txtDescripcion" layoutX="573.0" layoutY="45.0" prefHeight="143.0" prefWidth="234.0" promptText="Descripción" AnchorPane.bottomAnchor="45.0" AnchorPane.topAnchor="45.0" />
+                  <JFXComboBox fx:id="selectCategoria" layoutX="280.0" layoutY="102.0" prefHeight="26.0" prefWidth="224.0" promptText="Categoría" AnchorPane.leftAnchor="280.0" />
+                  <JFXComboBox fx:id="selectFragilidad" layoutX="280.0" layoutY="159.0" prefHeight="26.0" prefWidth="224.0" promptText="Fragilidad" AnchorPane.leftAnchor="280.0" />
+                  <JFXTextField fx:id="txtPeso" layoutX="280.0" layoutY="215.0" prefHeight="26.0" prefWidth="234.0" promptText="Peso" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="280.0" />
+               </children>
+            </AnchorPane>
+            <AnchorPane id="AnchorPane" prefHeight="43.0" prefWidth="881.0" style="-fx-background-color: white;" styleClass="mainFxmlClass" GridPane.columnIndex="1" GridPane.rowIndex="5">
+               <children>
+                  <JFXTextField fx:id="finalPrice" disable="true" layoutX="489.0" layoutY="34.0" prefHeight="26.0" prefWidth="200.0" AnchorPane.bottomAnchor="10.0" />
+                  <Label layoutX="393.0" layoutY="39.0" text="Precio Base" AnchorPane.bottomAnchor="10.0" />
+                  <JFXButton fx:id="saveBtn" layoutX="736.0" layoutY="12.0" style="-fx-background-color: #FFFFFF;" text="Guardar" AnchorPane.bottomAnchor="4.0" AnchorPane.rightAnchor="0.0">
+                     <effect>
+                        <DropShadow />
+                     </effect>
+                  </JFXButton>
+               </children>
+            </AnchorPane>
+            <AnchorPane style="-fx-background-color: white;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white; -fx-border-color: #C8C8C8;" GridPane.columnIndex="1" GridPane.rowIndex="2">
+               <children>
+                  <Label layoutX="15.0" layoutY="10.0" prefHeight="17.0" prefWidth="126.0" text="Insumos" />
+                  <JFXTextField layoutX="587.0" layoutY="2.0" prefHeight="26.0" prefWidth="184.0" promptText="Buscar">
+                     <font>
+                        <Font size="10.0" />
+                     </font>
+                  </JFXTextField>
+               </children>
+            </AnchorPane>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #ECEFF1; -fx-border-color: #C8C8C8;" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <JFXTreeTableView fx:id="insumoTable" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+         </children>
+      </GridPane>
    </children>
 </AnchorPane>

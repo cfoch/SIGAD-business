@@ -163,39 +163,33 @@ public class LoteInsumoHelper {
                 tx = session.beginTransaction();
             }
             ArrayList<LoteInsumo> loteinsumos = getLoteInsumos(tienda);
-            Collections.sort(loteinsumos, new Comparator<LoteInsumo>() {
-                @Override
-                public int compare(LoteInsumo s1, LoteInsumo s2) {
-                    Long i =  s1.getFechaVencimiento().getTime() - s1.getFechaVencimiento().getTime();
-                    return i.intValue();
-                }
-            });
-            loteinsumos.forEach((t) -> {
-                System.out.println(t.getFechaVencimiento().toString());
-                System.out.println(t.getInsumo().getNombre());
-                System.out.println(t.getStockLogico());
-                System.out.println("----------------------------------");
+            Collections.sort(loteinsumos, (LoteInsumo s1, LoteInsumo s2) -> {
+                return s1.getFechaVencimiento().compareTo(s2.getFechaVencimiento());
+
             });
             ArrayList<LoteInsumo> seleccionados = new ArrayList<>();
             for (Map.Entry<Insumo, Integer> entry : insumosHaConsumir.entrySet()) {
-                Insumo t = entry.getKey();
-                Integer u = entry.getValue();
-                Date fecha = new Date();
-                Long maximo = Long.MAX_VALUE;
-                LoteInsumo loteSeleccionado = null;
+                Insumo t = entry.getKey();//Insumo
+                Integer u = entry.getValue();//Cantidad requerida del insumo
+                Integer queda = u;
                 for (LoteInsumo loteinsumo : loteinsumos) {
-                    if (loteinsumo.getInsumo().equals(t) && loteinsumo.getStockLogico() >= u) {
-                        if (loteinsumo.getFechaVencimiento().getTime() - fecha.getTime() < maximo) {
-                            loteSeleccionado = loteinsumo;
-                            maximo = loteinsumo.getFechaVencimiento().getTime() - fecha.getTime();
+                    if (loteinsumo.getInsumo().equals(t) && loteinsumo.getStockLogico() > 0 && queda > 0) {
+                        Integer p = queda - loteinsumo.getStockLogico();//Queda por descontar
+                        loteinsumo.setStockLogico((p <= 0) ? loteinsumo.getStockLogico() - queda : 0);
+                        queda = (p <= 0) ? 0 : p;
+                        Integer i = seleccionados.indexOf(loteinsumo);
+                        if (i >= 0){
+                            seleccionados.set(i, loteinsumo);
+                        }else{
+                             seleccionados.add(loteinsumo);
                         }
+                       
                     }
                 }
-                if (loteSeleccionado == null) {
+                if (queda > 0) {
                     return Boolean.FALSE;
                 }
-                loteSeleccionado.setStockLogico(loteSeleccionado.getStockLogico() - u);
-                seleccionados.add(loteSeleccionado);
+
             }
 
             seleccionados.forEach((t) -> {
