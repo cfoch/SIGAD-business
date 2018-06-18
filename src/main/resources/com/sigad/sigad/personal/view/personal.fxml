@@ -33,9 +33,9 @@
                   <RowConstraints maxHeight="111.83892822265625" minHeight="10.0" prefHeight="52.69287109375" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <JFXTreeTableView fx:id="userTbl" prefHeight="390.0" prefWidth="918.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                  <AnchorPane prefHeight="56.0" prefWidth="927.0" style="-fx-background-color: #ECEFF1; -fx-border-color: #C8C8C8;" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                  <AnchorPane prefHeight="33.0" prefWidth="927.0" style="-fx-background-color: white; -fx-border-color: #C8C8C8;" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                  <JFXTreeTableView fx:id="userTbl" prefHeight="390.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <AnchorPane prefHeight="56.0" style="-fx-background-color: #ECEFF1; -fx-border-color: #C8C8C8;" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <AnchorPane prefHeight="33.0" style="-fx-background-color: white; -fx-border-color: #C8C8C8;" GridPane.columnIndex="1" GridPane.rowIndex="1">
                      <children>
                         <Label layoutX="29.0" layoutY="11.0" prefHeight="17.0" prefWidth="145.0" text="Usuarios" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="5.0" />
                         <JFXButton fx:id="moreBtn" contentDisplay="RIGHT" layoutX="847.0" layoutY="-2.0" onAction="#handleAction" text=" " AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
@@ -45,7 +45,7 @@
                         </JFXButton>
                      </children>
                   </AnchorPane>
-                  <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                  <AnchorPane prefHeight="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
                      <children>
                         <JFXButton fx:id="addBtn" alignment="CENTER" layoutX="833.0" layoutY="5.0" onAction="#handleAction" text=" " AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
                            <graphic>

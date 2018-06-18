@@ -204,27 +204,27 @@ public class TiendaController implements Initializable {
 
     private void initStoreTbl() {
         JFXTreeTableColumn<TiendaController.Store, String> capacidad = new JFXTreeTableColumn<>("Capacidad");
-        capacidad.setPrefWidth(50);
+        capacidad.setPrefWidth(70);
         capacidad.setCellValueFactory((TreeTableColumn.CellDataFeatures<TiendaController.Store, String> param) -> param.getValue().getValue().capacidad);
         
         JFXTreeTableColumn<TiendaController.Store, String> coorxdireccion = new JFXTreeTableColumn<>("Coordenada X");
-        coorxdireccion.setPrefWidth(50);
+        coorxdireccion.setPrefWidth(70);
         coorxdireccion.setCellValueFactory((TreeTableColumn.CellDataFeatures<TiendaController.Store, String> param) -> param.getValue().getValue().cooxdireccion);
         
         JFXTreeTableColumn<TiendaController.Store, String> coorydireccion = new JFXTreeTableColumn<>("Coordenada Y");
-        coorydireccion.setPrefWidth(50);
+        coorydireccion.setPrefWidth(70);
         coorydireccion.setCellValueFactory((TreeTableColumn.CellDataFeatures<TiendaController.Store, String> param) -> param.getValue().getValue().cooydireccion);
         
         JFXTreeTableColumn<TiendaController.Store, String> direccion = new JFXTreeTableColumn<>("Dirección");
-        direccion.setPrefWidth(50);
+        direccion.setPrefWidth(70);
         direccion.setCellValueFactory((TreeTableColumn.CellDataFeatures<TiendaController.Store, String> param) -> param.getValue().getValue().dirección);
         
         JFXTreeTableColumn<TiendaController.Store, String> descripcion = new JFXTreeTableColumn<>("Descripción");
-        descripcion.setPrefWidth(50);
+        descripcion.setPrefWidth(70);
         descripcion.setCellValueFactory((TreeTableColumn.CellDataFeatures<TiendaController.Store, String> param) -> param.getValue().getValue().descripcion);
         
         JFXTreeTableColumn<TiendaController.Store, String> active = new JFXTreeTableColumn<>("Activo");
-        active.setPrefWidth(50);
+        active.setPrefWidth(70);
         active.setCellValueFactory((TreeTableColumn.CellDataFeatures<TiendaController.Store, String> param) -> param.getValue().getValue().activo);
         
         storeTbl.getColumns().add(capacidad);

@@ -32,7 +32,8 @@ public class MovimientosTienda {
     private Tienda tienda;
     @ManyToOne
     private LoteInsumo LoteInsumo;
-
+    @ManyToOne
+    private Pedido pedido;
     public MovimientosTienda() {
     }
 
@@ -133,5 +134,19 @@ public class MovimientosTienda {
      */
     public void setLoteInsumo(LoteInsumo LoteTienda) {
         this.LoteInsumo = LoteTienda;
+    }
+
+    /**
+     * @return the pedido
+     */
+    public Pedido getPedido() {
+        return pedido;
+    }
+
+    /**
+     * @param pedido the pedido to set
+     */
+    public void setPedido(Pedido pedido) {
+        this.pedido = pedido;
     }
 }

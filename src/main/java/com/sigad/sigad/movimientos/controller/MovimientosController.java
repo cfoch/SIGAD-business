@@ -56,40 +56,40 @@ public class MovimientosController implements Initializable {
 
     private void initMovementTbl() {
         JFXTreeTableColumn<Movement, String> id = new JFXTreeTableColumn<>("Id");
-        id.setPrefWidth(120);
+        id.setPrefWidth(70);
         id.setCellValueFactory((TreeTableColumn.CellDataFeatures<Movement, String> param) -> param.getValue().getValue().id);
         
         JFXTreeTableColumn<Movement, String> cantMovimiento = new JFXTreeTableColumn<>("Cantidad Movimiento");
-        cantMovimiento.setPrefWidth(120);
+        cantMovimiento.setPrefWidth(70);
         cantMovimiento.setCellValueFactory((TreeTableColumn.CellDataFeatures<Movement, String> param) -> param.getValue().getValue().cantidadMovimiento);
         
         JFXTreeTableColumn<Movement, String> fecha = new JFXTreeTableColumn<>("Fecha");
-        fecha.setPrefWidth(50);
+        fecha.setPrefWidth(70);
         fecha.setCellValueFactory((TreeTableColumn.CellDataFeatures<Movement, String> param) -> param.getValue().getValue().fecha);
         
         JFXTreeTableColumn<Movement, String> idLoteInsumo = new JFXTreeTableColumn<>("Id LoteInsumo");
-        idLoteInsumo.setPrefWidth(50);
+        idLoteInsumo.setPrefWidth(70);
         idLoteInsumo.setCellValueFactory((TreeTableColumn.CellDataFeatures<Movement, String> param) -> param.getValue().getValue().idLoteInsumo);
         
         JFXTreeTableColumn<Movement, String> insumo = new JFXTreeTableColumn<>("Insumo");
-        insumo.setPrefWidth(50);
+        insumo.setPrefWidth(70);
         insumo.setCellValueFactory((TreeTableColumn.CellDataFeatures<Movement, String> param) -> param.getValue().getValue().insumo);
         
         JFXTreeTableColumn<Movement, String> idTienda = new JFXTreeTableColumn<>("Id Tienda");
-        idTienda.setPrefWidth(50);
+        idTienda.setPrefWidth(70);
         idTienda.setCellValueFactory((TreeTableColumn.CellDataFeatures<Movement, String> param) -> param.getValue().getValue().idTienda);
         
         JFXTreeTableColumn<Movement, String> tienda = new JFXTreeTableColumn<>("Tienda");
-        tienda.setPrefWidth(50);
+        tienda.setPrefWidth(70);
         tienda.setCellValueFactory((TreeTableColumn.CellDataFeatures<Movement, String> param) -> param.getValue().getValue().dirección);
         
         JFXTreeTableColumn<Movement, String> tipoMovimiento = new JFXTreeTableColumn<>("Tipo Movimiento");
-        tipoMovimiento.setPrefWidth(50);
+        tipoMovimiento.setPrefWidth(70);
         tipoMovimiento.setCellValueFactory((TreeTableColumn.CellDataFeatures<Movement, String> param) -> param.getValue().getValue().movimiento);
         
         
         JFXTreeTableColumn<Movement, String> usuario = new JFXTreeTableColumn<>("Usuario");
-        usuario.setPrefWidth(50);
+        usuario.setPrefWidth(70);
         usuario.setCellValueFactory((TreeTableColumn.CellDataFeatures<Movement, String> param) -> param.getValue().getValue().usuario);
         
         movimientosTbl.getColumns().add(id);

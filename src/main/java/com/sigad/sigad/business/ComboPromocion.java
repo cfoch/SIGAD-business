@@ -36,6 +36,7 @@ public class ComboPromocion {
     private Date fechaFin;
     private Boolean activo;
     private Integer duracionDias;
+    private Double volumen;
     private String imagen;
     @OneToMany(mappedBy = "combopromocion", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ProductosCombos> productosxCombo = new HashSet<>();
@@ -227,5 +228,19 @@ public class ComboPromocion {
      */
     public void setImagen(String imagen) {
         this.imagen = imagen;
+    }
+
+    /**
+     * @return the volumen
+     */
+    public Double getVolumen() {
+        return volumen;
+    }
+
+    /**
+     * @param volumen the volumen to set
+     */
+    public void setVolumen(Double volumen) {
+        this.volumen = volumen;
     }
 }
