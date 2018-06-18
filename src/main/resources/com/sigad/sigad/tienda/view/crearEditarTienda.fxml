@@ -18,7 +18,7 @@
    <children>
       <AnchorPane id="AnchorPane" fx:id="containerPane" prefHeight="356.0" prefWidth="569.0" styleClass="mainFxmlClass">
           <stylesheets>
-              <URL value="@/styles/crearEditartienda.css" />
+              <URL value="@/styles/crearEditarTienda.css" />
           </stylesheets>
          <children>
             <AnchorPane id="AnchorPane" prefHeight="356.0" prefWidth="569.0" styleClass="mainFxmlClass">
