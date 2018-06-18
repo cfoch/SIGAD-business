@@ -7,7 +7,6 @@ package com.sigad.sigad.business;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -20,8 +19,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 
 /**
  *
@@ -387,20 +386,6 @@ public class Usuario {
      */
     public void setFavoritos(Set<Producto> favoritos) {
         this.favoritos = favoritos;
-    }
-
-    /**
-     * @return the descuentoCliente
-     */
-    public Set<ClienteDescuento> getDescuentoCliente() {
-        return descuentoCliente;
-    }
-
-    /**
-     * @param descuentoCliente the descuentoCliente to set
-     */
-    public void setDescuentoCliente(Set<ClienteDescuento> descuentoCliente) {
-        this.descuentoCliente = descuentoCliente;
     }
 
     /**
