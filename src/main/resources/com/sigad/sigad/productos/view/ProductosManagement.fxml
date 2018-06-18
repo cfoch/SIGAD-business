@@ -66,8 +66,8 @@
          <font>
             <Font size="10.0" />
          </font></JFXTextField>
-      <JFXTextField fx:id="finalPrice" disable="true" layoutX="474.0" layoutY="566.0" prefHeight="26.0" prefWidth="200.0" />
-      <Label layoutX="392.0" layoutY="574.0" text="Precio Base" />
+      <JFXTextField fx:id="finalPrice" disable="true" layoutX="306.0" layoutY="566.0" prefHeight="26.0" prefWidth="111.0" />
+      <Label layoutX="106.0" layoutY="568.0" text="Costo del producto" />
       <JFXButton fx:id="saveBtn" buttonType="RAISED" layoutX="710.0" layoutY="565.0" style="-fx-background-color: #FFFFFF;" text="Guardar">
          <font>
             <Font size="15.0" />
@@ -76,5 +76,11 @@
             <DropShadow />
          </effect>
       </JFXButton>
+      <JFXTextField fx:id="productPrice" layoutX="566.0" layoutY="564.0" prefHeight="26.0" prefWidth="111.0">
+         <font>
+            <Font size="10.0" />
+         </font>
+      </JFXTextField>
+      <Label layoutX="466.0" layoutY="572.0" text="Precio final" />
    </children>
 </AnchorPane>
