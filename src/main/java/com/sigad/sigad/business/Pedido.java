@@ -57,7 +57,7 @@ public class Pedido {
     private Reparto reparto;
 
     //fk
-    @ManyToOne(optional = false)
+    @ManyToOne
     private Usuario vendedor;
 
     @ManyToOne(optional = false)
