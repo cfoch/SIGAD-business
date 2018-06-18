@@ -13,11 +13,15 @@ import com.jfoenix.controls.JFXTreeTableColumn;
 import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
+import com.sigad.sigad.app.controller.LoginController;
 import com.sigad.sigad.business.Insumo;
+import com.sigad.sigad.business.LoteInsumo;
 import com.sigad.sigad.business.Producto;
 import com.sigad.sigad.business.ProductoCategoria;
 import com.sigad.sigad.business.ProductoFragilidad;
 import com.sigad.sigad.business.ProductoInsumo;
+import com.sigad.sigad.business.Tienda;
+import com.sigad.sigad.business.Usuario;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.SimpleStringProperty;
@@ -30,6 +34,7 @@ import javafx.util.Callback;
 import com.sigad.sigad.business.helpers.ProductoHelper;
 import com.sigad.sigad.business.helpers.InsumoHelper;
 import com.sigad.sigad.business.helpers.InsumoHelper.InsumoParser;
+import com.sigad.sigad.business.helpers.LoteInsumoHelper;
 import java.util.ArrayList;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -41,6 +46,8 @@ import org.apache.commons.lang3.StringUtils;
 import com.sigad.sigad.business.helpers.ProductoCategoriaHelper;
 import com.sigad.sigad.business.helpers.ProductoFragilidadHelper;
 import com.sigad.sigad.business.helpers.ProductoInsumoHelper;
+import com.sigad.sigad.business.helpers.TiendaHelper;
+import com.sigad.sigad.personal.controller.PersonalController.User;
 import javafx.event.ActionEvent;
 
 /**
@@ -70,8 +77,11 @@ public class ProductosManagementController implements Initializable {
     private JFXTextField txtPeso;
     @FXML
     private JFXButton saveBtn;
+    @FXML
+    private JFXTextField productPrice;
     private static Producto producto = null;
     private static Boolean update = false;
+    private static Usuario currentUser = LoginController.user;
     /**
      * Initializes the controller class.
      */
@@ -231,7 +241,7 @@ public class ProductosManagementController implements Initializable {
         this.selectFragilidad.getSelectionModel().select(this.producto.getFragilidad().getDescripcion());
         this.txtDescripcion.setText(this.producto.getDescripcion());
         this.txtPeso.setText(String.valueOf(this.producto.getPeso()));
-        this.finalPrice.setText(String.valueOf(this.producto.getPrecio()));
+        this.productPrice.setText(String.valueOf(this.producto.getPrecio()));
         //productSupplies();
     }
     
@@ -262,6 +272,7 @@ public class ProductosManagementController implements Initializable {
             total += (Double.parseDouble(price) * Integer.parseInt(ammount));
         }
         finalPrice.setText(String.valueOf(total));
+        productPrice.setText(String.valueOf(total));
     }
     
     private ArrayList<InsumoLista> getSelectedItems(){
@@ -300,7 +311,7 @@ public class ProductosManagementController implements Initializable {
         nuevoProducto.setNombre(txtNombre.getText());
         nuevoProducto.setPeso(Double.parseDouble(txtPeso.getText()));
         nuevoProducto.setDescripcion(txtDescripcion.getText());
-        nuevoProducto.setPrecio(Double.parseDouble(finalPrice.getText()));
+        nuevoProducto.setPrecio(Double.parseDouble(productPrice.getText()));
         
         ProductoHelper productoHelper = new ProductoHelper();
         ProductoCategoriaHelper categoriaHelper = new ProductoCategoriaHelper();
@@ -382,14 +393,14 @@ public class ProductosManagementController implements Initializable {
         public InsumoLista(String id, String nombre, String precio){
             this.id = new SimpleStringProperty(id);
             this.nombre = new SimpleStringProperty(nombre);
-            this.precio = new SimpleStringProperty(precio);
+            setPrecio(precio, nombre);
             this.cantidad = new SimpleStringProperty("0");
         }
         
         public InsumoLista(String id, String nombre, String precio, String cantidad){
             this.id = new SimpleStringProperty(id);
             this.nombre = new SimpleStringProperty(nombre);
-            this.precio = new SimpleStringProperty(precio);
+            setPrecio(precio, nombre);
             this.cantidad = new SimpleStringProperty(cantidad);
         }
         
@@ -412,6 +423,30 @@ public class ProductosManagementController implements Initializable {
         }
         public void setCantidad(String cantidad){
             this.cantidad = new SimpleStringProperty(cantidad);
+        }
+        public void setPrecio(String precio, String nombre){
+            //Usuario user = ProductosManagementController.currentUser;
+            TiendaHelper tiendaHelper = new TiendaHelper();
+            LoteInsumoHelper loteInsumoHelper = new LoteInsumoHelper();
+                    
+            Tienda tienda = tiendaHelper.getStore(currentUser.getTienda().getId().intValue());
+            
+            ArrayList<LoteInsumo> lotes = loteInsumoHelper.getLoteInsumos(tienda);
+            Double price = 0.0;
+            Integer count = 0;
+            
+            for (LoteInsumo lote : lotes) {
+                if(lote.getInsumo().getNombre().equals(nombre)){
+                    price += lote.getCostoUnitario();
+                    count++;
+                }
+            }
+            if (count > 0)
+                price = price/count;
+            else
+                price = 0.0;
+            
+            this.precio = new SimpleStringProperty(String.valueOf(price));
         }
     }
     
