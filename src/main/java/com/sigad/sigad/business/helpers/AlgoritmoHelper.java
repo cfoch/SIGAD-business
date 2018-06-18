@@ -11,10 +11,13 @@ import com.grupo1.simulated_annealing.VRPAlgorithm;
 import com.grupo1.simulated_annealing.VRPCostMatrix;
 import com.grupo1.simulated_annealing.VRPProblem;
 import com.sigad.sigad.app.controller.LoginController;
+import com.sigad.sigad.business.Constantes;
+import com.sigad.sigad.business.MovimientosTienda;
 import com.sigad.sigad.business.Pedido;
 import com.sigad.sigad.business.PedidoEstado;
 import com.sigad.sigad.business.Reparto;
 import com.sigad.sigad.business.Tienda;
+import com.sigad.sigad.business.TipoMovimiento;
 import com.sigad.sigad.business.Usuario;
 import com.sigad.sigad.business.Vehiculo;
 import java.util.ArrayList;
@@ -108,7 +111,6 @@ public class AlgoritmoHelper extends BaseHelper {
             Locacion [] locaciones;
             List<Usuario> repartidores = new ArrayList<>();
             Usuario repartidor;
-            PedidoEstado estadoPedido;
             Random rand = new Random();
             int i, j;
             // Resolver problema VRP
@@ -139,16 +141,6 @@ public class AlgoritmoHelper extends BaseHelper {
                 throw new Exception(String.format("No existen repartidores "
                         + "para la tienda con id='%d'.", tienda.getId()));
             }
-            try {
-                estadoPedido = (PedidoEstado) session
-                        .createQuery(
-                                "from PedidoEstado where nombre='Despacho'")
-                        .getSingleResult();
-            } catch (Exception ex) {
-                customMsg = true;
-                throw new Exception(String.format("El estado 'Despacho' no "
-                        + "está registrado."));
-            }
             for (i = 0; i < solution.size(); i++) {
                 Vehiculo vehiculo = vehiculos.get(i % vehiculos.size());
                 List<Pedido> subpedidos;
@@ -157,7 +149,6 @@ public class AlgoritmoHelper extends BaseHelper {
                 subpedidos = locacionesToPedidos(ruta);
                 repartidor =
                         repartidores.get(rand.nextInt(repartidores.size()));
-
                 session.getTransaction().begin();
                 Reparto reparto = new Reparto();
                 reparto.setVehiculo(vehiculo);
@@ -170,7 +161,13 @@ public class AlgoritmoHelper extends BaseHelper {
                 for (j = 0; j < subpedidos.size(); j++) {
                     Pedido subpedido = subpedidos.get(j);
                     subpedido.setReparto(reparto);
-                    subpedido.setEstado(estadoPedido);
+
+                    try {
+                        cambiarPedidoEstado(subpedido, "Despacho");
+                    } catch (Exception ex) {
+                        customMsg = true;
+                        throw ex;
+                    }
                     subpedido.setSecuenciaReparto(j);
                     session.save(subpedido);
                 }
@@ -191,6 +188,101 @@ public class AlgoritmoHelper extends BaseHelper {
                 throw ex;
             }
         }
+    }
+
+    public boolean cambiarPedidoEstado(Pedido pedido, String estadoNombre)
+            throws Exception {
+        PedidoEstado estadoNuevo;
+        try {
+            estadoNuevo = (PedidoEstado) session
+                    .createQuery("from PedidoEstado where nombre = :nombre")
+                    .setParameter("nombre", estadoNombre)
+                    .getSingleResult();
+        } catch (Exception ex) {
+            Logger.getLogger(getClass().getName())
+                .log(Level.SEVERE, null, ex);
+            throw new Exception(String.format("El estado 'Despacho' no "
+                    + "está registrado."));
+        }
+
+        return cambiarPedidoEstado(pedido, estadoNuevo);
+    }
+
+    public boolean cambiarPedidoEstado(Pedido pedido,
+            PedidoEstado estadoNuevo) throws Exception {
+        boolean ret = false;
+        PedidoEstado estadoActual = pedido.getEstado();
+        String estadoActualNombre = estadoActual.getNombre();
+
+        if (estadoActualNombre.equals("Venta") &&
+                estadoNuevo.getNombre().equals("Despacho")) {
+            int i;
+            String tipoMovimientoNombre = Constantes.TIPO_MOVIMIENTO_SALIDA_LOGICA;
+            List<MovimientosTienda> movimientos;
+            TipoMovimiento tipoMovimientoSalidaFisica = null;
+
+            // TODO
+            // Debería usarse preferiblemente TipoMovimientoHelper, pero por
+            // alguna razón cierra la sesión. Por ahora, este workaround:
+            try {
+                Query query;
+                query = session
+                    .createQuery("from TipoMovimiento where nombre = :nombre")
+                    .setParameter("nombre", Constantes.TIPO_MOVIMIENTO_SALIDA_FISICA);
+                if (!query.list().isEmpty()) {
+                    tipoMovimientoSalidaFisica = (TipoMovimiento) query.list().get(0);
+                }
+            } catch (Exception ex) {
+            }
+            if (tipoMovimientoSalidaFisica == null) {
+                throw new Exception(String.format("No existe tipo de "
+                        + "movimiento '%s'",
+                        Constantes.TIPO_MOVIMIENTO_SALIDA_FISICA));
+            }
+
+            try {
+                movimientos = (List<MovimientosTienda>) session
+                        .createQuery("from MovimientosTienda as mov "
+                                + "where mov.pedido.id = :pedido_id and "
+                                + "mov.tipoMovimiento.nombre = :tipoMovimiento")
+                        .setParameter("pedido_id", pedido.getId())
+                        .setParameter("tipoMovimiento", tipoMovimientoNombre)
+                        .list();
+            } catch (Exception ex) {
+                Logger.getLogger(getClass().getName())
+                    .log(Level.SEVERE, null, ex);
+                throw new Exception(String.format("No existe movimiento de "
+                        + "tipo '%s' para el pedido con id %d",
+                        tipoMovimientoNombre, pedido.getId()));
+            }
+            for (i = 0; i < movimientos.size(); i++) {
+                MovimientosTienda movimiento = movimientos.get(i);
+                MovimientosTienda movimientoNuevo = new MovimientosTienda();
+                movimientoNuevo.setCantidadMovimiento(
+                        movimiento.getCantidadMovimiento());
+                movimientoNuevo.setFecha(movimiento.getFecha());
+                movimientoNuevo.setLoteInsumo(movimiento.getLoteInsumo());
+                movimientoNuevo.setPedido(movimiento.getPedido());
+                movimientoNuevo.setTienda(movimiento.getTienda());
+                movimientoNuevo.setTipoMovimiento(tipoMovimientoSalidaFisica);
+                movimientoNuevo.setTrabajador(movimiento.getTrabajador());
+                try {
+                    session.save(movimientoNuevo);
+                } catch (Exception ex) {
+                    Logger.getLogger(getClass().getName())
+                        .log(Level.SEVERE, null, ex);
+                    session.getTransaction().rollback();
+                    throw new Exception(String.format("No se pudo crear un "
+                            + "movimiento de tipo '%s' para el "
+                            + "pedido con id %d",
+                            Constantes.TIPO_MOVIMIENTO_SALIDA_FISICA,
+                            pedido.getId()));
+                }
+            }
+            pedido.setEstado(estadoNuevo);
+            ret = true;
+        }
+        return ret;
     }
 
     public List<Pedido> locacionesToPedidos(
