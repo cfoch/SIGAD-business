@@ -99,7 +99,6 @@ public class AlgoritmoHelper extends BaseHelper {
             Locacion [] locaciones;
             List<Usuario> repartidores = new ArrayList<>();
             Usuario repartidor;
-            PedidoEstado estadoPedido;
             Random rand = new Random();
             int i, j;
             // Resolver problema VRP
@@ -130,16 +129,6 @@ public class AlgoritmoHelper extends BaseHelper {
                 throw new Exception(String.format("No existen repartidores "
                         + "para la tienda con id='%d'.", tienda.getId()));
             }
-            try {
-                estadoPedido = (PedidoEstado) session
-                        .createQuery(
-                                "from PedidoEstado where nombre='Despacho'")
-                        .getSingleResult();
-            } catch (Exception ex) {
-                customMsg = true;
-                throw new Exception(String.format("El estado 'Despacho' no "
-                        + "está registrado."));
-            }
             for (i = 0; i < solution.size(); i++) {
                 Vehiculo vehiculo = vehiculos.get(i % vehiculos.size());
                 List<Pedido> subpedidos;
@@ -159,9 +148,15 @@ public class AlgoritmoHelper extends BaseHelper {
                 reparto.setTienda(repartidor.getTienda());
                 session.save(reparto);
                 for (j = 0; j < subpedidos.size(); j++) {
+                    PedidoHelper helperPedido = new PedidoHelper();
                     Pedido subpedido = subpedidos.get(j);
                     subpedido.setReparto(reparto);
-                    subpedido.setEstado(estadoPedido);
+                    try {
+                        helperPedido.cambiarPedidoEstado(subpedido, "Despacho");
+                    } catch (Exception ex) {
+                        customMsg = true;
+                        throw ex;
+                    }
                     subpedido.setSecuenciaReparto(j);
                     session.save(subpedido);
                 }
