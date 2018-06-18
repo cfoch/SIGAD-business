@@ -43,9 +43,6 @@ public class ProductoDescuento {
     //Fk
     @ManyToOne
     private Producto producto;
-    @ManyToMany
-    private Set<Usuario> usuarios = new HashSet<>();
-
     public ProductoDescuento() {
     }
 

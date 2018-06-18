@@ -63,8 +63,6 @@ public class Usuario {
     @OneToMany(mappedBy = "cliente")
     private Set<Pedido> pedidoCliente = new HashSet<Pedido>();
     @ManyToMany(mappedBy = "usuarios", cascade = {CascadeType.ALL})
-    private Set<ProductoDescuento> descuentos = new HashSet<ProductoDescuento>();
-    @ManyToMany(mappedBy = "usuarios", cascade = {CascadeType.ALL})
     private Set<Producto> favoritos = new HashSet<>();
     @ManyToMany(mappedBy = "clientes", cascade = {CascadeType.ALL})
     private Set<ClienteDescuento> descuentoCliente = new HashSet<ClienteDescuento>();
@@ -378,20 +376,6 @@ public class Usuario {
     }
 
     /**
-     * @return the descuentos
-     */
-    public Set<ProductoDescuento> getDescuentos() {
-        return descuentos;
-    }
-
-    /**
-     * @param descuentos the descuentos to set
-     */
-    public void setDescuentos(Set<ProductoDescuento> descuentos) {
-        this.descuentos = descuentos;
-    }
-
-    /**
      * @return the favoritos
      */
     public Set<Producto> getFavoritos() {
@@ -403,6 +387,20 @@ public class Usuario {
      */
     public void setFavoritos(Set<Producto> favoritos) {
         this.favoritos = favoritos;
+    }
+
+    /**
+     * @return the descuentoCliente
+     */
+    public Set<ClienteDescuento> getDescuentoCliente() {
+        return descuentoCliente;
+    }
+
+    /**
+     * @param descuentoCliente the descuentoCliente to set
+     */
+    public void setDescuentoCliente(Set<ClienteDescuento> descuentoCliente) {
+        this.descuentoCliente = descuentoCliente;
     }
 
     /**

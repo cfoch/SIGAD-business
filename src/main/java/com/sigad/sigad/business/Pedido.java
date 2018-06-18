@@ -46,6 +46,9 @@ public class Pedido {
     private double cooXDireccion;
     @NotNull
     private double cooYDireccion;
+    private String rucFactura;
+    private String nombreEmpresa;
+    
     @ManyToOne(optional = false)
     private PedidoEstado estado;
     private String turno;
