@@ -60,7 +60,7 @@ public class RegistrarComboProductosController implements Initializable {
     /**
      * Initializes the controller class.
      */
-    public static final String viewPath = "/com/sigad/sigad/descuentos/view/registrarComboProductos.fxml";
+    public static final String viewPath = "/com/sigad/sigad/descuentos/view/RegistrarComboProductos.fxml";
 
     @FXML
     private Label lblError;
