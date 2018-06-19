@@ -70,7 +70,7 @@ public class ReportesController implements Initializable {
         DirectoryChooser dirChooser = new DirectoryChooser();
         String downloadDir = dirChooser.showDialog(currentStage).getAbsolutePath() + "/template.xls";
         if(downloadDir != null){
-            reporteGenerator.reporte(downloadDir, "Ventas.jrxml","Reporte de Ventas");
+            reporteGenerator.reporte(downloadDir, "/home/jorgito-stark/Desktop/Reports/Ventas.jrxml","Reporte de Ventas");
         }
     }
     
@@ -79,7 +79,7 @@ public class ReportesController implements Initializable {
         DirectoryChooser dirChooser = new DirectoryChooser();
         String downloadDir = dirChooser.showDialog(currentStage).getAbsolutePath() + "/template.xls";
         if(downloadDir != null){
-            reporteGenerator.reporte(downloadDir, "Insumos.jrxml","Reporte de Insumos");
+            reporteGenerator.reporte(downloadDir, "/home/jorgito-stark/Desktop/Reports/Insumos.jrxml","Reporte de Insumos");
         }
     }
     
@@ -88,7 +88,7 @@ public class ReportesController implements Initializable {
         DirectoryChooser dirChooser = new DirectoryChooser();
         String downloadDir = dirChooser.showDialog(currentStage).getAbsolutePath() + "/template.xls";
         if(downloadDir != null){
-            reporteGenerator.reporte(downloadDir, "Favoritos.jrxml","Reporte de Productos Favoritos");
+            reporteGenerator.reporte(downloadDir, "/home/jorgito-stark/Desktop/Reports/Favoritos.jrxml","Reporte de Productos Favoritos");
         }
     }
     
