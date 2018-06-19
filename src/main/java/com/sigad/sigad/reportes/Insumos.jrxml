@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[SELECT P.nombre as proveedor, I.nombre as insumo, SUM(MT.cantidadmovimiento) as total, date_trunc('month', MT.fecha) as MES , T.direccion as tienda
+FROM proveedor P, insumo I, tienda T, proveedorinsumo PI, movimientostienda MT, ordencompra OC, detalleordencompra DOC, loteinsumo LI
+WHERE MT.tipomovimiento_id = (select id from tipomovimiento where nombre = 'Ingreso') and P.id = OC.proveedor_id and OC.id = DOC.orden_id and DOC.loteinsumo_id = LI.id and LI.id = MT.loteinsumo_id and MT.tienda_id = T.id
+GROUP BY P.nombre, date_trunc('month', MT.fecha), I.nombre, T.direccion;]]>
+	</queryString>
+	<field name="proveedor" class="java.lang.String"/>
+	<field name="insumo" class="java.lang.String"/>
+	<field name="total" class="java.lang.Long"/>
+	<field name="mes" class="java.sql.Timestamp"/>
+	<field name="tienda" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="51" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="554" height="48"/>
+				<textElement textAlignment="Center">
+					<font size="24" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Módulo de Reportes SIGAD]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="554" height="25" forecolor="#FF0000"/>
+				<textElement textAlignment="Center">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Reporte de Insumos]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="22" splitType="Stretch">
+			<staticText>
+				<reportElement x="28" y="0" width="100" height="20"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Proveedor]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="127" y="2" width="100" height="20"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Insumo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="227" y="0" width="100" height="20"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Existencias]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="327" y="0" width="100" height="20"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Mes]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="427" y="0" width="100" height="20"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tienda]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="22" splitType="Stretch">
+			<textField>
+				<reportElement x="27" y="0" width="100" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{proveedor}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="127" y="0" width="100" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{insumo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="227" y="0" width="100" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{total}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="327" y="0" width="100" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.sql.Timestamp"><![CDATA[$F{mes}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="427" y="0" width="100" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{tienda}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="24" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement x="301" y="0" width="214" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.lang.String"><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="515" y="0" width="40" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="yyyy.MMMMM.dd GGG hh:mm aaa">
+				<reportElement x="113" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="1" y="0" width="112" height="20"/>
+				<textElement/>
+				<text><![CDATA[Reporte obtenido el :]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="33" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="3" width="554" height="30"/>
+				<textElement/>
+				<text><![CDATA[Este reporte tiene como finalidad dar seguimiento a los ingresos de insumos, organizados por proveedor, por mes y por tienda]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

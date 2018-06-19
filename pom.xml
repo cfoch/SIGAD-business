@@ -105,10 +105,10 @@
         </dependency>
         <!-- https://mvnrepository.com/artifact/jasperreports/jasperreports -->
         <dependency>
-            <groupId>jasperreports</groupId>
+            <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports</artifactId>
-            <version>3.0.0</version>
+            <version>6.4.0</version>
         </dependency>
-
-    </dependencies>
+ 
+   </dependencies>
 </project>
