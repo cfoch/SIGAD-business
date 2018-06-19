@@ -13,6 +13,7 @@ import com.sigad.sigad.business.Permiso;
 import com.sigad.sigad.controller.cargaMasiva.CargaMasivaViewController;
 import com.sigad.sigad.deposito.controller.FXMLAlmacenIngresoListaOrdenCompraController;
 import com.sigad.sigad.descuentos.controller.MantenimientoDescuentosController;
+import com.sigad.sigad.estadisticas.controller.ReportesController;
 import com.sigad.sigad.pedido.controller.MantenimientoPedidosController;
 import com.sigad.sigad.pedido.controller.SeleccionarProductosController;
 import com.sigad.sigad.insumos.controller.ListaInsumoController;
@@ -138,8 +139,6 @@ public class HomeController implements Initializable {
                                     node = (Node) FXMLLoader.load(HomeController.this.getClass().getResource(MantenimientoPedidosController.viewPath));
                                 }else if(name.equals("Insumos")){
                                     node = (Node) FXMLLoader.load(HomeController.this.getClass().getResource(ListaInsumoController.viewPath));
-                                }else if(name.equals("Productos")){
-                                    node = (Node) FXMLLoader.load(HomeController.this.getClass().getResource(ProductosManagementController.viewPath));
                                 }else if(name.equals("Descuentos")){
                                     node = (Node) FXMLLoader.load(HomeController.this.getClass().getResource(MantenimientoDescuentosController.viewPath));
                                 }else if(name.equals("Personal")){
@@ -167,8 +166,9 @@ public class HomeController implements Initializable {
                                 }else if(name.equals("Tiendas")){
                                     node = (Node) FXMLLoader.load(getClass().getResource(TiendaController.viewPath));
                                 }else if(name.equals("Perfiles")){
-                                    node = (Node) FXMLLoader.load(HomeController.this.getClass().getResource(PerfilController.viewPath));
+                                    node= (Node) FXMLLoader.load(HomeController.this.getClass().getResource(PerfilController.viewPath));
                                 }else if(name.equals("Estadísticas")){
+                                    node = (Node) FXMLLoader.load(HomeController.this.getClass().getResource(ReportesController.viewPath));
                                 }else if(name.equals("Carga Masiva")){
                                     node = (Node) FXMLLoader.load(getClass().getResource(CargaMasivaViewController.viewPath));
                                 }else if(name.equals("Configuraciones")){

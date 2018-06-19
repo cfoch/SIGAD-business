@@ -44,23 +44,23 @@ public class GenerarReportes {
     }
     
     // rutaFinal se refiere a la ruta donde se guardara el archivo, no incluya el nombre del archivo ni la extension
-    public void reporteInsumos(String rutaFinal){
+    public void reporte(String rutaFinal, String fileName, String reportName){
         try {
             //JasperReport report = (JasperReport) JRLoader.loadObjectFromFile("Insumos.jasper");
-            JasperReport report = JasperCompileManager.compileReport("Insumos.jrxml");
+            JasperReport report = JasperCompileManager.compileReport(fileName);
             Map parameters = new HashMap();
             iniciarConexion();
             JasperPrint jprint = JasperFillManager.fillReport(report, parameters, conn);
             JasperViewer jv = new JasperViewer(jprint, false);
-            jv.setTitle("Reporte de Insumos");
+            jv.setTitle(reportName);
             jv.setVisible(true);
             conn.close();
             // exportar PDF
-            generarPDF(jprint, rutaFinal, "ReporteInsumos");
+            generarPDF(jprint, rutaFinal, reportName);
             LOGGER.log(Level.INFO, "Reporte de insumo creado con exito");
         }
         catch(Exception e) {
-            LOGGER.log(Level.SEVERE, "Ocurrio un error al intentar abrir el reporte en pantalla");
+            LOGGER.log(Level.SEVERE, "Ocurrio un error al intentar abrir el reporte %s en pantalla", reportName);
             JOptionPane.showMessageDialog(null, "Error al mostrar el reporte : " + e);
         }
     }
