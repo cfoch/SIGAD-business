@@ -17,6 +17,7 @@ import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import com.sigad.sigad.app.controller.ErrorController;
 import com.sigad.sigad.app.controller.LoginController;
+import com.sigad.sigad.business.Constantes;
 import com.sigad.sigad.business.DetalleOrdenCompra;
 import com.sigad.sigad.business.Insumo;
 import com.sigad.sigad.business.LoteInsumo;
@@ -271,7 +272,7 @@ public class ListaOrdenesCompraController implements Initializable {
     private void showOptions(){
         JFXButton edit = new JFXButton("Editar");
         JFXButton io = new JFXButton("Ingreso");
-        JFXButton delete = new JFXButton("Eliminar");
+        JFXButton delete = new JFXButton("No hay opciones");
         
         io.setOnAction((ActionEvent event) -> {
             popup.hide();
@@ -335,7 +336,7 @@ public class ListaOrdenesCompraController implements Initializable {
                     movNew.setCantidadMovimiento(loteNew.getStockLogico());
                     movNew.setFecha(new Date());
                     movNew.setTienda(currentStore);
-                    movNew.setTipoMovimiento(helpertm.getTipoMov("Ingreso"));
+                    movNew.setTipoMovimiento(helpertm.getTipoMov(Constantes.TIPO_MOVIMIENTO_ENTRADA_FISICA));
                     movNew.setTrabajador(LoginController.user);
                     movNew.setLoteInsumo(loteNew);
                     helpermo.saveMovement(movNew);
@@ -359,7 +360,7 @@ public class ListaOrdenesCompraController implements Initializable {
         delete.setOnAction((ActionEvent event) -> {
             popup.hide();
             ////VALIDAR QUE NO SE PUEDA ELIMINAR SI YA ESTA EN ESTADO DESPACHADA
-            deleteOrdenesDialog();
+            //deleteOrdenesDialog();
         });
         
         edit.setPadding(new Insets(20));
@@ -377,7 +378,7 @@ public class ListaOrdenesCompraController implements Initializable {
            popup.setPopupContent(vBox);
         }
         else {
-           vBox = new VBox( delete);
+           vBox = new VBox(delete);
            popup = new JFXPopup();
            popup.setPopupContent(vBox);
         }

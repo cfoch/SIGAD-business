@@ -18,6 +18,7 @@ import com.jfoenix.validation.NumberValidator;
 import com.jfoenix.validation.RequiredFieldValidator;
 import com.sigad.sigad.app.controller.ErrorController;
 import com.sigad.sigad.app.controller.LoginController;
+import com.sigad.sigad.business.Constantes;
 import com.sigad.sigad.business.Insumo;
 import com.sigad.sigad.business.LoteInsumo;
 import com.sigad.sigad.business.MovimientosTienda;
@@ -181,7 +182,8 @@ public class RegistrarIngresoSalidaInsumoController implements Initializable {
         ArrayList<LoteInsumo> insumosSpecific = helperli.getLoteInsumosEspecificPositive(LoginController.user.getTienda(),insumo);
         if(tipos!= null) {
             tipos.forEach((i)->{
-                if(!(i.getNombre().equals("Salida") && insumosSpecific == null)){
+                if(!(i.getNombre().equals(Constantes.TIPO_MOVIMIENTO_SALIDA_FISICA) && insumosSpecific == null) && !i.getNombre().equals(Constantes.TIPO_MOVIMIENTO_SALIDA_LOGICA)
+                            && !i.getNombre().equals(Constantes.TIPO_MOVIMIENTO_ENTRADA_LOGICA)){
                    cbxTipo.getItems().add(i); 
                 }
             });
@@ -212,10 +214,10 @@ public class RegistrarIngresoSalidaInsumoController implements Initializable {
         
         cbxTipo.valueProperty().addListener((ObservableValue<? extends Object> observable, Object oldValue, Object newValue) -> {
             TipoMovimiento li = (TipoMovimiento) newValue;
-            if(li.getNombre().equals("Entrada")){
+            if(li.getNombre().equals(Constantes.TIPO_MOVIMIENTO_ENTRADA_FISICA)){
                 tblLotes.setDisable(true);
             }
-            else if(li.getNombre().equals("Salida")){
+            else if(li.getNombre().equals(Constantes.TIPO_MOVIMIENTO_SALIDA_FISICA)){
                 tblLotes.setDisable(false);
             }
         });
@@ -275,7 +277,7 @@ public class RegistrarIngresoSalidaInsumoController implements Initializable {
                 
                 ArrayList<LoteInsumo> lotesInsumo = helperli.getLoteInsumosEspecific(currentStore, insumo);
                 
-                if(cbxTipo.getValue().getNombre().equals("Entrada")){
+                if(cbxTipo.getValue().getNombre().equals(Constantes.TIPO_MOVIMIENTO_ENTRADA_FISICA)){
 
                     if(lotesInsumo !=null) {
                         for (int i = 0; i < lotesInsumo.size(); i++) {
@@ -374,7 +376,7 @@ public class RegistrarIngresoSalidaInsumoController implements Initializable {
                         }
                     }
                 }
-                else if(cbxTipo.getValue().getNombre().equals("Salida")){
+                else if(cbxTipo.getValue().getNombre().equals(Constantes.TIPO_MOVIMIENTO_SALIDA_FISICA)){
                     
                     if(lotesInsumo !=null){
                         //validar que se debe selecionar un lote insumo(falta)

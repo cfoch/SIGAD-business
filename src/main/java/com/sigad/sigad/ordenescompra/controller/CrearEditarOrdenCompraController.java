@@ -16,18 +16,22 @@ import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import com.jfoenix.validation.NumberValidator;
 import com.sigad.sigad.app.controller.ErrorController;
 import com.sigad.sigad.app.controller.LoginController;
+import com.sigad.sigad.business.Constantes;
 import com.sigad.sigad.business.DetalleOrdenCompra;
 import com.sigad.sigad.business.Insumo;
 import com.sigad.sigad.business.LoteInsumo;
+import com.sigad.sigad.business.MovimientosTienda;
 import com.sigad.sigad.business.OrdenCompra;
 import com.sigad.sigad.business.Proveedor;
 import com.sigad.sigad.business.ProveedorInsumo;
 import com.sigad.sigad.business.Tienda;
 import com.sigad.sigad.business.helpers.InsumosHelper;
 import com.sigad.sigad.business.helpers.LoteInsumoHelper;
+import com.sigad.sigad.business.helpers.MovimientoHelper;
 import com.sigad.sigad.business.helpers.OrdenCompraHelper;
 import com.sigad.sigad.business.helpers.ProveedorHelper;
 import com.sigad.sigad.business.helpers.TiendaHelper;
+import com.sigad.sigad.business.helpers.TipoMovimientoHelper;
 import com.sigad.sigad.insumos.controller.ListaInsumoController.InsumoViewer;
 import java.net.URL;
 import java.text.Format;
@@ -279,8 +283,29 @@ public class CrearEditarOrdenCompraController implements Initializable {
                 
                 OrdenCompraHelper helper = new OrdenCompraHelper();
                 //creacion
-                if(ListaOrdenesCompraController.isOrdenCreate){
+                if(ListaOrdenesCompraController.isOrdenCreate){                   
                     Integer id = helper.saveOrden(orden, listaLotes);
+                    
+                    MovimientoHelper helpermo= new MovimientoHelper();
+                    TipoMovimientoHelper helpertm = new TipoMovimientoHelper();
+                    OrdenCompraHelper helperoctemp = new OrdenCompraHelper();
+                    ArrayList<DetalleOrdenCompra> detallesOrdenes = helperoctemp.getDetalles(id);
+                    if(detallesOrdenes!=null){
+                        for (int i = 0; i < detallesOrdenes.size(); i++) {
+
+                            //registrar movimiento
+                            MovimientosTienda movNew = new MovimientosTienda();
+                            movNew.setCantidadMovimiento(detallesOrdenes.get(i).getLoteInsumo().getStockLogico());
+                            movNew.setFecha(new Date());
+                            movNew.setTienda(currentStore);
+                            movNew.setTipoMovimiento(helpertm.getTipoMov(Constantes.TIPO_MOVIMIENTO_ENTRADA_LOGICA));
+                            movNew.setTrabajador(LoginController.user);
+                            movNew.setLoteInsumo(detallesOrdenes.get(i).getLoteInsumo());
+                            helpermo.saveMovement(movNew);
+
+                        }
+                    }
+                    
                     if(id != null){
                         ListaOrdenesCompraController.updateTable(orden);
                         ListaOrdenesCompraController.ordenDialog.close();
