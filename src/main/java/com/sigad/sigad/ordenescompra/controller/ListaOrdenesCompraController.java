@@ -343,10 +343,11 @@ public class ListaOrdenesCompraController implements Initializable {
 
                 }
             }
-            
             helperi.close();
+            helperoctemp.close();
+            helpermo.close();
+            helpertm.close();
             helperli.close();
-            helperoc.close();
         });
         edit.setOnAction((ActionEvent event) -> {
             popup.hide();

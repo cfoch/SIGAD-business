@@ -306,6 +306,10 @@ public class CrearEditarOrdenCompraController implements Initializable {
                         }
                     }
                     
+                    helpertm.close();
+                    helpermo.close();
+                    helperoctemp.close();
+                    
                     if(id != null){
                         ListaOrdenesCompraController.updateTable(orden);
                         ListaOrdenesCompraController.ordenDialog.close();
@@ -323,6 +327,7 @@ public class CrearEditarOrdenCompraController implements Initializable {
 //                        error.loadDialog("Error", helper.getErrorMessage(), "Ok", hiddenSp);
 //                    }
                 }
+                
                 helper.close();
             }
         });
