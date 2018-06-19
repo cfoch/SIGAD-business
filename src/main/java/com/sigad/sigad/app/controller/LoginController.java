@@ -66,6 +66,7 @@ public class LoginController implements Initializable {
     
     public static Stage stage;
     public static Usuario user = null;
+    public static int MAX_PERMISOS= 13;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -106,6 +107,8 @@ public class LoginController implements Initializable {
                 list.add(new Permiso(6, "Productos", "STORE"));
                 list.add(new Permiso(10, "Movimientos", "CLOCK_FAST"));
                 
+                MAX_PERMISOS = list.size();
+                
                 for (Permiso p : list) {
                     PermisoHelper helper1 = new PermisoHelper();
                     helper1.savePermission(p);
@@ -113,7 +116,7 @@ public class LoginController implements Initializable {
                 }
                 
                 //Crear un perfil de superadmin
-                Perfil adminProfile = new Perfil("SuperAdmin", "Super admini can create stores", true, list);
+                Perfil adminProfile = new Perfil("SuperAdmin", "Super admini can create stores", true, list, false);
 
                 String hash = encrypt("admin");
 

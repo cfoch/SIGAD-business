@@ -121,6 +121,7 @@ public class DatosPedidoController implements Initializable {
         pedido.getCliente().getClienteDirecciones().forEach((t) -> {
             direcciones.add(t);
         });
+        cmbDireccion.hide();
         cmbTarjeta.getItems().addAll("Visa", "Mastercard");
         cmbInicio.getItems().addAll("M", "T", "N");
 

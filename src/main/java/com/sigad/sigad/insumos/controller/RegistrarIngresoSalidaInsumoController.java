@@ -158,9 +158,9 @@ public class RegistrarIngresoSalidaInsumoController implements Initializable {
         addColumns();
         loadInsumo();
         fillData();
+        initValidator();
         addDialogBtns();
     }
-    
     public void loadInsumo(){
         InsumosHelper helper = new InsumosHelper();
         insumo = helper.getInsumo(ListaInsumoController.selectedInsumo.getId());
@@ -172,7 +172,6 @@ public class RegistrarIngresoSalidaInsumoController implements Initializable {
         }
         helper.close();
     }
-    
     public void fillData(){
         TipoMovimientoHelper helpertm = new TipoMovimientoHelper();
        
@@ -231,7 +230,6 @@ public class RegistrarIngresoSalidaInsumoController implements Initializable {
         pckDate.setValue(date);
         helperli.close();
     }
-    
     private void setColumns(){
         codigoCol.setCellValueFactory((TreeTableColumn.CellDataFeatures<LoteInsumoViewer, String> param) -> param.getValue().getValue().getCodigo()
         );
@@ -240,7 +238,6 @@ public class RegistrarIngresoSalidaInsumoController implements Initializable {
         stockCol.setCellValueFactory((TreeTableColumn.CellDataFeatures<LoteInsumoViewer, String> param) -> param.getValue().getValue().getStock()
         );        
     }
-    
     private void addColumns(){
         final TreeItem<LoteInsumoViewer> rootInsumo = new RecursiveTreeItem<>(lotesList,RecursiveTreeObject::getChildren);
         tblLotes.setEditable(false);
@@ -249,7 +246,6 @@ public class RegistrarIngresoSalidaInsumoController implements Initializable {
         tblLotes.setShowRoot(false);
         
     }
-    
     public void updateTable(LoteInsumo lote){
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         LoteInsumoViewer loteinsumoviewer = new LoteInsumoViewer(lote.getId().toString(),df.format(lote.getFechaVencimiento()),lote.getStockFisico().toString());
@@ -279,7 +275,7 @@ public class RegistrarIngresoSalidaInsumoController implements Initializable {
                 
                 ArrayList<LoteInsumo> lotesInsumo = helperli.getLoteInsumosEspecific(currentStore, insumo);
                 
-                if(cbxTipo.getValue().getNombre().equals("Ingreso")){
+                if(cbxTipo.getValue().getNombre().equals("Entrada")){
 
                     if(lotesInsumo !=null) {
                         for (int i = 0; i < lotesInsumo.size(); i++) {
@@ -373,7 +369,7 @@ public class RegistrarIngresoSalidaInsumoController implements Initializable {
                             }
                         }
                         else{
-                             ErrorController error = new ErrorController();
+                            ErrorController error = new ErrorController();
                             error.loadDialog("Error", helperli.getErrorMessage(), "Ok", hiddenSp);
                         }
                     }
@@ -430,8 +426,6 @@ public class RegistrarIngresoSalidaInsumoController implements Initializable {
                         ErrorController error = new ErrorController();
                         error.loadDialog("Error", "No puede realizar una salida, no existe ningun lote del insumo", "Ok", hiddenSp);
                     }
-                    
-                    
                 }
                 helperi.close();
                 helpermo.close();
@@ -450,10 +444,8 @@ public class RegistrarIngresoSalidaInsumoController implements Initializable {
         containerPane.getChildren().add(save);
         containerPane.getChildren().add(cancel);
     }
-    
     public boolean validateFields() {
-        Boolean cond = Boolean.TRUE;
-        if(tblLotes.getSelectionModel()== null){
+        if(cbxTipo.getValue().getNombre().equals("Salida") && tblLotes.getSelectionModel().getSelectedItem() == null){
             ErrorController error = new ErrorController();
             error.loadDialog("Error","Debe seleccionar un lote de insumos", "Ok", hiddenSp);
             return false;
@@ -467,7 +459,6 @@ public class RegistrarIngresoSalidaInsumoController implements Initializable {
             return true;
         } 
     }
-    
     private void initValidator() {
         RequiredFieldValidator r;
         NumberValidator n;
@@ -491,7 +482,6 @@ public class RegistrarIngresoSalidaInsumoController implements Initializable {
             }
         });
     }
-    
     public void fillFields(){
         
         movimiento.setCantidadMovimiento(Integer.parseInt(cantidadTxt.getText()));

@@ -10,6 +10,7 @@ import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXScrollPane;
 import com.jfoenix.controls.JFXTextField;
 import com.sigad.sigad.app.controller.ErrorController;
+import com.sigad.sigad.app.controller.LoginController;
 import com.sigad.sigad.business.Perfil;
 import com.sigad.sigad.business.Permiso;
 import com.sigad.sigad.business.helpers.PerfilHelper;
@@ -19,11 +20,15 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.function.Consumer;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TreeItem;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -66,12 +71,9 @@ public class CrearEditarPermisoController implements Initializable {
             loadFields();
         }
         
-        //Inmediate validations
-        //initValidator();
-        
         //initProfileTable();
         initPermissionPicker();
-    }    
+    }
     
     private void addDialogBtns() {
         JFXButton save = new JFXButton("Guardar");
@@ -86,38 +88,44 @@ public class CrearEditarPermisoController implements Initializable {
                     PerfilController.permissionDialog.close();
                 }
                 
-                int indexPermission = getSelectedIndex(permissionListView, "Permisos");
-                if(indexPermission<0){
+                int[] indexPermission = getSelectedIndex(permissionListView, "Permisos");
+                if(indexPermission[0]==-1 && indexPermission[1]==-1){
                     ErrorController error = new ErrorController();
                     error.loadDialog("Error", "Debe seleccionar al menos un registro de la tabla Permisos", "Ok", hiddenSp);
                     return;
-                }
-                
-                PermisoHelper helper = new PermisoHelper();
-                Permiso p = helper.getPermission(permissionListView.getItems().get(indexPermission).getText());
-                
-                PerfilHelper perfilHelper = new PerfilHelper();
-                Perfil temp = perfilHelper.getProfile(perfil.getNombre());
-                if(p != null){
-                    Set<Permiso> permisos = temp.getPermisos();
-                    permisos.add(p);
-                    perfil.setPermisos(permisos);
-                    
-                    boolean ok = perfilHelper.updateProfile(perfil);
-                    
-                    if(ok){
-                        PerfilController.updatePermissionData(p);
-                        PerfilController.permissionDialog.close();
-                    }else{
-                        ErrorController error = new ErrorController();
-                        error.loadDialog("Error", perfilHelper.getErrorMessage(), "Ok", hiddenSp);
-                    }
-                    
-                }else{
-                    ErrorController error = new ErrorController();
-                    error.loadDialog("Error", helper.getErrorMessage(), "Ok", hiddenSp);
-                }
+                }else if(indexPermission[0]!=-1){
+                    for (int i = 0; i < indexPermission.length; i++) {
+                        if(indexPermission[i]!= -1){
+                            PermisoHelper helper = new PermisoHelper();
+                            Permiso p = helper.getPermission(permissionListView.getItems().get(indexPermission[i]).getText());
 
+                            PerfilHelper perfilHelper = new PerfilHelper();
+                            Perfil temp = perfilHelper.getProfile(perfil.getNombre());
+                            if(p != null){
+                                Set<Permiso> permisos = temp.getPermisos();
+                                permisos.add(p);
+                                perfil.setPermisos(permisos);
+
+                                boolean ok = perfilHelper.updateProfile(perfil);
+
+                                if(ok){
+                                    PerfilController.updatePermissionData(p);
+                                    PerfilController.permissionDialog.close();
+                                }else{
+                                    ErrorController error = new ErrorController();
+                                    error.loadDialog("Error", perfilHelper.getErrorMessage(), "Ok", hiddenSp);
+                                }
+                            }else{
+                                ErrorController error = new ErrorController();
+                                error.loadDialog("Error", helper.getErrorMessage(), "Ok", hiddenSp);
+                            }
+                            perfilHelper.close();
+                            helper.close();
+                        }else{
+                            break;
+                        }
+                    }
+                }
             }
         });
         
@@ -133,17 +141,27 @@ public class CrearEditarPermisoController implements Initializable {
         containerPane.getChildren().add(cancel);
     }
     
-    private int getSelectedIndex(JFXListView<Label> listView, String tableName) {
-        int selected = -1;
+    private int[] getSelectedIndex(JFXListView<Label> listView, String tableName) {
+        int[] selected = new int[LoginController.MAX_PERMISOS];
+        for (int i = 0; i < selected.length; i++) {
+            selected[i]=-1;
+        }
         int count = listView.getSelectionModel().getSelectedItems().size();
         if( count > 1){
-            ErrorController error = new ErrorController();
-            error.loadDialog("Atención", "Debe seleccionar solo un registro de la tabla" + tableName, "Ok", hiddenSp);
+//            ErrorController error = new ErrorController();
+//            error.loadDialog("Atención", "Debe seleccionar solo un registro de la tabla" + tableName, "Ok", hiddenSp);
+            for (int i = 0; i < listView.getSelectionModel().getSelectedIndices().size(); i++) {
+                selected[i] = listView.getSelectionModel().getSelectedIndices().get(i);
+            }
+            System.out.println("Lista de seleccionados");
+            for (int i = 0; i < selected.length; i++) {
+                System.out.print(selected[i]);
+            }
         }else if(count<=0){
             ErrorController error = new ErrorController();
             error.loadDialog("Atención", "Debe seleccionar al menos un registro de la tabla" + tableName, "Ok", hiddenSp);
         }else{
-            selected  = listView.getSelectionModel().getSelectedIndex();
+            selected[0]  = listView.getSelectionModel().getSelectedIndex();
         }
         return selected;
     }
@@ -159,6 +177,7 @@ public class CrearEditarPermisoController implements Initializable {
             perfil.setDescripcion(temp.getDescripcion());
             perfil.setPermisos(temp.getPermisos());
             perfil.setActivo(temp.isActivo());
+            perfil.setEditable(temp.isEditable());
             
             profileName.setText("Selecciona un permiso para " + perfil.getNombre());
         }
@@ -173,6 +192,7 @@ public class CrearEditarPermisoController implements Initializable {
             error.loadDialog("Error", "No se pudo obtener el perfil seleccionado", "Ok", hiddenSp);
             return;
         }
+        
         permissionListView = new JFXListView<>();
         
         Set<Permiso> currPermissions= ptemp.getPermisos();
@@ -205,7 +225,7 @@ public class CrearEditarPermisoController implements Initializable {
         
         permissionListView.getStyleClass().add("mylistview");
         permissionListView.setStyle("-fx-background-color:WHITE");
-        
+        permissionListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);  
         permissionPane.getChildren().add(permissionListView);
     }
 

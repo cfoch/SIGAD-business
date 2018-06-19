@@ -74,8 +74,6 @@ public class OrdenCompraHelper {
         }
         return id;
     }
-    
-    
     public ArrayList<OrdenCompra> getOrdenes(){
         ArrayList<OrdenCompra> ordenes = null;
         Query query = null;
@@ -89,7 +87,19 @@ public class OrdenCompraHelper {
         }
         return ordenes;
     }
-    
+    public ArrayList<OrdenCompra> getOrdenesUser(Long id){
+        ArrayList<OrdenCompra> ordenes = null;
+        Query query = null;
+        try {
+            query = session.createQuery("from OrdenCompra where usuario_id = " + id);
+            if(!query.list().isEmpty()){
+                ordenes = (ArrayList<OrdenCompra>)query.list();
+            }
+        } catch (Exception e) {
+            errorMessage = e.getMessage();
+        }
+        return ordenes;
+    }
     public ArrayList<DetalleOrdenCompra> getDetalles(Integer id){
         ArrayList<DetalleOrdenCompra> ordenes = null;
         Query query = null;
@@ -103,7 +113,6 @@ public class OrdenCompraHelper {
         }
         return ordenes;
     }
-    
     public boolean updateOrdenCompra(OrdenCompra tOld){
         boolean ok = false;
         try {
@@ -131,5 +140,18 @@ public class OrdenCompraHelper {
             this.errorMessage = e.getMessage();
         }
         return ok;
+    }
+    public OrdenCompra getOrdenCompra(Integer id){
+        OrdenCompra orden = null;
+        Query query = null;
+        try {
+            query = session.createQuery("from OrdenCompra where id=" + id);
+            if(!query.list().isEmpty()){
+                orden = (OrdenCompra) query.list().get(0);
+            }
+        } catch (Exception e) {
+            this.errorMessage = e.getMessage();
+        }
+        return orden;
     }
 }

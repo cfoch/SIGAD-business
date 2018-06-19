@@ -36,3 +36,11 @@
 .jfx-popup-container {
     -fx-background-color: blue;
 }
+
+.tab{
+    -fx-background-color: #455A64 ;
+}
+
+.tab-header-background{
+    -fx-background-color: #455A64 ;
+}

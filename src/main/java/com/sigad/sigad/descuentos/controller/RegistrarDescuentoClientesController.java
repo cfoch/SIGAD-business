@@ -17,6 +17,7 @@ import java.net.URL;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.beans.value.ObservableValue;
@@ -43,6 +44,9 @@ public class RegistrarDescuentoClientesController implements Initializable {
      */
     @FXML
     private Label lblError;
+
+    @FXML
+    private Label lblError1;
 
     @FXML
     private JFXDatePicker txtFechaInicio;
@@ -73,6 +77,7 @@ public class RegistrarDescuentoClientesController implements Initializable {
     private ClienteDescuento pc;
 
     public static final String viewPath = "/com/sigad/sigad/descuentos/view/registrarDescuentoClientes.fxml";
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -96,6 +101,7 @@ public class RegistrarDescuentoClientesController implements Initializable {
             txtValue.setText(pct.toString());
             lblunit.setText("PEN");
         } else {
+            txtValue.setText(pct.toString());
             lblunit.setText("ped.");
         }
 
@@ -133,7 +139,20 @@ public class RegistrarDescuentoClientesController implements Initializable {
                 }
             }
         });
-        
+        txtValue.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*(\\.\\d*)?")) {
+                txtValue.setText(oldValue);
+            } else {
+                if (newValue.length() > 0) {
+                    Double n = Double.valueOf(newValue);
+                    System.out.println(n);
+                    if (n > 100.0 || n < 0.0) {
+                        txtValue.setText(oldValue);
+                    }
+                }
+            }
+        });
+
         r = new RequiredFieldValidator();
         r.setIcon(new MaterialDesignIconView(MaterialDesignIcon.CLOSE_CIRCLE));
         r.setMessage("Campo obligatorio");
@@ -178,7 +197,7 @@ public class RegistrarDescuentoClientesController implements Initializable {
             try {
 
                 if (newValue.length() == 10) {
-                    LocalDate newDate = LocalDate.parse(newValue);
+                    LocalDate newDate = LocalDate.parse(newValue, formatter);
                     System.out.println("Valor actual de END FIELD " + txtFechaFin.getValue());
                     System.out.println("Valor actual de START FIELD " + txtFechaInicio.getValue());
 
@@ -199,7 +218,7 @@ public class RegistrarDescuentoClientesController implements Initializable {
             try {
 
                 if (newValue.length() == 10) {
-                    LocalDate newDate = LocalDate.parse(newValue);
+                    LocalDate newDate = LocalDate.parse(newValue, formatter);
 
                     if (newDate.isBefore(txtFechaInicio.getValue())) {
                         txtFechaFin.getEditor().textProperty().setValue("");
@@ -235,7 +254,7 @@ public class RegistrarDescuentoClientesController implements Initializable {
         } else if (txtCondicion.validate() && !GeneralHelper.isNumericDouble(txtValue.getText())) {
             lblError.setText("Verifique el rango de fechas");
             return false;
-        }else if (txtFechaInicio.getValue().isAfter(txtFechaFin.getValue())) {
+        } else if (txtFechaInicio.getValue().isAfter(txtFechaFin.getValue())) {
             lblError.setText("Verifique el rango de fechas");
             return false;
         } else if (txtFechaInicio.getValue() == null) {
@@ -244,7 +263,12 @@ public class RegistrarDescuentoClientesController implements Initializable {
         } else if (txtFechaFin.getValue() == null) {
             lblError.setText("Verifique el rango de fechas");
             return false;
+        } else if (cmbTiposDescuento.getValue() == null) {
+            lblError1.setText("El combo no puede ser null");
+            return false;
         } else {
+            lblError.setText("");
+            lblError1.setText("");
             return true;
         }
     }
@@ -269,8 +293,10 @@ public class RegistrarDescuentoClientesController implements Initializable {
     @FXML
     void handleAction(ActionEvent event) {
         if (cmbTiposDescuento.getValue().equals(Constantes.TIPO_DCTO_USUARIO_X_MONTO)) {
+            txtCondicion.setPromptText("Monto a superar");
             lblunit.setText("PEN");
         } else {
+            txtCondicion.setPromptText("Minimo comprado");
             lblunit.setText("Unit.");
         }
     }

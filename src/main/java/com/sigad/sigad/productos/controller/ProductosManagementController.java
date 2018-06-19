@@ -13,11 +13,15 @@ import com.jfoenix.controls.JFXTreeTableColumn;
 import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
+import com.sigad.sigad.app.controller.LoginController;
 import com.sigad.sigad.business.Insumo;
+import com.sigad.sigad.business.LoteInsumo;
 import com.sigad.sigad.business.Producto;
 import com.sigad.sigad.business.ProductoCategoria;
 import com.sigad.sigad.business.ProductoFragilidad;
 import com.sigad.sigad.business.ProductoInsumo;
+import com.sigad.sigad.business.Tienda;
+import com.sigad.sigad.business.Usuario;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.SimpleStringProperty;
@@ -30,6 +34,7 @@ import javafx.util.Callback;
 import com.sigad.sigad.business.helpers.ProductoHelper;
 import com.sigad.sigad.business.helpers.InsumoHelper;
 import com.sigad.sigad.business.helpers.InsumoHelper.InsumoParser;
+import com.sigad.sigad.business.helpers.LoteInsumoHelper;
 import java.util.ArrayList;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -41,6 +46,8 @@ import org.apache.commons.lang3.StringUtils;
 import com.sigad.sigad.business.helpers.ProductoCategoriaHelper;
 import com.sigad.sigad.business.helpers.ProductoFragilidadHelper;
 import com.sigad.sigad.business.helpers.ProductoInsumoHelper;
+import com.sigad.sigad.business.helpers.TiendaHelper;
+import com.sigad.sigad.personal.controller.PersonalController.User;
 import javafx.event.ActionEvent;
 
 /**
@@ -70,8 +77,13 @@ public class ProductosManagementController implements Initializable {
     private JFXTextField txtPeso;
     @FXML
     private JFXButton saveBtn;
+    @FXML
+    private JFXTextField productPrice;
     private static Producto producto = null;
     private static Boolean update = false;
+    private static Usuario currentUser = LoginController.user;
+    @FXML
+    private JFXTextField filtro;
     /**
      * Initializes the controller class.
      */
@@ -90,6 +102,17 @@ public class ProductosManagementController implements Initializable {
             public void handle(ActionEvent event){
                 saveProduct();
             }
+        });
+        
+        agregarFiltro();
+    }
+    
+    public void agregarFiltro() {
+        filtro.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+            insumoTable.setPredicate((TreeItem<InsumoLista> t) -> {
+                Boolean flag = t.getValue().nombre.getValue().contains(newValue) || t.getValue().precio.getValue().contains(newValue) || t.getValue().cantidad.getValue().contains(newValue) || t.getValue().id.getValue().contains(newValue);
+                return flag;
+            });
         });
     }
     
@@ -137,40 +160,39 @@ public class ProductosManagementController implements Initializable {
         
         if(insumos != null){
             if(this.producto == null){
-                insumos.forEach((p) ->{
-                    Insumo t = p;
-                    insumosList.add(new ProductosManagementController.InsumoLista(
-                        String.valueOf(t.getId()),
-                        t.getNombre(),
-                        String.valueOf(t.getPrecio())
-                    ));
-                });   
+                for (Insumo insumo : insumos) {
+                    String id = String.valueOf(insumo.getId());
+                    String nombre = insumo.getNombre();
+                    String precio = String.valueOf(insumo.getPrecio());
+                    String cantidad = "0";
+                    InsumoLista nuevoInsumoLista = new InsumoLista(id,nombre,precio,cantidad);
+                    insumosList.add(nuevoInsumoLista);
+                }
             }
             else{
                 ArrayList<ProductoInsumo> savedRegisters = productSupplies();
-                insumos.forEach((p) ->{
-                    Insumo t = p;
+                for (Insumo insumo : insumos) {
                     Double ammount = null;
-                    for (ProductoInsumo savedRegister : savedRegisters) {
-                        if(savedRegister.getInsumo().getId() == t.getId())
-                            ammount = savedRegister.getCantidad();
+                    if(savedRegisters != null){
+                        for (ProductoInsumo savedRegister : savedRegisters) {
+                            if(savedRegister.getInsumo().getId() == insumo.getId())
+                                ammount = savedRegister.getCantidad();
+                        }   
                     }
+                    
+                    String id = String.valueOf(insumo.getId());
+                    String nombre = insumo.getNombre();
+                    String precio = String.valueOf(insumo.getPrecio());
+
                     if(ammount != null){
-                        insumosList.add(new ProductosManagementController.InsumoLista(
-                            String.valueOf(t.getId()),
-                            t.getNombre(),
-                            String.valueOf(t.getPrecio()),
-                            String.valueOf(ammount.intValue())
-                        ));                           
+                        InsumoLista nuevoInsumoLista = new InsumoLista(id,nombre,precio,String.valueOf(ammount.intValue()));
+                        insumosList.add(nuevoInsumoLista);
                     }
                     else{
-                        insumosList.add(new ProductosManagementController.InsumoLista(
-                            String.valueOf(t.getId()),
-                            t.getNombre(),
-                            String.valueOf(t.getPrecio())
-                        ));   
+                        InsumoLista nuevoInsumoLista = new InsumoLista(id,nombre,precio,"0");
+                        insumosList.add(nuevoInsumoLista);
                     }
-                });   
+                };   
             }
         }
         
@@ -231,7 +253,7 @@ public class ProductosManagementController implements Initializable {
         this.selectFragilidad.getSelectionModel().select(this.producto.getFragilidad().getDescripcion());
         this.txtDescripcion.setText(this.producto.getDescripcion());
         this.txtPeso.setText(String.valueOf(this.producto.getPeso()));
-        this.finalPrice.setText(String.valueOf(this.producto.getPrecio()));
+        this.productPrice.setText(String.valueOf(this.producto.getPrecio()));
         //productSupplies();
     }
     
@@ -262,6 +284,7 @@ public class ProductosManagementController implements Initializable {
             total += (Double.parseDouble(price) * Integer.parseInt(ammount));
         }
         finalPrice.setText(String.valueOf(total));
+        productPrice.setText(String.valueOf(total));
     }
     
     private ArrayList<InsumoLista> getSelectedItems(){
@@ -300,7 +323,7 @@ public class ProductosManagementController implements Initializable {
         nuevoProducto.setNombre(txtNombre.getText());
         nuevoProducto.setPeso(Double.parseDouble(txtPeso.getText()));
         nuevoProducto.setDescripcion(txtDescripcion.getText());
-        nuevoProducto.setPrecio(Double.parseDouble(finalPrice.getText()));
+        nuevoProducto.setPrecio(Double.parseDouble(productPrice.getText()));
         
         ProductoHelper productoHelper = new ProductoHelper();
         ProductoCategoriaHelper categoriaHelper = new ProductoCategoriaHelper();
@@ -379,17 +402,11 @@ public class ProductosManagementController implements Initializable {
         StringProperty precio;
         StringProperty cantidad;
         
-        public InsumoLista(String id, String nombre, String precio){
-            this.id = new SimpleStringProperty(id);
-            this.nombre = new SimpleStringProperty(nombre);
-            this.precio = new SimpleStringProperty(precio);
-            this.cantidad = new SimpleStringProperty("0");
-        }
         
         public InsumoLista(String id, String nombre, String precio, String cantidad){
             this.id = new SimpleStringProperty(id);
             this.nombre = new SimpleStringProperty(nombre);
-            this.precio = new SimpleStringProperty(precio);
+            setPrecio(precio);
             this.cantidad = new SimpleStringProperty(cantidad);
         }
         
@@ -412,6 +429,32 @@ public class ProductosManagementController implements Initializable {
         }
         public void setCantidad(String cantidad){
             this.cantidad = new SimpleStringProperty(cantidad);
+        }
+        public void setPrecio(String precio){
+            //Usuario user = ProductosManagementController.currentUser;
+            TiendaHelper tiendaHelper = new TiendaHelper();
+            LoteInsumoHelper loteInsumoHelper = new LoteInsumoHelper();
+                    
+            Tienda tienda = tiendaHelper.getStore(currentUser.getTienda().getId().intValue());
+            
+            ArrayList<LoteInsumo> lotes = loteInsumoHelper.getLoteInsumos(tienda);
+            Double price = 0.0;
+            Integer count = 0;
+            
+            if(lotes != null){
+                for (LoteInsumo lote : lotes) {
+                    if(lote.getInsumo().getId() == Long.parseLong(this.id.getValue()) ){
+                        price += lote.getCostoUnitario();
+                        count++;
+                    }
+                }   
+            }
+            if (count > 0)
+                price = price/count;
+            else
+                price = 0.0;
+            
+            this.precio = new SimpleStringProperty(String.valueOf(price));
         }
     }
     

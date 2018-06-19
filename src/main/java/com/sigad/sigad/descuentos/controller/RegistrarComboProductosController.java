@@ -18,22 +18,14 @@ import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIconView;
 import java.net.URL;
 import java.sql.Date;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.ResourceBundle;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -50,6 +42,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableCell;
 import javafx.scene.control.TreeTableColumn;
+import javafx.scene.control.TreeTableRow;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -67,7 +60,7 @@ public class RegistrarComboProductosController implements Initializable {
     /**
      * Initializes the controller class.
      */
-    public static final String viewPath = "/com/sigad/sigad/descuentos/view/registrarComboProductos.fxml";
+    public static final String viewPath = "/com/sigad/sigad/descuentos/view/RegistrarComboProductos.fxml";
 
     @FXML
     private Label lblError;
@@ -97,6 +90,15 @@ public class RegistrarComboProductosController implements Initializable {
     private JFXTextField txtPrecioBase;
 
     @FXML
+    private JFXTextField txtPrecioCompra;
+
+    @FXML
+    private JFXTextField txtVolumenTotal;
+
+    @FXML
+    private JFXTextField txtstockMaximo;
+
+    @FXML
     private JFXTreeTableView<ProductoLista> tblProductos;
 
     @FXML
@@ -119,6 +121,7 @@ public class RegistrarComboProductosController implements Initializable {
     @FXML
     JFXTreeTableColumn<ProductoLista, Integer> cantidad = new JFXTreeTableColumn<>("Cantidad");
     private final ObservableList<ProductoLista> prod = FXCollections.observableArrayList();
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -161,14 +164,29 @@ public class RegistrarComboProductosController implements Initializable {
         r = new RequiredFieldValidator();
         r.setIcon(new MaterialDesignIconView(MaterialDesignIcon.CLOSE_CIRCLE));
         r.setMessage("Campo obligatorio");
-        txtDescripcion.getValidators().add(r);
-        txtDescripcion.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+        txtNombre.getValidators().add(r);
+        txtNombre.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             if (!newValue) {
 
-                if (!txtDescripcion.validate()) {
-                    txtDescripcion.setFocusColor(new Color(0.58, 0.34, 0.09, 1));
+                if (!txtNombre.validate()) {
+                    txtNombre.setFocusColor(new Color(0.58, 0.34, 0.09, 1));
                 } else {
-                    txtDescripcion.setFocusColor(new Color(0.30, 0.47, 0.23, 1));
+                    txtNombre.setFocusColor(new Color(0.30, 0.47, 0.23, 1));
+                }
+            }
+        });
+
+        r = new RequiredFieldValidator();
+        r.setIcon(new MaterialDesignIconView(MaterialDesignIcon.CLOSE_CIRCLE));
+        r.setMessage("Campo obligatorio y numerico");
+        txtstockMaximo.getValidators().add(r);
+        txtstockMaximo.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+            if (!newValue) {
+
+                if (!txtstockMaximo.validate()) {
+                    txtstockMaximo.setFocusColor(new Color(0.58, 0.34, 0.09, 1));
+                } else {
+                    txtstockMaximo.setFocusColor(new Color(0.30, 0.47, 0.23, 1));
                 }
             }
         });
@@ -187,6 +205,11 @@ public class RegistrarComboProductosController implements Initializable {
                 }
             }
         });
+        txtPrecioReal.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*(\\.\\d*)?")) {
+                txtPrecioReal.setText(oldValue);
+            }
+        });
 
         r = new RequiredFieldValidator();
         r.setIcon(new MaterialDesignIconView(MaterialDesignIcon.CLOSE_CIRCLE));
@@ -200,6 +223,11 @@ public class RegistrarComboProductosController implements Initializable {
                 } else {
                     txtPrecioBase.setFocusColor(new Color(0.30, 0.47, 0.23, 1));
                 }
+            }
+        });
+        txtPrecioBase.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*(\\.\\d*)?")) {
+                txtPrecioBase.setText(oldValue);
             }
         });
         JFXDatePicker minDate = new JFXDatePicker();
@@ -231,7 +259,7 @@ public class RegistrarComboProductosController implements Initializable {
             try {
 
                 if (newValue.length() == 10) {
-                    LocalDate newDate = LocalDate.parse(newValue);
+                    LocalDate newDate = LocalDate.parse(newValue, formatter);
                     System.out.println("Valor actual de END FIELD " + txtFechaFin.getValue());
                     System.out.println("Valor actual de START FIELD " + txtFechaInicio.getValue());
 
@@ -252,7 +280,7 @@ public class RegistrarComboProductosController implements Initializable {
             try {
 
                 if (newValue.length() == 10) {
-                    LocalDate newDate = LocalDate.parse(newValue);
+                    LocalDate newDate = LocalDate.parse(newValue, formatter);
 
                     if (newDate.isBefore(txtFechaInicio.getValue())) {
                         txtFechaFin.getEditor().textProperty().setValue("");
@@ -280,13 +308,13 @@ public class RegistrarComboProductosController implements Initializable {
         } else if (txtFechaInicio.getValue().isAfter(txtFechaFin.getValue())) {
             lblError.setText("Verifique el rango de fechas");
             return false;
-        }else if (txtFechaInicio.getValue() == null) {
+        } else if (txtFechaInicio.getValue() == null) {
             lblError.setText("Verifique el rango de fechas");
             return false;
         } else if (txtFechaFin.getValue() == null) {
             lblError.setText("Verifique el rango de fechas");
             return false;
-        }else if (!txtPrecioBase.validate() && !GeneralHelper.isNumericDouble(txtPrecioBase.getText())) {
+        } else if (!txtPrecioBase.validate() && !GeneralHelper.isNumericDouble(txtPrecioBase.getText())) {
             txtPrecioBase.setFocusColor(new Color(0.58, 0.34, 0.09, 1));
             txtPrecioBase.requestFocus();
             return false;
@@ -294,6 +322,19 @@ public class RegistrarComboProductosController implements Initializable {
             txtPrecioReal.setFocusColor(new Color(0.58, 0.34, 0.09, 1));
             txtPrecioReal.requestFocus();
             return false;
+        } else if (!txtstockMaximo.validate() && !GeneralHelper.isNumeric(txtstockMaximo.getText())) {
+            try {
+                if (Integer.valueOf(txtstockMaximo.getText()) > combo.getNumVendidos()) {
+                    txtstockMaximo.setFocusColor(new Color(0.58, 0.34, 0.09, 1));
+                    txtstockMaximo.requestFocus();
+                }
+            } catch (NumberFormatException e) {
+                txtstockMaximo.setFocusColor(new Color(0.58, 0.34, 0.09, 1));
+                txtstockMaximo.requestFocus();
+            } finally {
+                return false;
+            }
+
         } else {
             return true;
         }
@@ -312,19 +353,10 @@ public class RegistrarComboProductosController implements Initializable {
         pu.setPrefWidth(80);
         pu.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProductoLista, String> param) -> param.getValue().getValue().precio);
 
-        cantidad.setPrefWidth(80);
-        cantidad.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<ProductoLista, Integer>, ObservableValue<Integer>>() {
-            @Override
-            public ObservableValue<Integer> call(TreeTableColumn.CellDataFeatures<ProductoLista, Integer> param) {
-                return param.getValue().getValue().cantidad.asObject();
-            }
-        });
-        cantidad.setCellFactory(new Callback<TreeTableColumn<ProductoLista, Integer>, TreeTableCell<ProductoLista, Integer>>() {
-            @Override
-            public TreeTableCell<ProductoLista, Integer> call(TreeTableColumn<ProductoLista, Integer> param) {
-                return new EditingCell();
-            }
-        });
+        cantidad.setPrefWidth(200);
+        cantidad.setSortType(TreeTableColumn.SortType.DESCENDING);
+        cantidad.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProductoLista, Integer> param) -> param.getValue().getValue().cantidad.asObject());
+        cantidad.setCellFactory((TreeTableColumn<ProductoLista, Integer> param) -> new EditingCell());
         cantidad.setOnEditCommit((event) -> {
             ProductoLista p = event.getRowValue().getValue();
             p.cantidad.setValue(event.getNewValue());
@@ -338,18 +370,24 @@ public class RegistrarComboProductosController implements Initializable {
                 calcularPrecioBase();
             }
 
-            // Colorear la huevada
+            // Colorear la 
         });
     }
 
     public void calcularPrecioBase() {
         Double precioBase = 0.0;
+        Double precioCompra = 0.0;
+        Double volumen = 0.0;
         for (ProductoLista t : prod) {
             if (t.cantidad.getValue() > 0) {
-                precioBase = precioBase + t.cantidad.getValue() * t.producto.getPrecio();
+                precioBase = precioBase + t.cantidad.getValue() * ((t.producto.getPrecio() == null) ? 0.0 : t.producto.getPrecio());
+                precioCompra = precioCompra + t.cantidad.getValue() * ((t.producto.getPrecioCompra() == null) ? 0.0 : t.producto.getPrecioCompra());
+                volumen = volumen + t.cantidad.getValue() * t.producto.getVolumen();
             }
         }
         txtPrecioBase.setText(precioBase.toString());
+        txtPrecioCompra.setText(precioCompra.toString());
+        txtVolumenTotal.setText(volumen.toString());
     }
 
     public void cargarTabla() {
@@ -386,17 +424,23 @@ public class RegistrarComboProductosController implements Initializable {
         Double precio = combo.getPreciounitario();
         Double precioreal = combo.getPreciounireal();
         txtPrecioBase.setText(precio.toString());
+        txtPrecioBase.setDisable(true);
         txtPrecioReal.setText(GeneralHelper.roundTwoDecimals(precioreal).toString());
+        txtPrecioReal.setDisable(true);
+        tblProductos.setEditable(false);
+        txtstockMaximo.setText(combo.getMaxDisponible().toString());
         txtDescripcion.setText(combo.getDescripcion());
         combo.getProductosxComboArray().forEach((t) -> {
             ProductoLista pd = new ProductoLista(t.getProducto(), Integer.SIZE);
             Integer i = prod.indexOf(pd);
             System.out.println(t.getProducto().getId());
-            if (i >= 0) {
+            if (i >= 0 && t.getCantidad() > 0) {
                 prod.get(i).cantidad.set(t.getCantidad());
+            } else if (i >= 0 && t.getCantidad() <= 0) {
+                prod.remove(pd);
             }
         });
-
+        calcularPrecioBase();
     }
 
     public void initModel(Boolean isedit, ComboPromocion cb, StackPane stackpane) {
@@ -423,6 +467,8 @@ public class RegistrarComboProductosController implements Initializable {
         nuevo.setPreciounireal(Double.valueOf(txtPrecioReal.getText()));
         nuevo.setPreciounitario(Double.valueOf(txtPrecioBase.getText()));
         nuevo.setNombre(txtNombre.getText());
+        nuevo.setMaxDisponible(Integer.valueOf(txtstockMaximo.getText()));
+        nuevo.setVolumen(Double.valueOf(txtVolumenTotal.getText()));
         ArrayList<ProductosCombos> pc = new ArrayList<>();
         prod.forEach((t) -> {
             if (t.cantidad.getValue() > 0) {
@@ -447,12 +493,28 @@ public class RegistrarComboProductosController implements Initializable {
             construirDescuento(combo);
             combo.setNumVendidos(0);
             helper.saveCombo(combo);
+            reloadTable();
+            MantenimientoDescuentosController.comboDialog.close();
+            
         } else if (isEdit && validateFields()) {
             construirDescuento(combo);
             helper.updateCombo(combo);
+            reloadTable();
+            MantenimientoDescuentosController.comboDialog.close();
         }
+
     }
 
+    public void reloadTable() {
+        MantenimientoDescuentosController.descuentosCombos.clear();
+        ComboPromocionHelper pdhelper = new ComboPromocionHelper();
+        ArrayList<ComboPromocion> ps = pdhelper.getCombos();
+        pdhelper.close();
+        ps.forEach((t) -> {
+            MantenimientoDescuentosController.descuentosCombos.add(new MantenimientoDescuentosController.CombosProductosLista(t));
+        });
+
+    }
     class ProductoLista extends RecursiveTreeObject<ProductoLista> {
 
         private IntegerProperty id;
@@ -519,7 +581,7 @@ public class RegistrarComboProductosController implements Initializable {
         @Override
         public void updateItem(Integer item, boolean empty) {
             super.updateItem(item, empty);
-
+            TreeTableRow<ProductoLista> currentRow = getTreeTableRow();
             if (empty) {
                 setText(null);
                 setGraphic(null);
@@ -533,6 +595,11 @@ public class RegistrarComboProductosController implements Initializable {
                 } else {
                     setText(getString());
                     setContentDisplay(ContentDisplay.TEXT_ONLY);
+                }
+                if (item > 0) {
+                    currentRow.setStyle("-fx-background-color:#F3F3F3;");
+                } else {
+                    currentRow.setStyle("-fx-background-color:transparent;");
                 }
             }
         }

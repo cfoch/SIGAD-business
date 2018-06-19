@@ -2,6 +2,7 @@ package com.sigad.sigad.business.helpers;
 
 import com.sigad.sigad.app.controller.LoginController;
 import com.sigad.sigad.business.Perfil;
+import com.sigad.sigad.business.Tienda;
 import com.sigad.sigad.business.Usuario;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -155,6 +156,24 @@ public class UsuarioHelper extends BaseHelper{
         Query query = null;
         try {
             query = session.createQuery("from Usuario where perfil_id='" + perfil.getId() + "'");
+            
+            if(!query.list().isEmpty()){
+                users = (ArrayList<Usuario>) query.list();
+            }
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            session.getTransaction().rollback();
+            this.errorMessage = e.getMessage();
+        } finally {
+            return users;
+        }
+    }
+    
+    public ArrayList<Usuario> getUsersStore(Tienda tienda){
+        ArrayList<Usuario> users = null;
+        Query query = null;
+        try {
+            query = session.createQuery("from Usuario where tienda_id='" + tienda.getId() + "'");
             
             if(!query.list().isEmpty()){
                 users = (ArrayList<Usuario>) query.list();

@@ -38,9 +38,9 @@ public class PedidoHelper {
     }
 
     
-     public ArrayList<Pedido> getPedidos(){
+    public ArrayList<Pedido> getPedidos(){
         ArrayList<Pedido> pedidos = null;
-         Query query = null;
+        Query query = null;
         try {
             query = session.createQuery("from Pedido");
             pedidos = (ArrayList<Pedido>) query.list();
@@ -51,6 +51,33 @@ public class PedidoHelper {
             return pedidos;
         }
     };
+    public ArrayList<Pedido> getPedidosCliente(Long userId){
+        ArrayList<Pedido> pedidos = null;
+        Query query = null;
+        try {
+            query = session.createQuery("from Pedido where cliente_id = " + userId);
+            pedidos = (ArrayList<Pedido>) query.list();
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            errorMessage = e.getMessage();
+        } finally{
+            return pedidos;
+        }
+    }
+    
+    public ArrayList<Pedido> getPedidosVendedor(Long userId){
+        ArrayList<Pedido> pedidos = null;
+        Query query = null;
+        try {
+            query = session.createQuery("from Pedido where vendedor_id = " + userId);
+            pedidos = (ArrayList<Pedido>) query.list();
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            errorMessage = e.getMessage();
+        } finally{
+            return pedidos;
+        }
+    }
     /*Get all the Pedidos*/
     public Long savePedido(Pedido pedido) {
         Long id = null;

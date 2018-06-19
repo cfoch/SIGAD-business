@@ -58,6 +58,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.Label;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableCell;
 import javafx.scene.control.TreeTableColumn;
@@ -98,6 +99,10 @@ public class CrearEditarOrdenCompraController implements Initializable {
 
     @FXML
     private JFXTreeTableView<InsumoViewerOrden> tblInsumos;
+    
+    
+    @FXML
+    private JFXTextField txtProveedor;
     
     public static OrdenCompra orden = null;
     static ObservableList<InsumoViewerOrden> insumosList;
@@ -178,13 +183,13 @@ public class CrearEditarOrdenCompraController implements Initializable {
         private SimpleStringProperty recibido;
         private SimpleStringProperty fechaVencimiento;
         
-        public InsumoViewerOrden(String nombre,String volumen,String precio,String cantidad,String subtotal,String fecha) {
+        public InsumoViewerOrden(String nombre,String volumen,String precio,String cantidad,String subtotal) {
             this.nombre = new SimpleStringProperty(nombre);
             this.volumen = new SimpleStringProperty(volumen);            
             this.precio = new SimpleStringProperty(precio);
             this.cantidad = new SimpleStringProperty(cantidad);
             this.subTotal = new SimpleStringProperty(subtotal);
-            this.fechaVencimiento = new SimpleStringProperty(fecha);
+            //this.fechaVencimiento = new SimpleStringProperty(fecha);
             
         }
     }
@@ -193,12 +198,21 @@ public class CrearEditarOrdenCompraController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
         insumosList = FXCollections.observableArrayList();
-        orden = new OrdenCompra();
         setColumns();
         addColumns();
+        if(!ListaOrdenesCompraController.isOrdenCreate){
+            cbxProv.setVisible(false);
+            txtProveedor.setVisible(true);
+            tblInsumos.setDisable(true);
+            loadFields();
+        }
+        else{
+            cbxProv.setVisible(true);
+            txtProveedor.setVisible(false);
+            orden = new OrdenCompra();
+            addDialogBtns();
+        }
         fillData();
-        addDialogBtns();
-        
     }
     
     private void addDialogBtns() {
@@ -234,7 +248,7 @@ public class CrearEditarOrdenCompraController implements Initializable {
                 
                 if(capacidadActual > capacidadTotal){
                     ErrorController error = new ErrorController();
-                    error.loadDialog("Error", "No puede agregar " + (capacidadActual) + " porque supera la capacidad actual de la tienda es " + (capacidadTotal), "Ok", hiddenSp);
+                    error.loadDialog("Error", "No puede agregar " + (capacidadActual) + " porque supera la capacidad actual de la tienda:  " + (capacidadTotal), "Ok", hiddenSp);
                     return;
                 }
                 ArrayList <LoteInsumo> listaLotes = new ArrayList<>();
@@ -264,8 +278,16 @@ public class CrearEditarOrdenCompraController implements Initializable {
                 
                 
                 OrdenCompraHelper helper = new OrdenCompraHelper();
-                //edicion
-                if(!ListaOrdenesCompraController.isOrdenCreate){
+                //creacion
+                if(ListaOrdenesCompraController.isOrdenCreate){
+                    Integer id = helper.saveOrden(orden, listaLotes);
+                    if(id != null){
+                        ListaOrdenesCompraController.updateTable(orden);
+                        ListaOrdenesCompraController.ordenDialog.close();
+                    }else {
+                        ErrorController error = new ErrorController();
+                        error.loadDialog("Error", helper.getErrorMessage(), "Ok", hiddenSp);
+                    }
 //                    Long id = helper.updateInsumo(insumo,null);
 //                    if(id != null){
 //                        ListaInsumoController.insumosList.remove(ListaInsumoController.selectedInsumo);
@@ -275,17 +297,6 @@ public class CrearEditarOrdenCompraController implements Initializable {
 //                        ErrorController error = new ErrorController();
 //                        error.loadDialog("Error", helper.getErrorMessage(), "Ok", hiddenSp);
 //                    }
-                }
-                //creacion
-                else{
-                    Integer id = helper.saveOrden(orden, listaLotes);
-                    if(id != null){
-                        ListaOrdenesCompraController.updateTable(orden);
-                        ListaOrdenesCompraController.ordenDialog.close();
-                    }else {
-                        ErrorController error = new ErrorController();
-                        error.loadDialog("Error", helper.getErrorMessage(), "Ok", hiddenSp);
-                    }
                 }
                 helper.close();
             }
@@ -302,6 +313,18 @@ public class CrearEditarOrdenCompraController implements Initializable {
         
         containerPane.getChildren().add(save);
         containerPane.getChildren().add(cancel);
+    }
+    
+    private void loadFields(){
+        
+        OrdenCompraHelper helperor = new OrdenCompraHelper();
+        orden = helperor.getOrden(Integer.parseInt(ListaOrdenesCompraController.selectedOrdenCompra.getCodigo().getValue()));
+        
+        if(orden != null) {
+            txtProveedor.setText(orden.getProveedor().getNombre());
+            pckDate.setValue(orden.getFecha().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+        }
+        helperor.close();
     }
     
     private void setColumns(){
@@ -361,12 +384,22 @@ public class CrearEditarOrdenCompraController implements Initializable {
     }
     
     private void fillData(){
-        ProveedorHelper helperp = new ProveedorHelper();
-        ArrayList<Proveedor> listaprov = helperp.getProveedores();
-        if(listaprov != null) {
-            listaprov.forEach((p)-> {
-                cbxProv.getItems().add(p);
-            });
+                
+        if(!ListaOrdenesCompraController.isOrdenCreate){
+            OrdenCompraHelper helperor = new OrdenCompraHelper();
+            
+            ArrayList<DetalleOrdenCompra> listaDets = helperor.getDetalles(orden.getId());
+            if(listaDets != null){
+                listaDets.forEach((i)->{
+                    Double pd = (Double) i.getPrecioDetalle();
+                    updateTableView(i.getLoteInsumo(), pd.toString());
+                });
+            }
+            helperor.close();
+        }
+        else{
+            ProveedorHelper helperp = new ProveedorHelper();
+            ArrayList<Proveedor> listaprov = helperp.getProveedores();
             cbxProv.setPromptText("Proveedores");
             cbxProv.setConverter(new StringConverter<Proveedor>() {
                 Long id = null;
@@ -390,26 +423,40 @@ public class CrearEditarOrdenCompraController implements Initializable {
                     return pr;
                 }
             });
-        }
-        helperp.close();
-        cbxProv.valueProperty().addListener((ObservableValue<? extends Object> observable, Object oldValue, Object newValue) -> {
-            InsumosHelper helper = new InsumosHelper();
-            Proveedor p = (Proveedor) newValue;
-            ArrayList<ProveedorInsumo> pi = (ArrayList<ProveedorInsumo>) helper.getInsumoFromProveedor(p);
-            
-            if(pi!= null){
-                insumosList.clear();
-                pi.forEach((i)->{
-                    updateTable(i,"");
-                });
-                helper.close();
+
+            cbxProv.valueProperty().addListener((ObservableValue<? extends Object> observable, Object oldValue, Object newValue) -> {
+                InsumosHelper helper = new InsumosHelper();
+                Proveedor p = (Proveedor) newValue;
+                ArrayList<ProveedorInsumo> pi = (ArrayList<ProveedorInsumo>) helper.getInsumoFromProveedor(p);
+
+                if(pi!= null){
+                    insumosList.clear();
+                    pi.forEach((i)->{
+                        updateTable(i,"");
+                    });
+                    helper.close();
+                }
+            });
+            if(listaprov != null) {
+                listaprov.forEach((p)-> {
+                    cbxProv.getItems().add(p);
+                });                
             }
-        });
-        Date inputDate = new Date();
-        LocalDate date = inputDate .toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        pckDate.setValue(date);
+            helperp.close();
+
+            Date inputDate = new Date();
+            LocalDate date = inputDate .toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            pckDate.setValue(date);
+        }
     }
     
+    public static void updateTableView(LoteInsumo lote,String subtotal){
+        Double cost = lote.getCostoUnitario();
+        InsumoViewerOrden insumoOrd = new InsumoViewerOrden(lote.getInsumo().getNombre(),lote.getInsumo().isVolumen().toString(),
+                                                            cost.toString(), lote.getStockLogico().toString(),subtotal);
+        insumoOrd.setInsumoLocal(lote.getInsumo());
+        insumosList.add(insumoOrd);
+    }
     public static void updateTable(ProveedorInsumo provinsumo,String cant){
         String subtotal;
         
@@ -422,15 +469,13 @@ public class CrearEditarOrdenCompraController implements Initializable {
         }
         
         InsumoViewerOrden insumoOrd = new InsumoViewerOrden(provinsumo.getInsumo().getNombre(),provinsumo.getInsumo().isVolumen().toString(), 
-                                           provinsumo.getPrecio().toString(), cant, subtotal,"");
+                                           provinsumo.getPrecio().toString(), cant, subtotal);
         insumoOrd.setInsumoLocal(provinsumo.getInsumo());
         insumosList.add(insumoOrd);
     }
     
 
     private void fillFields(){
-//        orden.setFecha(Date.from(datePick.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
-        //orden.setPrecioTotal(0);
         orden.setRecibido(false);
         orden.setUsuario(LoginController.user);
         orden.setProveedor(cbxProv.getValue());
@@ -447,26 +492,20 @@ public class CrearEditarOrdenCompraController implements Initializable {
     }
     
     public boolean validateFields() {
-//        if(!nombreTxt.validate()){
-//            nombreTxt.setFocusColor(new Color(0.58, 0.34, 0.09, 1));
-//            nombreTxt.requestFocus();
-//            return false;
-//        }else if(!tiempoTxt.validate()){
-//            tiempoTxt.setFocusColor(new Color(0.58, 0.34, 0.09, 1));
-//            tiempoTxt.requestFocus();
-//            return false;
-//        }else if(!descripcionTxt.validate()){
-//            descripcionTxt.setFocusColor(new Color(0.58, 0.34, 0.09, 1));
-//            descripcionTxt.requestFocus();
-//            return false;
-//        }
-//        else if(!volumenTxt.validate()){
-//            volumenTxt.setFocusColor(new Color(0.58, 0.34, 0.09, 1));
-//            volumenTxt.requestFocus();
-//            return false;
-//        }
-//        else 
-        return true;
+        // Validar que exista al menos un proveedor seleccionado
+        Integer count = 0;
+        for (int i = 0; i < insumosList.size(); i++) {
+            if(!insumosList.get(i).getCantidad().getValue().equals("")){
+                count += 1;
+            }
+        }
+        if(count == 0){
+            ErrorController error = new ErrorController();
+            error.loadDialog("Error", "Debe seleccionar al menos un insumo", "Ok", hiddenSp);
+            return false;
+        }
+        else 
+            return true;
     }
     
     class EditingCell extends TreeTableCell<InsumoViewerOrden, String> {

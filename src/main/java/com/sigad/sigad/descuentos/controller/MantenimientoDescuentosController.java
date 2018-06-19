@@ -5,8 +5,11 @@
  */
 package com.sigad.sigad.descuentos.controller;
 
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialogLayout;
+import com.jfoenix.controls.JFXPopup;
+import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXTreeTableColumn;
 import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
@@ -16,7 +19,6 @@ import com.sigad.sigad.business.ComboPromocion;
 import com.sigad.sigad.business.ProductoCategoriaDescuento;
 import com.sigad.sigad.business.helpers.ProductoCategoriaDescuentoHelper;
 import com.sigad.sigad.business.ProductoDescuento;
-import com.sigad.sigad.business.ProductosCombos;
 import com.sigad.sigad.business.helpers.ClienteDescuentoHelper;
 import com.sigad.sigad.business.helpers.ComboPromocionHelper;
 import com.sigad.sigad.business.helpers.ProductoDescuentoHelper;
@@ -35,11 +37,14 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
@@ -47,6 +52,7 @@ import javafx.scene.control.TreeTableRow;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 
@@ -72,65 +78,40 @@ public class MantenimientoDescuentosController implements Initializable {
 
     @FXML
     private StackPane stackPaneCmb;
-
-    @FXML
+    private JFXPopup popup;
+    
     public static JFXDialog descDialog;
 
-    @FXML
     public static JFXDialog descCatDialog;
 
-    @FXML
     public static JFXDialog descCliDialog;
 
-    @FXML
     public static JFXDialog comboDialog;
 
-    @FXML
     JFXTreeTableColumn<DescuentosLista, Integer> id = new JFXTreeTableColumn<>("id");
-    @FXML
     JFXTreeTableColumn<DescuentosLista, String> producto = new JFXTreeTableColumn<>("Producto");
-    @FXML
     JFXTreeTableColumn<DescuentosLista, String> fechaInicio = new JFXTreeTableColumn<>("F. Inicio");
-    @FXML
     JFXTreeTableColumn<DescuentosLista, String> fechaFin = new JFXTreeTableColumn<>("F. Fin");
-    @FXML
     JFXTreeTableColumn<DescuentosLista, Double> valorPct = new JFXTreeTableColumn<>("Valor(%)");
 
-    @FXML
     JFXTreeTableColumn<DescuentosCategoriaLista, Integer> idCat = new JFXTreeTableColumn<>("id");
-    @FXML
     JFXTreeTableColumn<DescuentosCategoriaLista, String> categoria = new JFXTreeTableColumn<>("Categoria");
-    @FXML
     JFXTreeTableColumn<DescuentosCategoriaLista, String> fechaInicioCat = new JFXTreeTableColumn<>("F. Inicio");
-    @FXML
     JFXTreeTableColumn<DescuentosCategoriaLista, String> fechaFinCat = new JFXTreeTableColumn<>("F. Fin");
-    @FXML
     JFXTreeTableColumn<DescuentosCategoriaLista, Double> valorPctCat = new JFXTreeTableColumn<>("Valor(%)");
 
-    @FXML
     JFXTreeTableColumn<DescuentosUsuariosLista, Integer> idCli = new JFXTreeTableColumn<>("id");
-    @FXML
     JFXTreeTableColumn<DescuentosUsuariosLista, String> tipo = new JFXTreeTableColumn<>("Tipo");
-    @FXML
     JFXTreeTableColumn<DescuentosUsuariosLista, String> masde = new JFXTreeTableColumn<>("Aplicable a");
-    @FXML
     JFXTreeTableColumn<DescuentosUsuariosLista, String> fechaInicioCli = new JFXTreeTableColumn<>("F. Inicio");
-    @FXML
     JFXTreeTableColumn<DescuentosUsuariosLista, String> fechaFinCli = new JFXTreeTableColumn<>("F. Fin");
-    @FXML
     JFXTreeTableColumn<DescuentosUsuariosLista, Double> valorCli = new JFXTreeTableColumn<>("Valor(%)");
 
-    @FXML
     JFXTreeTableColumn<CombosProductosLista, Integer> idCombo = new JFXTreeTableColumn<>("id");
-    @FXML
     JFXTreeTableColumn<CombosProductosLista, String> descCombo = new JFXTreeTableColumn<>("Descripcion");
-    @FXML
     JFXTreeTableColumn<CombosProductosLista, String> nombre = new JFXTreeTableColumn<>("Nombre");
-    @FXML
     JFXTreeTableColumn<CombosProductosLista, String> fechaInicioCmb = new JFXTreeTableColumn<>("F. Inicio");
-    @FXML
     JFXTreeTableColumn<CombosProductosLista, String> fechaFinCmb = new JFXTreeTableColumn<>("F. Fin");
-    @FXML
     JFXTreeTableColumn<CombosProductosLista, Double> precioBase = new JFXTreeTableColumn<>("Precio(PEN)");
 
     @FXML
@@ -149,6 +130,30 @@ public class MantenimientoDescuentosController implements Initializable {
     @FXML
     private JFXTreeTableView<CombosProductosLista> tblCombos;
     public static final ObservableList<CombosProductosLista> descuentosCombos = FXCollections.observableArrayList();
+    @FXML
+    private JFXButton moreBtnProducto;
+    @FXML
+    private JFXTextField filtroProducto;
+    @FXML
+    private JFXButton btnAddDescuento;
+    @FXML
+    private JFXButton moreBtnCategoria;
+    @FXML
+    private JFXTextField filtroCategoria;
+    @FXML
+    private JFXButton btnAddDescCat;
+    @FXML
+    private JFXButton moreBtnCliente;
+    @FXML
+    private JFXTextField filtroCliente;
+    @FXML
+    private JFXButton btnAddDescCliente;
+    @FXML
+    private JFXButton moreBtnCombos;
+    @FXML
+    private JFXTextField filtroCombos;
+    @FXML
+    private JFXButton btnAddCombo;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -167,9 +172,39 @@ public class MantenimientoDescuentosController implements Initializable {
         columnasCombos();
         agregarColumnasCombos();
         llenarTablaCombos();
-        
+        agregarFiltros();
     }
 
+    public void agregarFiltros() {
+        filtroProducto.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+            tblDescuentos.setPredicate((TreeItem<DescuentosLista> t) -> {
+                Boolean flag = t.getValue().id.getValue().toString().contains(newValue);
+                return flag;
+            });
+        });
+        
+        filtroCategoria.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+            tblDescCat.setPredicate((TreeItem<DescuentosCategoriaLista> t) -> {
+                Boolean flag = t.getValue().id.getValue().toString().contains(newValue);
+                return flag;
+            });
+        });
+        
+        filtroCliente.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+            tblDescCliente.setPredicate((TreeItem<DescuentosUsuariosLista> t) -> {
+                Boolean flag = t.getValue().id.getValue().toString().contains(newValue);
+                return flag;
+            });
+        });
+        
+        filtroCombos.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+            tblCombos.setPredicate((TreeItem<CombosProductosLista> t) -> {
+                Boolean flag = t.getValue().id.getValue().toString().contains(newValue);
+                return flag;
+            });
+        });
+    }
+    
     public void llenarTabla() {
         descuentos.clear();
         ProductoDescuentoHelper pdhelper = new ProductoDescuentoHelper();
@@ -206,7 +241,7 @@ public class MantenimientoDescuentosController implements Initializable {
     public void llenarTablaCombos() {
         descuentosCombos.clear();
         ComboPromocionHelper pdhelper = new ComboPromocionHelper();
-        ArrayList<ComboPromocion> pd = pdhelper.getDescuentos();
+        ArrayList<ComboPromocion> pd = pdhelper.getCombos();
         pdhelper.close();
         pd.forEach((t) -> {
             descuentosCombos.add(new CombosProductosLista(t));
@@ -378,6 +413,41 @@ public class MantenimientoDescuentosController implements Initializable {
         });
     }
 
+    @FXML
+    void handleAction(ActionEvent event) {
+        JFXButton edit = new JFXButton("Editar");
+        JFXButton delete = new JFXButton("Eliminar");
+        
+        edit.setOnAction((ActionEvent event1) -> {
+            popup.hide();
+            if(event.getSource() == moreBtnProducto){
+            }else if(event.getSource() == moreBtnCliente){
+            }else if(event.getSource() == moreBtnCategoria){
+            }else if(event.getSource() == moreBtnCombos){
+            }
+
+        });
+
+        delete.setOnAction((ActionEvent event2) -> {
+            popup.hide();
+            if(event.getSource() == moreBtnProducto){
+            }else if(event.getSource() == moreBtnCliente){
+            }else if(event.getSource() == moreBtnCategoria){
+            }else if(event.getSource() == moreBtnCombos){
+            }
+        });
+        
+        edit.setPadding(new Insets(20));
+        edit.setPrefSize(145, 40);
+        delete.setPadding(new Insets(20));
+        delete.setPrefSize(145, 40);
+        
+        VBox vBox = new VBox(edit, delete);
+        
+        popup = new JFXPopup();
+        popup.setPopupContent(vBox);
+    }
+    
     public void editRegistrarDescuentoCliente(ClienteDescuento pd) {
         try {
             JFXDialogLayout content = new JFXDialogLayout();
@@ -452,19 +522,16 @@ public class MantenimientoDescuentosController implements Initializable {
         editRegistrarDescuento(null);
     }
 
-    @FXML
     void gotAgregarDescuentoCategoria(MouseEvent event) {
         isEdit = Boolean.FALSE;
         editRegistrarDescuentoCategoria(null);
     }
 
-    @FXML
     void gotAgregarDescuentoCliente(MouseEvent event) {
         isEdit = Boolean.FALSE;
         editRegistrarDescuentoCliente(null);
     }
 
-    @FXML
     void gotAgregarCombo(MouseEvent event) {
         isEdit = Boolean.FALSE;
         editRegistrarComboPromocion(null);

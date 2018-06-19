@@ -12,22 +12,19 @@ import com.sigad.sigad.business.ProductoCategoriaDescuento;
 import com.sigad.sigad.business.helpers.GeneralHelper;
 import com.sigad.sigad.business.helpers.ProductoCategoriaDescuentoHelper;
 import com.sigad.sigad.business.helpers.ProductoCategoriaHelper;
-import com.sigad.sigad.business.helpers.ProductoDescuentoHelper;
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIconView;
 import java.net.URL;
 import java.sql.Date;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Observable;
 import java.util.ResourceBundle;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.DateCell;
@@ -61,6 +58,10 @@ public class RegistrarDescuentoCategoriaProductoController implements Initializa
 
     @FXML
     private Label lblError;
+
+    @FXML
+    private Label lblerrorc;
+    
     @FXML
     private JFXButton btnGuardar;
 
@@ -74,6 +75,7 @@ public class RegistrarDescuentoCategoriaProductoController implements Initializa
 
     ProductoCategoriaDescuento pc;
     ObservableList<ProductoCategoria> categoriasproductos;
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -87,6 +89,7 @@ public class RegistrarDescuentoCategoriaProductoController implements Initializa
         categoriasproductos = FXCollections.observableArrayList(categorias);
         cmbCategorias.setItems(categoriasproductos);
         cmbCategorias.setPromptText("Categorias");
+        
 //        cmbCategorias.setOnAction((event) -> {
 //            pc.setCategoria(cmbCategorias.getSelectionModel().getSelectedItem());
 //        });
@@ -123,6 +126,20 @@ public class RegistrarDescuentoCategoriaProductoController implements Initializa
                 }
             }
         });
+        txtValuePct.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*(\\.\\d*)?")) {
+
+                txtValuePct.setText(oldValue);
+            } else {
+                if (newValue.length() > 0) {
+                    Double n = Double.valueOf(newValue);
+                    System.out.println(n);
+                    if (n > 100.0 || n < 0.0) {
+                        txtValuePct.setText(oldValue);
+                    }
+                }
+            }
+        });
 
         JFXDatePicker minDate = new JFXDatePicker();
         minDate.setValue(LocalDate.now(ZoneId.systemDefault())); // colocar la fecha de hoy como el minimo
@@ -153,7 +170,7 @@ public class RegistrarDescuentoCategoriaProductoController implements Initializa
             try {
 
                 if (newValue.length() == 10) {
-                    LocalDate newDate = LocalDate.parse(newValue);
+                    LocalDate newDate = LocalDate.parse(newValue, formatter);
                     System.out.println("Valor actual de END FIELD " + txtFechaFin.getValue());
                     System.out.println("Valor actual de START FIELD " + txtFechaInicio.getValue());
 
@@ -174,7 +191,7 @@ public class RegistrarDescuentoCategoriaProductoController implements Initializa
             try {
 
                 if (newValue.length() == 10) {
-                    LocalDate newDate = LocalDate.parse(newValue);
+                    LocalDate newDate = LocalDate.parse(newValue, formatter);
 
                     if (newDate.isBefore(txtFechaInicio.getValue())) {
                         txtFechaFin.getEditor().textProperty().setValue("");
@@ -196,7 +213,7 @@ public class RegistrarDescuentoCategoriaProductoController implements Initializa
     }
 
     public boolean validateFields() {
-        if (!txtValuePct.validate() && !GeneralHelper.isNumericDouble(txtValuePct.getText()) && txtValuePct.getLength() ==0) {
+        if (!txtValuePct.validate() && !GeneralHelper.isNumericDouble(txtValuePct.getText()) && txtValuePct.getLength() == 0) {
             txtValuePct.setFocusColor(new Color(0.58, 0.34, 0.09, 1));
             txtValuePct.requestFocus();
             return false;
@@ -209,8 +226,12 @@ public class RegistrarDescuentoCategoriaProductoController implements Initializa
         } else if (txtFechaFin.getValue() == null) {
             lblError.setText("Verifique el rango de fechas");
             return false;
-        } else {
+        } else if (cmbCategorias.getValue() == null) {
+            lblerrorc.setText("Verifique el rango de fechas");
+            return false;
+        }else {
             lblError.setText("");
+            lblerrorc.setText("");
             return true;
         }
     }
@@ -245,12 +266,12 @@ public class RegistrarDescuentoCategoriaProductoController implements Initializa
             construirDescuento();
             helper.saveDescuento(pc);
             reloadTable();
-            MantenimientoDescuentosController.descDialog.close();
+            MantenimientoDescuentosController.descCatDialog.close();
         } else if (/*validarCampos() && cant == 1 &&*/validateFields() && isEdit) {
             construirDescuento();
             helper.updateDescuento(pc);
             reloadTable();
-            MantenimientoDescuentosController.descDialog.close();
+            MantenimientoDescuentosController.descCatDialog.close();
         }
 
     }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextField?>
 <?import com.jfoenix.controls.JFXTreeTableView?>
 <?import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIconView?>
 <?import java.net.URL?>
@@ -43,6 +44,7 @@
                               <MaterialDesignIconView glyphName="DOTS_VERTICAL" />
                            </graphic>
                         </JFXButton>
+                        <JFXTextField fx:id="filtro" layoutX="712.0" layoutY="7.0" prefHeight="29.0" prefWidth="203.0" promptText="Buscar" AnchorPane.bottomAnchor="11.0" AnchorPane.rightAnchor="61.0" AnchorPane.topAnchor="6.0" />
                      </children>
                   </AnchorPane>
                   <AnchorPane prefHeight="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4">

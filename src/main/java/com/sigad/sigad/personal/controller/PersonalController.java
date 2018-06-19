@@ -9,6 +9,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialogLayout;
 import com.jfoenix.controls.JFXPopup;
+import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXTreeTableColumn;
 import com.jfoenix.controls.JFXTreeTableRow;
 import com.jfoenix.controls.JFXTreeTableView;
@@ -26,6 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -56,7 +58,7 @@ public class PersonalController implements Initializable {
     public static final String viewPath = "/com/sigad/sigad/personal/view/personal.fxml";
     public static String windowName = "Cuentas";
     @FXML
-    private JFXTreeTableView userTbl;
+    private JFXTreeTableView<User> userTbl;
     static ObservableList<User> data;
     @FXML
     private JFXButton addBtn;
@@ -65,21 +67,29 @@ public class PersonalController implements Initializable {
     @FXML
     private StackPane hiddenSp;
     /*Extras*/
-    @FXML
     public static JFXDialog userDialog;
-    @FXML
     private JFXPopup popup;
     
     public static boolean isUserCreate;
     public static User selectedUser = null;
+    @FXML
+    private JFXTextField filtro;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         data = FXCollections.observableArrayList();
         initUserTbl();
-        
-    }    
+        agregarFiltro();
+    }
     
+    public void agregarFiltro() {
+        filtro.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+            userTbl.setPredicate((TreeItem<User> t) -> {
+                Boolean flag = t.getValue().nombres.getValue().contains(newValue) || t.getValue().apellidoMaterno.getValue().contains(newValue) || t.getValue().apellidoPaterno.getValue().contains(newValue) || t.getValue().dni.getValue().contains(newValue) || t.getValue().telefono.getValue().contains(newValue) || t.getValue().celular.getValue().contains(newValue) || t.getValue().profileName.getValue().contains(newValue) || t.getValue().profileDesc.getValue().contains(newValue) || t.getValue().tienda.getValue().contains(newValue) || t.getValue().activo.getValue().contains(newValue);
+                return flag;
+            });
+        });
+    }
     public static void updateTable(Usuario u) {
         data.add(
                 new User(

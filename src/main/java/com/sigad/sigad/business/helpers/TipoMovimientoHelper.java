@@ -54,7 +54,7 @@ public class TipoMovimientoHelper {
         TipoMovimiento tipoMov = null;
         Query query = null;
         try {
-            query = session.createQuery("from MovimientosTienda where nombre = " + nombre);
+            query = session.createQuery("from TipoMovimiento where nombre = '" + nombre + "'");
             if(!query.list().isEmpty()){
                 tipoMov = (TipoMovimiento) query.list().get(0);
             }

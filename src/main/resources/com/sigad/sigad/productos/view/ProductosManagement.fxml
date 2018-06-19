@@ -62,7 +62,7 @@
             <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white; -fx-border-color: #C8C8C8;" GridPane.columnIndex="1" GridPane.rowIndex="2">
                <children>
                   <Label layoutX="15.0" layoutY="10.0" prefHeight="17.0" prefWidth="126.0" text="Insumos" />
-                  <JFXTextField layoutX="587.0" layoutY="2.0" prefHeight="26.0" prefWidth="184.0" promptText="Buscar">
+                  <JFXTextField fx:id="filtro" layoutX="587.0" layoutY="2.0" prefHeight="26.0" prefWidth="184.0" promptText="Buscar">
                      <font>
                         <Font size="10.0" />
                      </font>

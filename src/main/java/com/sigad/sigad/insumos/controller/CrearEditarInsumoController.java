@@ -99,6 +99,8 @@ public class CrearEditarInsumoController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
+        
+        
         listaProv = FXCollections.observableArrayList();
         setColumns();
         addColumns();
@@ -111,12 +113,19 @@ public class CrearEditarInsumoController implements Initializable {
         }
         fillData();
         addDialogBtns();
-
-        
         initValidator();
+        
+        tglActive.selectedProperty().addListener(((observable, oldValue, newValue) -> {
+            if(!newValue){
+                //verify if insumo has stock
+                if(insumo.getStockTotalLogico() > 0 || insumo.getStockTotalFisico() > 0){
+                    ErrorController error = new ErrorController();
+                    error.loadDialog("Error", "No puede desactivar el insumo, este cuenta con stock", "Ok", hiddenSp);
+                    tglActive.setSelected(true);
+                }
+            }
+        }));
     }
-    
-    
     private void addDialogBtns() {
         JFXButton save = new JFXButton("Guardar");
         save.setPrefSize(80, 25);
@@ -127,41 +136,63 @@ public class CrearEditarInsumoController implements Initializable {
                 System.out.println("VALIDADO ALL FIELDS");
                 fillFields();
                 InsumosHelper helper = new InsumosHelper();    
-                ArrayList<ProveedorInsumo> listaInsumoProv = new ArrayList<>();
-                listaProv.forEach((p)->{
-                    if(!p.getPrecio().getValue().equals("")){
-//                       ProveedorInsumo provin = helper.getInsumoProveedorUnit(insumo, p.getProv());
-//                        if(provin != null){
-//                            System.out.println("ya esxite relacion con proveedor");
-//                            System.out.println("id insumo" + provin.getInsumo().getId());
-//                            System.out.println("id insumo" + provin.getProveedor().getId());
-//                            listaInsumoProv.add(provin);
-//                        }
-//                        else {
-//                            
-                            ProveedorInsumo pr = new ProveedorInsumo();
-                            pr.setInsumo(insumo);
-                            pr.setProveedor(p.getProv());
-                            pr.setPrecio(Double.parseDouble(p.getPrecio().getValue()));
-                            pr.setActivo(true);
-                            listaInsumoProv.add(pr);
-//                        }
-                    }
-                });
+                
+                Boolean success = false;                
                 //edicion
                 if(!ListaInsumoController.isInsumoCreate){
-                    Long id = helper.updateInsumo(insumo,null);
-                    if(id != null){
-                        ListaInsumoController.insumosList.remove(ListaInsumoController.selectedInsumo);
-                        ListaInsumoController.updateTable(insumo);
-                        ListaInsumoController.insumoDialog.close();
-                    }else{
+                    Boolean ok = helper.updateInsumo(insumo);
+                    if(ok){
+                        for (int i = 0; i < listaProv.size(); i++) {
+                            if(!listaProv.get(i).getPrecio().getValue().equals("")){
+                               ProveedorInsumo provin = helper.getInsumoProveedorUnit(insumo, listaProv.get(i).getProv());
+                                if(provin != null){
+                                    provin.setPrecio(Double.parseDouble(listaProv.get(i).getPrecio().getValue()));
+                                    success=helper.updateProveedorInsumo(provin);
+                                    if(!success){
+                                        ErrorController error = new ErrorController();
+                                        error.loadDialog("Error", helper.getErrorMessage(), "Ok", hiddenSp);
+                                        break;
+                                    }
+                                }
+                                else {
+                                    ProveedorInsumo pr = new ProveedorInsumo();
+                                    pr.setInsumo(insumo);
+                                    pr.setProveedor(listaProv.get(i).getProv());
+                                    pr.setPrecio(Double.parseDouble(listaProv.get(i).getPrecio().getValue()));
+                                    pr.setActivo(insumo.isActivo());
+                                    success = helper.saveProveedorInsumo(pr);
+                                    if(!success){
+                                        ErrorController error = new ErrorController();
+                                        error.loadDialog("Error", helper.getErrorMessage(), "Ok", hiddenSp);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        if(success){
+                            ListaInsumoController.insumosList.remove(ListaInsumoController.selectedInsumo);
+                            ListaInsumoController.updateTable(insumo);
+                            ListaInsumoController.insumoDialog.close();
+                        }
+                    }
+                    else{
                         ErrorController error = new ErrorController();
                         error.loadDialog("Error", helper.getErrorMessage(), "Ok", hiddenSp);
                     }
                 }
                 //creacion
                 else{
+                    ArrayList<ProveedorInsumo> listaInsumoProv = new ArrayList<>();
+                    for (int i = 0; i < listaProv.size(); i++) {
+                        if(!listaProv.get(i).getPrecio().getValue().equals("")){
+                            ProveedorInsumo pr = new ProveedorInsumo();
+                            pr.setInsumo(insumo);
+                            pr.setProveedor(listaProv.get(i).getProv());
+                            pr.setPrecio(Double.parseDouble(listaProv.get(i).getPrecio().getValue()));
+                            pr.setActivo(insumo.isActivo());
+                            listaInsumoProv.add(pr);
+                        }
+                    }
                     Long id = helper.saveInsumo(insumo, listaInsumoProv);
                     if(id != null){
                         ListaInsumoController.updateTable(insumo);
@@ -186,9 +217,7 @@ public class CrearEditarInsumoController implements Initializable {
         containerPane.getChildren().add(save);
         containerPane.getChildren().add(cancel);
     }
-    
     private void loadFields(){
-        
         InsumosHelper helper = new InsumosHelper();
         insumo = helper.getInsumo(ListaInsumoController.selectedInsumo.getId());
         
@@ -198,6 +227,7 @@ public class CrearEditarInsumoController implements Initializable {
             tiempoTxt.setText(insumo.getTiempoVida() + "");
             descripcionTxt.setText(insumo.getDescripcion());
             volumenTxt.setText(insumo.isVolumen()+"");
+            volumenTxt.setDisable(true);
             tglActive.setSelected(insumo.isActivo());
         }
         helper.close();
@@ -206,14 +236,26 @@ public class CrearEditarInsumoController implements Initializable {
         insumo.setNombre(nombreTxt.getText());
         insumo.setTiempoVida(Integer.parseInt(tiempoTxt.getText()));
         insumo.setVolumen(Double.parseDouble(volumenTxt.getText()));
-        insumo.setActivo(true);
-        insumo.setStockTotalFisico(0);
-        insumo.setStockTotalLogico(0);
+        insumo.setActivo(tglActive.isSelected());
+        if(ListaInsumoController.isInsumoCreate){
+            insumo.setStockTotalFisico(0);
+            insumo.setStockTotalLogico(0);
+        }
         insumo.setDescripcion(descripcionTxt.getText());
         insumo.setActivo(tglActive.isSelected());
     }
-    
     public boolean validateFields() {
+        
+        Integer count = 0;
+        for (int i = 0; i < listaProv.size(); i++) {
+            if(!listaProv.get(i).getPrecio().getValue().equals("")){
+                count += 1;
+            }
+//            if(Integer.parseInt(listaProv.get(i).getPrecio().getValue())==0){
+//                count += 1;
+//            }
+        }
+
         if(!nombreTxt.validate()){
             nombreTxt.setFocusColor(new Color(0.58, 0.34, 0.09, 1));
             nombreTxt.requestFocus();
@@ -232,9 +274,13 @@ public class CrearEditarInsumoController implements Initializable {
             volumenTxt.requestFocus();
             return false;
         }
+        else if(count == 0){
+            ErrorController error = new ErrorController();
+            error.loadDialog("Error", "Debe seleccionar al menos un proveedor", "Ok", hiddenSp);
+            return false;
+        }
         else return true;
     }
-    
     private void initValidator() {
         RequiredFieldValidator r;
         NumberValidator n;
@@ -295,8 +341,6 @@ public class CrearEditarInsumoController implements Initializable {
             }
         });
     }
-    
-    
     public class ProveedorViewer extends RecursiveTreeObject<ProveedorViewer>{
 
         public Proveedor getProv() {
@@ -335,8 +379,6 @@ public class CrearEditarInsumoController implements Initializable {
             this.precio = new SimpleStringProperty(precio);
         }
     }
-    
-    
     private void setColumns(){
         nombreCol.setCellValueFactory((TreeTableColumn.CellDataFeatures<ProveedorViewer, String> param) -> param.getValue().getValue().getNombre()//throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         );
@@ -388,13 +430,11 @@ public class CrearEditarInsumoController implements Initializable {
         helperp.close();
         helperi.close();
     }
-    
     public void updateTable(Proveedor p,String cant){
         ProveedorViewer newprov = new ProveedorViewer(p.getNombre(), cant);
         newprov.setProv(p);
         listaProv.add(newprov);
     }
-    
     class EditingCell extends TreeTableCell<ProveedorViewer, String> {
 
         private JFXTextField textField;

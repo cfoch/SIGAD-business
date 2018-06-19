@@ -315,8 +315,6 @@ public class Producto {
         this.combos = combos;
     }
     /**
-=======
->>>>>>> 7f3200619b35784707a29e1624d000e9da5bc458
      * @return the precioCompra
      */
     public Double getPrecioCompra() {

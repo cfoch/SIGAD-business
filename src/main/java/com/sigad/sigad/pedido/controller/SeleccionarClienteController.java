@@ -184,6 +184,12 @@ public class SeleccionarClienteController implements Initializable {
     }
 
     @FXML
+    void backPage(MouseEvent event){
+        
+    
+    }
+    
+    @FXML
     void registrarCliente(MouseEvent event) {
         try {
             isClientCreate = Boolean.TRUE;

@@ -22,7 +22,7 @@
                <children>
                   <JFXDatePicker fx:id="txtFechaInicio" defaultColor="#455a64" layoutX="42.0" layoutY="107.0" prefHeight="17.0" prefWidth="171.0" promptText="Fecha Inicio" />
                   <JFXDatePicker fx:id="txtFechaFin" defaultColor="#455a64" layoutX="42.0" layoutY="154.0" promptText="Fecha Fin" />
-                  <JFXTextField fx:id="txtValue" layoutX="280.0" layoutY="107.0" prefHeight="25.0" prefWidth="99.0" promptText="Descuento (%) ">
+                  <JFXTextField fx:id="txtValue" labelFloat="true" layoutX="280.0" layoutY="107.0" prefHeight="25.0" prefWidth="99.0" promptText="Descuento (%) ">
                      <font>
                         <Font name="System Italic" size="12.0" />
                      </font>
@@ -39,10 +39,18 @@
                   </JFXButton>
                   <Label layoutX="391.0" layoutY="111.0" text="\%" />
                   <JFXComboBox fx:id="cmbTiposDescuento" layoutX="40.0" layoutY="56.0" onAction="#handleAction" prefHeight="25.0" prefWidth="164.0" promptText="Tipo" />
-                  <JFXTextField fx:id="txtCondicion" layoutX="280.0" layoutY="56.0" prefHeight="25.0" prefWidth="99.0" promptText="Monto" />
+                  <JFXTextField fx:id="txtCondicion" labelFloat="true" layoutX="280.0" layoutY="56.0" prefHeight="25.0" prefWidth="99.0" promptText="Monto" />
                   <Label fx:id="lblunit" layoutX="391.0" layoutY="60.0" text="PEN" />
                   <Label layoutX="216.0" layoutY="60.0" text="Más de" />
-                  <Label fx:id="lblError" layoutX="108.0" layoutY="249.0" />
+                  <Label fx:id="lblError" layoutX="39.0" layoutY="185.0" prefHeight="17.0" prefWidth="149.0" textFill="RED">
+                     <font>
+                        <Font size="9.0" />
+                     </font></Label>
+                  <Label fx:id="lblError1" layoutX="40.0" layoutY="81.0" prefHeight="25.0" prefWidth="164.0" textFill="RED">
+                     <font>
+                        <Font size="9.0" />
+                     </font>
+                  </Label>
                </children>
             </AnchorPane>
          </children>

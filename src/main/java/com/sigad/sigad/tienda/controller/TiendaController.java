@@ -12,6 +12,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialogLayout;
 import com.jfoenix.controls.JFXPopup;
+import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXTreeTableColumn;
 import com.jfoenix.controls.JFXTreeTableRow;
 import com.jfoenix.controls.JFXTreeTableView;
@@ -20,13 +21,14 @@ import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import com.sigad.sigad.app.controller.ErrorController;
 import com.sigad.sigad.business.Tienda;
 import com.sigad.sigad.business.helpers.TiendaHelper;
-import com.sigad.sigad.personal.controller.PersonalController;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -56,7 +58,7 @@ public class TiendaController implements Initializable {
      */
     public static final String viewPath = "/com/sigad/sigad/tienda/view/tienda.fxml";
     @FXML
-    private JFXTreeTableView storeTbl;
+    private JFXTreeTableView<Store> storeTbl;
     static ObservableList<Store> data;
     @FXML
     private StackPane hiddenSp;
@@ -70,13 +72,24 @@ public class TiendaController implements Initializable {
     
     public static boolean isStoreCreate;
     public static Store selectedStore = null;
+    @FXML
+    private JFXTextField filtro;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         data = FXCollections.observableArrayList();
         initStoreTbl();
+        agregarFiltro();
     }   
     
+    public void agregarFiltro() {
+        filtro.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+            storeTbl.setPredicate((TreeItem<Store> t) -> {
+                Boolean flag = t.getValue().capacidad.getValue().contains(newValue) || t.getValue().dirección.getValue().contains(newValue) || t.getValue().descripcion.getValue().contains(newValue) || t.getValue().activo.getValue().contains(newValue);
+                return flag;
+            });
+        });
+    }
     public static void updateTable(Tienda u) {
         data.add(
                 new Store(
@@ -107,7 +120,7 @@ public class TiendaController implements Initializable {
             try {
                 CreateEdditStoreDialog(true);
             } catch (IOException ex) {
-                Logger.getLogger(PersonalController.class.getName()).log(Level.SEVERE, "handleAction()", ex);
+                Logger.getLogger(TiendaController.class.getName()).log(Level.SEVERE, "handleAction()", ex);
             }
         }else if(event.getSource() == moreBtn){
             int count = storeTbl.getSelectionModel().getSelectedCells().size();
@@ -136,7 +149,7 @@ public class TiendaController implements Initializable {
             try {
                 CreateEdditStoreDialog(false);
             } catch (IOException ex) {
-                Logger.getLogger(PersonalController.class.getName()).log(Level.SEVERE, "initPopup(): CreateEdditStoreDialog()", ex);
+                Logger.getLogger(TiendaController.class.getName()).log(Level.SEVERE, "initPopup(): CreateEdditStoreDialog()", ex);
             }
         });
         
@@ -204,27 +217,27 @@ public class TiendaController implements Initializable {
 
     private void initStoreTbl() {
         JFXTreeTableColumn<TiendaController.Store, String> capacidad = new JFXTreeTableColumn<>("Capacidad");
-        capacidad.setPrefWidth(70);
+        capacidad.setPrefWidth(100);
         capacidad.setCellValueFactory((TreeTableColumn.CellDataFeatures<TiendaController.Store, String> param) -> param.getValue().getValue().capacidad);
         
         JFXTreeTableColumn<TiendaController.Store, String> coorxdireccion = new JFXTreeTableColumn<>("Coordenada X");
-        coorxdireccion.setPrefWidth(70);
+        coorxdireccion.setPrefWidth(100);
         coorxdireccion.setCellValueFactory((TreeTableColumn.CellDataFeatures<TiendaController.Store, String> param) -> param.getValue().getValue().cooxdireccion);
         
         JFXTreeTableColumn<TiendaController.Store, String> coorydireccion = new JFXTreeTableColumn<>("Coordenada Y");
-        coorydireccion.setPrefWidth(70);
+        coorydireccion.setPrefWidth(100);
         coorydireccion.setCellValueFactory((TreeTableColumn.CellDataFeatures<TiendaController.Store, String> param) -> param.getValue().getValue().cooydireccion);
         
         JFXTreeTableColumn<TiendaController.Store, String> direccion = new JFXTreeTableColumn<>("Dirección");
-        direccion.setPrefWidth(70);
+        direccion.setPrefWidth(300);
         direccion.setCellValueFactory((TreeTableColumn.CellDataFeatures<TiendaController.Store, String> param) -> param.getValue().getValue().dirección);
         
         JFXTreeTableColumn<TiendaController.Store, String> descripcion = new JFXTreeTableColumn<>("Descripción");
-        descripcion.setPrefWidth(70);
+        descripcion.setPrefWidth(200);
         descripcion.setCellValueFactory((TreeTableColumn.CellDataFeatures<TiendaController.Store, String> param) -> param.getValue().getValue().descripcion);
         
         JFXTreeTableColumn<TiendaController.Store, String> active = new JFXTreeTableColumn<>("Activo");
-        active.setPrefWidth(70);
+        active.setPrefWidth(80);
         active.setCellValueFactory((TreeTableColumn.CellDataFeatures<TiendaController.Store, String> param) -> param.getValue().getValue().activo);
         
         storeTbl.getColumns().add(capacidad);
@@ -251,7 +264,7 @@ public class TiendaController implements Initializable {
                     try {
                         CreateEdditStoreDialog(false);
                     } catch (IOException ex) {
-                        Logger.getLogger(PersonalController.class.getName()).log(Level.SEVERE, "initUserTbl(): CreateEdditUserDialog()", ex);
+                        Logger.getLogger(TiendaController.class.getName()).log(Level.SEVERE, "initUserTbl(): CreateEdditUserDialog()", ex);
                     }
                 }
             });

@@ -2,6 +2,7 @@
 
 <?import com.jfoenix.controls.JFXComboBox?>
 <?import com.jfoenix.controls.JFXDatePicker?>
+<?import com.jfoenix.controls.JFXTextField?>
 <?import com.jfoenix.controls.JFXTreeTableView?>
 <?import javafx.scene.control.TreeTableView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -31,6 +32,7 @@
                      <children>
                         <JFXComboBox fx:id="cbxProv" focusColor="#455a64" layoutX="109.0" layoutY="66.0" prefHeight="27.0" prefWidth="143.0" promptText="Proveedor" AnchorPane.bottomAnchor="77.0" />
                         <JFXDatePicker fx:id="pckDate" defaultColor="#455a64" disable="true" editable="false" layoutX="295.0" layoutY="66.0" prefHeight="27.0" prefWidth="158.0" promptText="Fecha" AnchorPane.bottomAnchor="77.0" />
+                        <JFXTextField fx:id="txtProveedor" disable="true" focusColor="#455a64" layoutX="105.0" layoutY="66.0" />
                      </children>
                   </AnchorPane>
                   <JFXTreeTableView fx:id="tblInsumos" prefHeight="216.0" prefWidth="589.0" GridPane.columnIndex="1" GridPane.rowIndex="2">

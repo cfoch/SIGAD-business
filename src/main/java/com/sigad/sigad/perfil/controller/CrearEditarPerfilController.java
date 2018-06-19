@@ -62,7 +62,7 @@ public class CrearEditarPerfilController implements Initializable {
             System.out.println(PerfilController.selectedProfile.name);
             loadFields();
         }else{
-            perfil = new Perfil();
+            perfil = new Perfil(true);
             messageLbl.setVisible(false);
         }
         
@@ -160,8 +160,9 @@ public class CrearEditarPerfilController implements Initializable {
             perfil.setDescripcion(temp.getDescripcion());
             perfil.setPermisos(temp.getPermisos());
             perfil.setActivo(temp.isActivo());
+            perfil.setEditable(temp.isEditable());
             
-            if(temp.getEditable()!=null && !temp.getEditable()){
+            if(temp.isEditable()!=null && !temp.isEditable()){
                 messageLbl.setVisible(true);
                 nameTxt.setEditable(false);
                 descriptionTXt.setEditable(false);

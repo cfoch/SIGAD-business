@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXTreeTableView?>
+<?import com.jfoenix.controls.JFXTextField?>
 <?import java.net.URL?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -36,6 +37,7 @@
                   <AnchorPane prefHeight="33.0" prefWidth="927.0" style="-fx-background-color: white; -fx-border-color: #C8C8C8;" GridPane.columnIndex="1" GridPane.rowIndex="1">
                      <children>
                         <Label layoutX="32.0" layoutY="7.0" prefHeight="27.0" prefWidth="186.0" text="Movimientos de Tienda" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="31.0" AnchorPane.topAnchor="6.0" />
+                        <JFXTextField fx:id="filtro" layoutX="712.0" layoutY="7.0" prefHeight="29.0" prefWidth="203.0" promptText="Buscar" AnchorPane.bottomAnchor="11.0" AnchorPane.rightAnchor="61.0" AnchorPane.topAnchor="6.0" />
                      </children>
                   </AnchorPane>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />

@@ -27,7 +27,6 @@ public class Perfil {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
-    private Boolean esCliente;
     @NotNull
     @Column(unique = true)
     private String nombre;
@@ -43,6 +42,11 @@ public class Perfil {
      * Constructor.
      */
     public Perfil() {
+        setEditable(true);
+    }
+    
+    public Perfil(boolean editable) {
+        setEditable(editable);
     }
 
     public Perfil(String nombre, String descripcion, boolean activo) {
@@ -51,11 +55,12 @@ public class Perfil {
         this.activo = activo;
     }
     
-    public Perfil(String nombre, String descripcion, boolean activo, Set<Permiso> permisos) {
+    public Perfil(String nombre, String descripcion, boolean activo, Set<Permiso> permisos, boolean editable) {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.activo = activo;
         this.permisos = permisos;
+        this.editable = editable;
     }
     
     /**
@@ -135,7 +140,6 @@ public class Perfil {
     }
 
     /**
-<<<<<<< HEAD
      * @return the usuarios
      */
     public Set<Usuario> getUsuarios() {
@@ -149,11 +153,9 @@ public class Perfil {
         this.usuarios = usuarios;
     }
     /**
-=======
->>>>>>> 7f3200619b35784707a29e1624d000e9da5bc458
      * @return the editable
      */
-    public Boolean getEditable() {
+    public Boolean isEditable() {
         return editable;
     }
 

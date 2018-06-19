@@ -11,6 +11,7 @@ import com.jfoenix.controls.JFXDialogLayout;
 import com.jfoenix.controls.JFXPopup;
 import com.jfoenix.controls.JFXPopup.PopupHPosition;
 import com.jfoenix.controls.JFXPopup.PopupVPosition;
+import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXTreeTableColumn;
 import com.jfoenix.controls.JFXTreeTableRow;
 import com.jfoenix.controls.JFXTreeTableView;
@@ -78,6 +79,8 @@ public class ProductosIndexController implements Initializable {
     public static boolean isProductCreate;
     public static ProductoLista selectedProductList = null;
     public static Producto selectedProduct = null;
+    @FXML
+    private JFXTextField filtro;
     /**
      * Initializes the controller class.
      */
@@ -85,9 +88,18 @@ public class ProductosIndexController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         data = FXCollections.observableArrayList();
         initializeMainTable();
+        agregarFiltro();
 //        initEvents();
     }
     
+    public void agregarFiltro() {
+        filtro.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+            productosTabla.setPredicate((TreeItem<ProductoLista> t) -> {
+                Boolean flag = t.getValue().nombre.getValue().contains(newValue) || t.getValue().precio.getValue().contains(newValue) || t.getValue().estado.getValue().contains(newValue) || t.getValue().descripcion.getValue().contains(newValue);
+                return flag;
+            });
+        });
+    }
     
     private static void updateTable(Producto p) {
         data.add(new ProductoLista(

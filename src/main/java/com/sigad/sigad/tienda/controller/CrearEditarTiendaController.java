@@ -19,10 +19,12 @@ import com.sigad.sigad.business.Tienda;
 import com.sigad.sigad.business.Usuario;
 import com.sigad.sigad.business.helpers.GMapsHelper;
 import com.sigad.sigad.business.helpers.TiendaHelper;
+import com.sigad.sigad.business.helpers.UsuarioHelper;
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIconView;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.logging.Level;
@@ -65,6 +67,8 @@ public class CrearEditarTiendaController implements Initializable {
     private JFXTextField coordXText;
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        
+        initElements();
         //Add the buttons of the static dialog
         addDialogBtns();
         
@@ -80,6 +84,26 @@ public class CrearEditarTiendaController implements Initializable {
         initValidator();
     }    
 
+    private ArrayList<Usuario> deactivateStore(){
+        UsuarioHelper helperu = new UsuarioHelper();
+        ArrayList<Usuario> listaUs = helperu.getUsersStore(tienda);
+        if(listaUs == null){
+            ErrorController error = new ErrorController();
+            error.loadDialog("Error", "No se puede desactivar tienda con usuarios", "Ok", hiddenSp);
+        }
+        helperu.close();
+        return listaUs;
+    }
+    private void initElements(){
+        isActiveBtn.selectedProperty().addListener(((observable, oldValue, newValue) -> {
+            if(!newValue){
+                //verify to deactivate
+                if(deactivateStore() != null){
+                    isActiveBtn.setSelected(true);
+                }
+            }
+        }));
+    }
     private void addDialogBtns() {
         JFXButton save = new JFXButton("Guardar");
         save.setPrefSize(80, 25);

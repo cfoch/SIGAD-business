@@ -9,6 +9,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialogLayout;
 import com.jfoenix.controls.JFXPopup;
+import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXTreeTableColumn;
 import com.jfoenix.controls.JFXTreeTableRow;
 import com.jfoenix.controls.JFXTreeTableView;
@@ -33,6 +34,8 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -67,38 +70,54 @@ public class PerfilController implements Initializable {
     static ObservableList<Profile> dataPerfilTbl;
     static ObservableList<Permission> dataPermisoTbl;
     @FXML
-    private JFXTreeTableView profilesTbl, permissionTbl;
+    private JFXTreeTableView<Profile> profilesTbl;
+    @FXML
+    private JFXTreeTableView<Permission> permissionTbl;
     @FXML
     private JFXButton perfilAddBtn, permisoAddBtn;
     @FXML
     private JFXButton perfilMoreBtn, permisoMoreBtn;
-    @FXML
     private JFXPopup popupProfile;
-    @FXML
     private JFXPopup popupPermission;
     @FXML
     private StackPane hiddenSp;
-    @FXML
-    public static JFXDialog profileDialog, permissionDialog;
+    public static JFXDialog profileDialog;
+    public static JFXDialog permissionDialog;
     
     public static boolean isProfileCreate;
     public static Profile selectedProfile = null;
     
     public static boolean isPermissionCreate;
     public static Permission selectedPermission = null;
+    @FXML
+    private JFXTextField filtro;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         dataPerfilTbl = FXCollections.observableArrayList();
         dataPermisoTbl = FXCollections.observableArrayList();
         initProfileTable();
+        agregarFiltro();
+    }
+    
+    public void agregarFiltro() {
+        filtro.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                profilesTbl.setPredicate((TreeItem<Profile> t) -> {
+                    Boolean flag = t.getValue().name.getValue().contains(newValue) || t.getValue().description.getValue().contains(newValue) || t.getValue().active.getValue().contains(newValue);
+                    return flag;
+                });
+            }
+        });
     }
     
     public static void updateProfileData(Perfil p) {
         dataPerfilTbl.add(new Profile(
             new SimpleStringProperty(p.getNombre()), 
             new SimpleStringProperty(p.getDescripcion()), 
-            new SimpleStringProperty(p.isActivo()? "Activo": "Inactivo"))
+            new SimpleStringProperty(p.isActivo()? "Activo": "Inactivo"),
+            new SimpleStringProperty(p.isEditable()? "Editable": "No Editable"))
         );
     }
     
@@ -170,7 +189,7 @@ public class PerfilController implements Initializable {
     
     private void initProfileTable() {
         JFXTreeTableColumn<Profile, String> nombre = new JFXTreeTableColumn<>("Nombre");
-        nombre.setPrefWidth(120);
+        nombre.setPrefWidth(200);
         nombre.setCellValueFactory((TreeTableColumn.CellDataFeatures<Profile, String> param) -> param.getValue().getValue().name);
         
         JFXTreeTableColumn<Profile, String> description = new JFXTreeTableColumn<>("Descripción");
@@ -178,8 +197,13 @@ public class PerfilController implements Initializable {
         description.setCellValueFactory((TreeTableColumn.CellDataFeatures<Profile, String> param) -> param.getValue().getValue().description);
         
         JFXTreeTableColumn<Profile, String> active = new JFXTreeTableColumn<>("Activo");
-        active.setPrefWidth(120);
+        active.setPrefWidth(50);
         active.setCellValueFactory((TreeTableColumn.CellDataFeatures<Profile, String> param) -> param.getValue().getValue().active);
+        
+        JFXTreeTableColumn<Profile, String> editable = new JFXTreeTableColumn<>("Editable");
+        editable.setPrefWidth(50);
+        editable.setCellValueFactory((TreeTableColumn.CellDataFeatures<Profile, String> param) -> param.getValue().getValue().editable);
+        
         
         //Get Data from db
         PerfilHelper usuarioHelper = new PerfilHelper();
@@ -222,7 +246,7 @@ public class PerfilController implements Initializable {
         
         profilesTbl.setEditable(true);
         profilesTbl.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        profilesTbl.getColumns().setAll(nombre, description, active);
+        profilesTbl.getColumns().setAll(nombre, description, active, editable);
         profilesTbl.setRoot(root);
         profilesTbl.setShowRoot(false);        
     }
@@ -409,14 +433,18 @@ public class PerfilController implements Initializable {
     private void initPermissionTable(String profileName) {
         dataPermisoTbl.clear();
         
-        JFXTreeTableColumn<Permission, String> nombre = new JFXTreeTableColumn<>("Menú");
-        nombre.setPrefWidth(120);
-        nombre.setCellValueFactory((TreeTableColumn.CellDataFeatures<Permission, String> param) -> param.getValue().getValue().menu);
+        JFXTreeTableColumn<Permission, String> menu = new JFXTreeTableColumn<>("Menú");
+        menu.setPrefWidth(120);
+        menu.setCellValueFactory((TreeTableColumn.CellDataFeatures<Permission, String> param) -> param.getValue().getValue().menu);
         
         JFXTreeTableColumn<Permission, String> description = new JFXTreeTableColumn<>("Ícono");
         description.setPrefWidth(120);
         description.setCellValueFactory((TreeTableColumn.CellDataFeatures<Permission, String> param) -> param.getValue().getValue().icono);
         
+        permissionTbl.getColumns().add(menu);
+        permissionTbl.getColumns().add(description);
+        
+        ////DB
         PerfilHelper ph = new PerfilHelper();
         Perfil ptemp = ph.getProfile(profileName);
         if(ptemp == null){
@@ -428,6 +456,7 @@ public class PerfilController implements Initializable {
         for (Permiso currPermission : currPermissions) {
             updatePermissionData(currPermission);
         }
+        ph.close();
         
 //        PermisoHelper helper = new PermisoHelper();
 //        ArrayList<Permiso> list = helper.getPermissions();
@@ -445,7 +474,7 @@ public class PerfilController implements Initializable {
         
         permissionTbl.setEditable(true);
         permissionTbl.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        permissionTbl.getColumns().setAll(nombre, description);
+        permissionTbl.getColumns().setAll(menu, description);
         permissionTbl.setRoot(root);
         permissionTbl.setShowRoot(false);
     }
@@ -456,11 +485,13 @@ public class PerfilController implements Initializable {
         StringProperty name;
         StringProperty description;
         StringProperty active;
+        StringProperty editable;
 
-        public Profile(StringProperty profileName, StringProperty profileDesc, StringProperty seleccion) {
+        public Profile(StringProperty profileName, StringProperty profileDesc, StringProperty seleccion, StringProperty editable) {
             this.name = profileName;
             this.description = profileDesc;
             this.active = seleccion;
+            this.editable = editable;
         }
 
         @Override

@@ -77,6 +77,9 @@ public class Pedido {
     
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<DocumentoLegal> documentos = new HashSet<>();
+    
+    @ManyToOne
+    private ClienteDescuento descuentoCliente;
 
     private Timestamp horaEntrega;
     private Time horaIniEntrega;

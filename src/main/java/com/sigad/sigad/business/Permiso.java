@@ -13,7 +13,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 
 /**
  *
@@ -21,13 +20,10 @@ import javax.persistence.ManyToOne;
  */
 @Entity
 public class Permiso {
-
-    
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
-    private int orden;
+    private Integer orden;
     private String menu;
     private String icono;
     @ManyToMany(mappedBy = "permisos", cascade = { CascadeType.ALL })

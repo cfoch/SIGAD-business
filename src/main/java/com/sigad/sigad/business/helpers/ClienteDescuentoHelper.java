@@ -139,7 +139,7 @@ public class ClienteDescuentoHelper {
             uNew.setFechaInicio(uOld.getFechaInicio());
             uNew.setFechaFin(uOld.getFechaFin());
             uNew.setValue(uOld.getValue());
-
+            uNew.setCondicion(uOld.getCondicion());
             session.merge(uNew);
             tx.commit();
             session.close();

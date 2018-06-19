@@ -153,6 +153,7 @@ public class SeleccionarProductosController implements Initializable {
             err.loadDialog("Aviso", "Su usuario no tiene una tienda asignada, contacte al administrador", "Ok", stackPane);
             return;
         }
+        pedido = new Pedido();
         pedido.setTienda(tienda);
         columnasPedidos();
         columnasProductos();
@@ -160,20 +161,7 @@ public class SeleccionarProductosController implements Initializable {
         agregarColumnasTablasProductos();
         agregarFiltro();
 
-        //Basede datos
-        ProductoHelper gest = new ProductoHelper();
-        ArrayList<Producto> productosDB = gest.getProducts();
-        gest.close();
-        if (productosDB != null) {
-            productosDB.forEach((p) -> {
-                Producto t = p;
-                prod.add(new ProductoLista(t.getNombre(), t.getPrecio().toString(), "0", t.getCategoria().getNombre(), tienda.getDescripcion(), t.getImagen(), t.getId().intValue(), t));
-            });
-
-        }
-        insumos = us.getTienda().getInsumos();
-        insumosCambiantes = new HashMap(insumos);
-        mostrarMaximoStock();
+       
     }
 
     public void agregarFiltro() {
@@ -457,9 +445,25 @@ public class SeleccionarProductosController implements Initializable {
         }
     }
 
-    public void initModel(Pedido pedido, StackPane stack) {
+    public void initModel(Pedido pedido, StackPane stack, Tienda tienda, String direccion) {
         stackPane = stack;
         this.pedido = pedido;
+        this.pedido.setTienda(tienda);
+        this.pedido.setDireccionDeEnvio(direccion);
+         //Basede datos
+        ProductoHelper gest = new ProductoHelper();
+        ArrayList<Producto> productosDB = gest.getProducts();
+        gest.close();
+        if (productosDB != null) {
+            productosDB.forEach((p) -> {
+                Producto t = p;
+                prod.add(new ProductoLista(t.getNombre(), t.getPrecio().toString(), "0", t.getCategoria().getNombre(), tienda.getDescripcion(), t.getImagen(), t.getId().intValue(), t));
+            });
+
+        }
+        insumos = tienda.getInsumos();
+        insumosCambiantes = new HashMap(insumos);
+        mostrarMaximoStock();
     }
 
     public void calcularTotal() {

@@ -20,25 +20,30 @@
          <children>
             <AnchorPane prefHeight="239.0" prefWidth="432.0">
                <children>
-                  <JFXDatePicker fx:id="txtFechaInicio" defaultColor="#455a64" layoutX="42.0" layoutY="107.0" prefHeight="17.0" prefWidth="171.0" promptText="Fecha Inicio" />
-                  <JFXDatePicker fx:id="txtFechaFin" defaultColor="#455a64" layoutX="42.0" layoutY="154.0" promptText="Fecha Fin" />
-                  <JFXTextField fx:id="txtValuePct" layoutX="266.0" layoutY="56.0" prefHeight="25.0" prefWidth="135.0" promptText="Descuento (%) ">
+                  <JFXDatePicker fx:id="txtFechaInicio" defaultColor="#455a64" layoutX="42.0" layoutY="128.0" prefHeight="17.0" prefWidth="171.0" promptText="Fecha Inicio" />
+                  <JFXDatePicker fx:id="txtFechaFin" defaultColor="#455a64" layoutX="42.0" layoutY="175.0" promptText="Fecha Fin" />
+                  <JFXTextField fx:id="txtValuePct" labelFloat="true" layoutX="266.0" layoutY="56.0" prefHeight="25.0" prefWidth="135.0" promptText="Descuento (%) ">
                      <font>
                         <Font name="System Italic" size="12.0" />
                      </font>
                   </JFXTextField>
-                  <JFXButton fx:id="btnGuardar" buttonType="RAISED" layoutX="260.0" layoutY="212.0" onAction="#guardarDescuento" style="-fx-background-color: #FFFFFF;" text="Guardar">
+                  <JFXButton fx:id="btnGuardar" buttonType="RAISED" defaultButton="true" layoutX="266.0" layoutY="238.0" onAction="#guardarDescuento" style="-fx-background-color: #FFFFFF;" text="Guardar">
                      <effect>
                         <DropShadow color="#000000f5" />
                      </effect>
                   </JFXButton>
-                  <JFXButton fx:id="btnCancelar" buttonType="RAISED" layoutX="113.0" layoutY="212.0" onMouseClicked="#close" style="-fx-background-color: #FFFFFF;" text="Cancelar">
+                  <JFXButton fx:id="btnCancelar" buttonType="RAISED" cancelButton="true" layoutX="104.0" layoutY="238.0" onMouseClicked="#close" style="-fx-background-color: #FFFFFF;" text="Cancelar">
                      <effect>
                         <DropShadow color="#000000f3" />
                      </effect>
                   </JFXButton>
-                  <Label fx:id="lblError" layoutX="150.0" layoutY="249.0" prefHeight="17.0" prefWidth="31.0" />
+                  <Label fx:id="lblError" layoutX="43.0" layoutY="200.0" prefHeight="25.0" prefWidth="171.0" />
                   <JFXComboBox fx:id="cmbCategorias" layoutX="40.0" layoutY="56.0" prefHeight="25.0" prefWidth="171.0" promptText="Categorias" />
+                  <Label fx:id="lblerrorc" layoutX="40.0" layoutY="81.0" prefHeight="25.0" prefWidth="171.0">
+                     <font>
+                        <Font size="9.0" />
+                     </font>
+                  </Label>
                </children>
             </AnchorPane>
          </children>

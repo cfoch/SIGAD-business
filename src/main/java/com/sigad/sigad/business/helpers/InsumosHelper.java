@@ -75,11 +75,14 @@ public class InsumosHelper {
         String hqlQuery = "from ProveedorInsumo PI where PI.proveedor = :prov_id and PI.insumo = :in_id and activo=true";
         try{
             List<ProveedorInsumo> busquedaResultado = session.createQuery(hqlQuery).setParameter("prov_id", proveedor).setParameter("in_id", insumo).list();
-            if (!busquedaResultado.isEmpty())
+            if (!busquedaResultado.isEmpty()){
                 LOGGER.log(Level.INFO, String.format("Insumo %s asociado al proveedor %s encontrado ", insumo.getNombre(), proveedor.getNombre()));
-            else
+                return busquedaResultado.get(0);
+            }
+            else{
                 LOGGER.log(Level.INFO, String.format("Insumo %s asociado al proveedor %s no encontrado ", insumo.getNombre(), proveedor.getNombre()));
-            return busquedaResultado.get(0);
+                return null;
+            }
         }
         catch(Exception e) {
             LOGGER.log(Level.WARNING, String.format("Error en la busqueda de los Insumos del proveedor %s", proveedor.getNombre()));
@@ -111,12 +114,8 @@ public class InsumosHelper {
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
-            System.out.println("here1");
-            System.out.println("id a actualizar" + modifiedInsumo.getId());
             session.update(modifiedInsumo);
-            System.out.println("here2");
             for (ProveedorInsumo proveedorInsumo : lista_proveedoresxInsumo) {
-                System.out.println("here3");
                 LOGGER.log(Level.INFO, String.format("Actualizando relacion entre %s y %s", proveedorInsumo.getProveedor().getNombre(), proveedorInsumo.getInsumo().getNombre()));
                 session.saveOrUpdate(proveedorInsumo);
             }
@@ -134,6 +133,62 @@ public class InsumosHelper {
             this.errorMessage = e.getMessage();
         }
         return id;
+    }
+    
+    public Boolean updateProveedorInsumo(ProveedorInsumo tOld){
+        Transaction tx = null;
+        boolean ok = false;
+        try {          
+            if(session.getTransaction().isActive()){
+                tx = session.getTransaction();
+            }else{
+                tx = session.beginTransaction();
+            }
+            
+            ProveedorInsumo tNew = session.load(ProveedorInsumo.class, tOld.getId());
+            
+            tNew.setActivo(tOld.isActivo());
+            tNew.setInsumo(tOld.getInsumo());
+            tNew.setPrecio(tOld.getPrecio());
+            tNew.setProveedor(tOld.getProveedor());
+
+            session.update(tNew);
+            session.merge(tNew);
+            tx.commit();
+            ok = true;
+            LOGGER.log(Level.FINE, "Lote insumo guardado");
+            this.errorMessage = "";
+        } catch (Exception e) {
+            if (tx!=null)   tx.rollback();
+            System.out.println(e.getMessage());
+            this.errorMessage = e.getMessage();
+        }
+        return ok;
+    }
+    
+    public Boolean saveProveedorInsumo(ProveedorInsumo pi){
+        Transaction tx = null;
+        boolean ok = false;
+        try {
+            if(session.getTransaction().isActive()){
+                tx = session.getTransaction();
+            }else{
+                tx = session.beginTransaction();
+            }
+            session.save(pi);
+            tx.commit();
+            ok = true;
+            LOGGER.log(Level.FINE, "Lote insumo guardado");
+            this.errorMessage = "";
+        } catch (Exception e) {
+            if (tx!=null)   tx.rollback();
+            this.errorMessage = e.getMessage();
+            LOGGER.log(Level.SEVERE, String.format("Ocurrio un error al tratar de crear el lote insumo"));
+            System.out.println("====================================================================");
+            System.out.println(e);
+            System.out.println("====================================================================");
+        }
+        return ok;
     }
     
     public boolean updateInsumo(Insumo tOld) {

@@ -5,6 +5,7 @@
  */
 package com.sigad.sigad.movimientos.controller;
 
+import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXTreeTableColumn;
 import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
@@ -18,6 +19,7 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -41,19 +43,29 @@ public class MovimientosController implements Initializable {
     public static String windowName = "Movimientos de Tienda";
     
     @FXML
-    private JFXTreeTableView movimientosTbl;
+    private JFXTreeTableView<Movement> movimientosTbl;
     static ObservableList<Movement> data;
     
     /*Extras*/
     @FXML
     public static StackPane movementDialog;
+    @FXML
+    private JFXTextField filtro;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         data = FXCollections.observableArrayList();
         initMovementTbl();
     }    
-
+    
+    public void agregarFiltro() {
+        filtro.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+            movimientosTbl.setPredicate((TreeItem<Movement> t) -> {
+                Boolean flag = t.getValue().id.getValue().contains(newValue) || t.getValue().fecha.getValue().contains(newValue) || t.getValue().cantidadMovimiento.getValue().contains(newValue) || t.getValue().dirección.getValue().contains(newValue) || t.getValue().idLoteInsumo.getValue().contains(newValue) || t.getValue().idTienda.getValue().contains(newValue) || t.getValue().insumo.getValue().contains(newValue) || t.getValue().movimiento.getValue().contains(newValue) || t.getValue().usuario.getValue().contains(newValue);
+                return flag;
+            });
+        });
+    }
     private void initMovementTbl() {
         JFXTreeTableColumn<Movement, String> id = new JFXTreeTableColumn<>("Id");
         id.setPrefWidth(70);
