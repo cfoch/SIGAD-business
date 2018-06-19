@@ -35,7 +35,7 @@ public class GenerarReportes {
     private void iniciarConexion() {
         try{
             LOGGER.log(Level.INFO, "Habriendo conexion para reportes");
-            conn = DriverManager.getConnection("jdbc:postgresql://200.16.7.71:1051/sigadtestdb", "postgres", "root");
+            conn = DriverManager.getConnection("jdbc:postgresql://200.16.7.71:1051/sigadtestdb", "postgres", "8g5334");
             LOGGER.log(Level.INFO, "Conexion abierta con exito");
         }
         catch(SQLException e) {
