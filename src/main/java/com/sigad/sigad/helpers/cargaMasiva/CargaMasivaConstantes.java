@@ -30,13 +30,15 @@ public class CargaMasivaConstantes {
     public static final String TABLA_TIPOVEHICULOS = "Tipos de Vehiculo";
     public static final String TABLA_VEHICULOS = "Vehiculos";
     public static final String TABLA_PROVEEDORXINSUMO = "Proveedor x Insumo";
-    
+    public static final String TABLA_DESCUENTOSCATEGORIA = "Descuento de Categoria de Productos";
+    public static final String TABLA_PRODUCTODESCUENTO = "Descuento de Productos";
+    public static final String TABLA_DESCUENTOXUSUARIO = "Descuento de Usuarios";
     
     /* mantener esta lista ordenada de la siguiente manera : primero aquellas entidades que no tienen FK, luego aquellas que si tiene FK */
     public static ObservableList<String> getList(){
         return FXCollections.observableArrayList(
-                TABLA_PRODUCTOCATEGORIA, TABLA_TIPOPAGO,TABLA_TIENDAS,TABLA_PERFILES, TABLA_USUARIOS, TABLA_PROVEEDORES, TABLA_INSUMOS, TABLA_PROVEEDORXINSUMO,
-                TABLA_TIPOMOV, TABLA_PERMISOS, TABLA_FRAGILIDAD, TABLA_PRODUCTOS,TABLA_PERFILXPERMISO, TABLA_PRODXINSUMO, TABLA_TIPOVEHICULOS, TABLA_VEHICULOS
+                TABLA_PRODUCTOCATEGORIA, TABLA_DESCUENTOSCATEGORIA, TABLA_TIPOPAGO,TABLA_TIENDAS,TABLA_PERFILES, TABLA_USUARIOS, TABLA_DESCUENTOXUSUARIO, TABLA_PROVEEDORES, TABLA_INSUMOS, TABLA_PROVEEDORXINSUMO,
+                TABLA_TIPOMOV, TABLA_PERMISOS, TABLA_FRAGILIDAD, TABLA_PRODUCTOS, TABLA_PRODUCTODESCUENTO,TABLA_PERFILXPERMISO, TABLA_PRODXINSUMO, TABLA_TIPOVEHICULOS, TABLA_VEHICULOS
         );
     };
 }

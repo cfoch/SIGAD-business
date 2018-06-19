@@ -29,6 +29,15 @@ public class ProductoCategoriaDescuento {
     @ManyToOne
     private ProductoCategoria categoria;
 
+    public void setActivo(Boolean activo) {
+        this.activo = activo;
+    }
+
+    public Boolean getActivo() {
+        return activo;
+    }
+
+    
     /**
      * @return the id
      */
