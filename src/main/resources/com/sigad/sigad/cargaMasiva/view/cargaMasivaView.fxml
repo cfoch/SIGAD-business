@@ -22,6 +22,14 @@
          <effect>
             <DropShadow />
          </effect></JFXButton>
+      <JFXButton fx:id="generarOrdenesCompraBtn" buttonType="RAISED" layoutX="731.0" layoutY="393.0" style="-fx-background-color: FFFFFF;" text="Generar órdenes de compra">
+         <font>
+            <Font size="15.0" />
+         </font>
+         <effect>
+            <DropShadow />
+         </effect>
+      </JFXButton>
       <Label layoutX="48.0" layoutY="59.0" text="Seleccion de entidades (Ctrl + Click para seleccion multiple)" />
       <Label layoutX="60.0" layoutY="301.0" text="Archivo" />
       <JFXTextField fx:id="archivoNombre" disable="true" layoutX="61.0" layoutY="319.0" prefHeight="26.0" prefWidth="632.0" />

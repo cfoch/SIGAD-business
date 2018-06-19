@@ -6,47 +6,43 @@
 package com.sigad.sigad.controller.cargaMasiva;
 
 import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXTreeTableColumn;
 import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
+import com.sigad.sigad.business.helpers.DBPopulationHelper;
+import com.sigad.sigad.helpers.cargaMasiva.*;
+import static com.sigad.sigad.helpers.cargaMasiva.CargaMasivaHelper.generarCargaMasivaTemplate;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.event.EventType;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.stage.FileChooser;
-import javafx.stage.Window;
-import com.sigad.sigad.business.*;
-import com.sigad.sigad.helpers.cargaMasiva.*;
-import static com.sigad.sigad.helpers.cargaMasiva.CargaMasivaHelper.generarCargaMasivaTemplate;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
+import javafx.stage.Window;
 import javafx.util.Callback;
-import com.sigad.sigad.helpers.cargaMasiva.TreeObjectInterface;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import javafx.event.Event;
-import javafx.scene.control.SelectionMode;
 
 /**
  * FXML Controller class
@@ -67,6 +63,8 @@ public class CargaMasivaViewController implements Initializable {
     private JFXTextField archivoNombre;
     @FXML
     private JFXButton guardarBtn;
+    @FXML
+    private JFXButton generarOrdenesCompraBtn;
      @FXML
     private JFXTreeTableView<HojaReporteTree> tablaPrevia;
     @FXML
@@ -131,6 +129,17 @@ public class CargaMasivaViewController implements Initializable {
                 List<HojaReporte> reporte = CargaMasivaHelper.CargaMasivaProceso(filePath);
                 showReport(reporte);
             }
+        });
+
+        generarOrdenesCompraBtn.setOnAction((event) -> {
+            DBPopulationHelper helperPopulation = new DBPopulationHelper();
+            try {
+                helperPopulation.generarOrdenesCompra();
+            } catch (Exception ex) {
+                Logger.getLogger(CargaMasivaViewController.class.getName())
+                        .log(Level.SEVERE, null, ex);
+            }
+            helperPopulation.close();
         });
     }
     
