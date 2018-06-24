@@ -189,12 +189,13 @@ public class RepartosController implements Initializable {
                         GrupoRepartosController controllerWrapper =
                             new GrupoRepartosController(
                                     GrupoRepartosLista.class);
-                        controllerWrapper.setParentStackPane(
-                                homeController.getStackPane());
 
                         nodeWrapper = UIFuncs.<GrupoRepartosController>
                                 createNodeFromControllerFXML(controllerWrapper,
                                         GrupoRepartosController.VIEW_PATH);
+                        controllerWrapper.getListarController()
+                                .setParentStackPane(
+                                        controllerWrapper.getStackPane());
                         homeController.getFirstPanel().getChildren().setAll(nodeWrapper);
                     } catch (InstantiationException | IllegalAccessException ex) {
                         Logger.getLogger(RepartosController.class.getName())
