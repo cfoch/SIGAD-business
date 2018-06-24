@@ -16,8 +16,18 @@ public class BaseHelper {
     static Session session = null;
     protected String errorMessage = "";
 
+    public BaseHelper(boolean close) {
+        init(close);
+    }
+
     public BaseHelper() {
-        if(this.session!= null) this.close();
+        init(true);
+    }
+
+    private void init(boolean close) {
+        if (this.session != null && close) {
+            this.close();
+        }
         session = LoginController.serviceInit();
     }
 
