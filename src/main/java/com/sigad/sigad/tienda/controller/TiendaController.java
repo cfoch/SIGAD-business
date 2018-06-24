@@ -5,12 +5,10 @@
  */
 package com.sigad.sigad.tienda.controller;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-import javafx.fxml.Initializable;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialogLayout;
+import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXPopup;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXTreeTableColumn;
@@ -19,15 +17,19 @@ import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import com.sigad.sigad.app.controller.ErrorController;
+import com.sigad.sigad.app.controller.LoginController;
 import com.sigad.sigad.business.Tienda;
+import com.sigad.sigad.business.Vehiculo;
 import com.sigad.sigad.business.helpers.TiendaHelper;
+import com.sigad.sigad.utils.ui.UIFuncs;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -35,8 +37,10 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
@@ -44,6 +48,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import org.hibernate.Session;
 
 
 /**
@@ -93,6 +98,7 @@ public class TiendaController implements Initializable {
     public static void updateTable(Tienda u) {
         data.add(
                 new Store(
+                        u.getId(),
                         new SimpleStringProperty(String.valueOf(u.getCapacidad())),
                         new SimpleStringProperty(String.valueOf(u.getCooXDireccion())),
                         new SimpleStringProperty(String.valueOf(u.getCooYDireccion())),
@@ -143,6 +149,7 @@ public class TiendaController implements Initializable {
     private void initPopup(){
         JFXButton edit = new JFXButton("Editar");
         JFXButton delete = new JFXButton("Eliminar");
+        JFXButton verVehiculos = new JFXButton("Ver vehículos");
         
         edit.setOnAction((ActionEvent event) -> {
             popup.hide();
@@ -157,13 +164,61 @@ public class TiendaController implements Initializable {
             popup.hide();
             deleteUserDialog();
         });
+
+        verVehiculos.setOnAction((event) -> {
+            JFXListView<Label> listView = new JFXListView<Label>();
+            Tienda tienda;
+            Session session;
+            popup.hide();
+
+            if (selectedStore == null) {
+                UIFuncs.Dialogs.showMsg(
+                        hiddenSp,
+                        UIFuncs.Dialogs.HEADINGS.ERROR,
+                        "Debe seleccionar una tienda.",
+                        UIFuncs.Dialogs.BUTTON.CERRAR);
+                return;
+            }
+
+            session = LoginController.serviceInit();
+            try {
+                tienda = (Tienda) session
+                        .createQuery("from Tienda where id = :idTienda")
+                        .setParameter("idTienda", selectedStore.id)
+                        .getSingleResult();
+                for (Vehiculo vehiculo : tienda.getVehiculos()) {
+                    Label label = new Label(String.format("%s - %s",
+                            vehiculo.getPlaca(), vehiculo.getNombre()));
+                    listView.getItems().add(label);
+                }
+                session.close();
+                UIFuncs.Dialogs.showDialog(hiddenSp,
+                        "Vehículos",
+                        listView,
+                        new JFXButton("Cerrar"),
+                        true);
+            } catch (Exception ex) {
+                try {
+                    session.close();
+                } catch (Exception ex1) {
+                }
+                UIFuncs.Dialogs.showMsg(
+                        hiddenSp,
+                        UIFuncs.Dialogs.HEADINGS.ERROR,
+                        "Hubo un error al mostrar las tiendas.",
+                        UIFuncs.Dialogs.BUTTON.CERRAR);
+                return;
+            }
+        });
         
         edit.setPadding(new Insets(20));
         edit.setPrefSize(145, 40);
         delete.setPadding(new Insets(20));
         delete.setPrefSize(145, 40);
+        verVehiculos.setPadding(new Insets(20));
+        verVehiculos.setPrefSize(145, 40);
         
-        VBox vBox = new VBox(edit, delete);
+        VBox vBox = new VBox(edit, delete,verVehiculos);
         
         popup = new JFXPopup();
         popup.setPopupContent(vBox);
@@ -281,7 +336,7 @@ public class TiendaController implements Initializable {
     }
     
     public static class Store  extends RecursiveTreeObject<Store> {
-        
+        Long id;
         StringProperty capacidad;
         StringProperty cooxdireccion;
         StringProperty cooydireccion;
@@ -289,7 +344,8 @@ public class TiendaController implements Initializable {
         StringProperty dirección;
         StringProperty activo;
 
-        public Store(StringProperty capacidad, StringProperty cooxdireccion, StringProperty cooydireccion, StringProperty descripcion, StringProperty dirección, StringProperty activo) {
+        public Store(Long id, StringProperty capacidad, StringProperty cooxdireccion, StringProperty cooydireccion, StringProperty descripcion, StringProperty dirección, StringProperty activo) {
+            this.id = id;
             this.capacidad = capacidad;
             this.cooxdireccion = cooxdireccion;
             this.cooydireccion = cooydireccion;
