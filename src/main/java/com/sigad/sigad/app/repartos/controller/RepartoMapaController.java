@@ -66,7 +66,7 @@ public class RepartoMapaController extends UIBaseController
     List<List<Locacion>> repartos2solution(List<Reparto> repartos) {
         int i;
         String marshallizedSolution;
-        AlgoritmoHelper helperAlgoritmo = new AlgoritmoHelper();
+        AlgoritmoHelper helperAlgoritmo = new AlgoritmoHelper(false);
         List<List<Locacion>> solucion = new ArrayList<>();
         for (i = 0; i < repartos.size(); i++) {
             List<Locacion> ruta;

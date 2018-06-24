@@ -37,6 +37,15 @@ import org.jgrapht.graph.SimpleGraph;
  * @author cfoch
  */
 public class AlgoritmoHelper extends BaseHelper {
+
+    public AlgoritmoHelper() {
+        super();
+    }
+
+    public AlgoritmoHelper(boolean close) {
+        super(close);
+    }
+
     public Tienda getTiendaActual(Usuario usuario) {
         Tienda tienda;
         tienda = usuario.getTienda();

@@ -94,6 +94,10 @@ public class GrupoRepartosLista extends UICRUDViewListarController {
                 controllerMapa = new RepartoMapaController(repartos);
                 nodeMapa = UIFuncs.createNodeFromControllerFXML(controllerMapa,
                         RepartoMapaController.VIEW_PATH);
+
+                helperAlgoritmo.close();
+                helperReparto.close();
+
                 UIFuncs.Dialogs.showDialog(sp,
                         "Mapa de repatos",
                         nodeMapa,
