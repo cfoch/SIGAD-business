@@ -8,7 +8,6 @@ package com.sigad.sigad.helpers.cargaMasiva;
 import com.sigad.sigad.app.controller.LoginController;
 import com.sigad.sigad.business.ClienteDescuento;
 import com.sigad.sigad.business.Insumo;
-import com.sigad.sigad.business.Pedido;
 import com.sigad.sigad.business.PedidoEstado;
 import com.sigad.sigad.business.Perfil;
 import com.sigad.sigad.business.Permiso;
@@ -27,10 +26,10 @@ import com.sigad.sigad.business.Usuario;
 import com.sigad.sigad.business.Vehiculo;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -929,6 +928,7 @@ public class CargaMasivaHelper {
                     return false;
                 }
             case CargaMasivaConstantes.TABLA_VEHICULOS:
+                Vehiculo.Tipo tipoVehiculoAsociado = null;
                 String descripcionVehiculo = StringUtils.trimToEmpty(dataFormatter.formatCellValue(row.getCell(index)));
                 index++;
                 String nombreVehiculo = StringUtils.trimToEmpty(dataFormatter.formatCellValue(row.getCell(index)));
@@ -941,6 +941,11 @@ public class CargaMasivaHelper {
                 index++;
                 String nombreTipoVehiculoAsociado = StringUtils.trimToEmpty(dataFormatter.formatCellValue(row.getCell(index)));
                 if(StringUtils.isBlank(nombreTipoVehiculoAsociado)){
+                    LOGGER.log(Level.SEVERE, "No se identifica un nombre de tipo de vehiculo para el vehiculo");
+                    return false;
+                }
+                tipoVehiculoAsociado = (Vehiculo.Tipo) CargaMasivaHelper.busquedaGeneralString(session, "Vehiculo$Tipo", new String[] {"nombre"}, new String[] {nombreTipoVehiculoAsociado});
+                if (tipoVehiculoAsociado == null) {
                     LOGGER.log(Level.SEVERE, "No se identifica un nombre de tipo de vehiculo para el vehiculo");
                     return false;
                 }
@@ -961,6 +966,7 @@ public class CargaMasivaHelper {
                 nuevoVehiculo.setNombre(nombreVehiculo);
                 nuevoVehiculo.setPlaca(placaVehiculo);
                 nuevoVehiculo.setTienda(tiendaAsociada);
+                nuevoVehiculo.setTipo(tipoVehiculoAsociado);
                 return CargaMasivaHelper.guardarObjeto(nuevoVehiculo, session);
                 /*
                 if(StringUtils.isNotBlank(placaVehiculo)){
