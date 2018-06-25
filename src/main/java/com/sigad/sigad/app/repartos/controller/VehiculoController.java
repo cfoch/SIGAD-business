@@ -8,6 +8,7 @@ package com.sigad.sigad.app.repartos.controller;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialogLayout;
+import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXPopup;
 import com.jfoenix.controls.JFXTreeTableColumn;
 import com.jfoenix.controls.JFXTreeTableRow;
@@ -15,13 +16,17 @@ import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import com.sigad.sigad.app.controller.ErrorController;
+import com.sigad.sigad.app.controller.LoginController;
+import com.sigad.sigad.business.Tienda;
 import com.sigad.sigad.business.Vehiculo;
+import com.sigad.sigad.business.helpers.TiendaHelper;
 import com.sigad.sigad.business.helpers.VehiculoHelper;
-import com.sigad.sigad.utils.ui.UIFuncs.Dialogs;
+import com.sigad.sigad.utils.ui.UIFuncs;
 import com.sigad.sigad.utils.ui.UIFuncs.Dialogs.SimplePopupMenuFactory;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,13 +39,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import org.hibernate.Session;
 
 /**
  * FXML Controller class
@@ -108,6 +114,7 @@ public class VehiculoController implements Initializable {
     JFXTreeTableColumn<VehiculoViewer, String> colPlaca = new JFXTreeTableColumn<>("Placa");
     JFXTreeTableColumn<VehiculoViewer, String> colTipo = new JFXTreeTableColumn<>("Tipo");
     JFXTreeTableColumn<VehiculoViewer, String> colNombre = new JFXTreeTableColumn<>("Nombre");
+    JFXTreeTableColumn<VehiculoViewer, String> colTienda = new JFXTreeTableColumn<>("Tienda");
     
     
     public static class VehiculoViewer extends RecursiveTreeObject<VehiculoViewer>{
@@ -140,6 +147,10 @@ public class VehiculoController implements Initializable {
             return nombre;
         }
 
+        public SimpleStringProperty getTienda() {
+            return tienda;
+        }
+
         public void setPlaca(String placa) {
             this.placa = new SimpleStringProperty(placa);
         }
@@ -151,16 +162,23 @@ public class VehiculoController implements Initializable {
         public void setNombre(String nombre) {
             this.nombre = new SimpleStringProperty(nombre);
         }
+
+        public void setTienda(String tienda) {
+            this.tienda = new SimpleStringProperty(tienda);
+        }
+
         private SimpleStringProperty placa;
         private SimpleStringProperty tipo;
         private SimpleStringProperty nombre;
+        private SimpleStringProperty tienda;
         private Long id;
         private Vehiculo vehiculo;
         
-        public VehiculoViewer(String placa,String tipo, String nombre,Long id){
+        public VehiculoViewer(String placa,String tipo, String nombre, Long id){
             this.placa = new SimpleStringProperty(placa);
             this.tipo = new SimpleStringProperty(tipo);
             this.nombre = new SimpleStringProperty(nombre);
+            this.tienda = new SimpleStringProperty();
             this.id = id;
         }
         
@@ -183,6 +201,8 @@ public class VehiculoController implements Initializable {
         colTipo.setCellValueFactory((TreeTableColumn.CellDataFeatures<VehiculoViewer, String> param) -> param.getValue().getValue().getTipo() //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         );
         colNombre.setCellValueFactory((TreeTableColumn.CellDataFeatures<VehiculoViewer, String> param) -> param.getValue().getValue().getNombre() //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        );
+        colTienda.setCellValueFactory((TreeTableColumn.CellDataFeatures<VehiculoViewer, String> param) -> param.getValue().getValue().getTienda() //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         );
         //Double click on row
         tblVehiculos.setRowFactory(ord -> {
@@ -208,7 +228,7 @@ public class VehiculoController implements Initializable {
     private void addColumns(){
         final TreeItem<VehiculoViewer> rootInsumo = new RecursiveTreeItem<>(vehiculosList,RecursiveTreeObject::getChildren);
         tblVehiculos.setEditable(true);
-        tblVehiculos.getColumns().setAll(colPlaca,colTipo,colNombre);
+        tblVehiculos.getColumns().setAll(colPlaca,colTipo,colNombre,colTienda);
         tblVehiculos.setRoot(rootInsumo);
         tblVehiculos.setShowRoot(false);
     }
@@ -230,6 +250,9 @@ public class VehiculoController implements Initializable {
         String nombre = vehiculo.getTipo().getMarca() + vehiculo.getTipo().getModelo();
         VehiculoViewer veh = new VehiculoViewer(vehiculo.getPlaca(),nombre,vehiculo.getNombre(),vehiculo.getId());
         veh.setVehiculo(vehiculo);
+        if (vehiculo.getTienda() != null) {
+            veh.setTienda(vehiculo.getTienda().getDescripcion());
+        }
         vehiculosList.add(veh);
     }
     
@@ -265,6 +288,7 @@ public class VehiculoController implements Initializable {
     private void showOptions(){
         JFXButton edit = new JFXButton("Editar");
         JFXButton delete = new JFXButton("Desactivar");
+        JFXButton asignarTienda = new JFXButton("Asignar tienda");
         
         edit.setOnAction((ActionEvent event) -> {
             popup.hide();
@@ -279,13 +303,80 @@ public class VehiculoController implements Initializable {
             popup.hide();
             //deleteInsumosDialog();
         });
+        asignarTienda.setOnAction((ActionEvent event) -> {
+            JFXListView<Label> listView = new JFXListView<Label>();
+            VehiculoHelper helperVehiculo = new VehiculoHelper();
+            TiendaHelper helperTienda = new TiendaHelper();
+            List<Tienda> tiendas;
+            Vehiculo vehiculoSeleccionado;
+            VBox box = new VBox();
+            JFXButton asignarBtn = new JFXButton("Asignar");
+
+            popup.hide();
+
+            // TODO: Handle error selectedVehiculo == null
+            vehiculoSeleccionado =
+                    helperVehiculo.getVehiculo(selectedVehiculo.getId());
+            // TODO: Handle error vehiculoSeleccionado == null
+
+            tiendas = helperTienda.getStores();
+            for (Tienda tienda : tiendas) {
+                Tienda vehiculoTienda = vehiculoSeleccionado.getTienda();
+                Label label = new Label(tienda.getDescripcion());
+                listView.getItems().add(label);
+                if (vehiculoTienda != null &&
+                        vehiculoTienda.getId() == tienda.getId()) {
+                    listView.getSelectionModel().selectLast();
+                }
+            }
+            box.getChildren().add(listView);
+
+            asignarBtn.setOnAction((evt) -> {
+                System.out.println("HOLAaaaaaaaa");
+                List<Integer> selection =
+                        listView.getSelectionModel().getSelectedIndices();
+                if (selection.isEmpty()) {
+                    UIFuncs.Dialogs.showMsg(
+                            hiddenSp,
+                            UIFuncs.Dialogs.HEADINGS.ERROR,
+                            "Debe seleccionar al menos una tienda.",
+                            UIFuncs.Dialogs.BUTTON.ACEPTAR);
+                } else {
+                    Tienda tienda;
+                    Integer i = selection.get(0);
+                    Session session = LoginController.serviceInit();
+
+                    tienda = tiendas.get(i);
+                    vehiculoSeleccionado.setTienda(tienda);
+
+                    session.beginTransaction();
+                    session.update(vehiculoSeleccionado);
+                    session.getTransaction().commit();
+
+                    selectedVehiculo.setVehiculo(vehiculoSeleccionado);
+                    selectedVehiculo.setTienda(tienda.getDescripcion());
+                    tblVehiculos.refresh();
+                }
+            });
+
+            UIFuncs.Dialogs.showDialog(
+                    hiddenSp,
+                    "Asignar tienda",
+                    box,
+                    asignarBtn,
+                    false);
+        });
         
         edit.setPadding(new Insets(20));
         edit.setPrefSize(145, 40);
         delete.setPadding(new Insets(40));
         delete.setPrefSize(145, 40);
+        asignarTienda.setPadding(new Insets(40));
+        asignarTienda.setPrefSize(145, 40);
         
-        VBox vBox = new VBox(edit);
+        VBox vBox = new VBox();
+        vBox.getChildren().add(edit);
+        vBox.getChildren().add(asignarTienda);
         
         popup = new JFXPopup();
         popup.setPopupContent(vBox);
