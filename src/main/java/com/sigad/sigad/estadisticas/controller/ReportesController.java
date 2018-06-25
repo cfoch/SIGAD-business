@@ -68,27 +68,27 @@ public class ReportesController implements Initializable {
     private void ventasGenerate(ActionEvent event){
         Window currentStage = getCurrentStage(event);
         DirectoryChooser dirChooser = new DirectoryChooser();
-        String downloadDir = dirChooser.showDialog(currentStage).getAbsolutePath() + "/template.xls";
+        String downloadDir = dirChooser.showDialog(currentStage).getAbsolutePath();
         if(downloadDir != null){
-            reporteGenerator.reporte(downloadDir, "/home/jorgito-stark/Desktop/Reports/Ventas.jrxml","Reporte de Ventas");
+            reporteGenerator.reporte(downloadDir, "src/main/java/com/sigad/sigad/reportes/Ventas.jrxml","Reporte de Ventas");
         }
     }
     
     private void insumosGenerate(ActionEvent event){
         Window currentStage = getCurrentStage(event);
         DirectoryChooser dirChooser = new DirectoryChooser();
-        String downloadDir = dirChooser.showDialog(currentStage).getAbsolutePath() + "/template.xls";
+        String downloadDir = dirChooser.showDialog(currentStage).getAbsolutePath();
         if(downloadDir != null){
-            reporteGenerator.reporte(downloadDir, "/home/jorgito-stark/Desktop/Reports/Insumos.jrxml","Reporte de Insumos");
+            reporteGenerator.reporte(downloadDir, "src/main/java/com/sigad/sigad/reportes/Insumos.jrxml","Reporte de Insumos");
         }
     }
     
     private void favoritosGenerate(ActionEvent event){
         Window currentStage = getCurrentStage(event);
         DirectoryChooser dirChooser = new DirectoryChooser();
-        String downloadDir = dirChooser.showDialog(currentStage).getAbsolutePath() + "/template.xls";
+        String downloadDir = dirChooser.showDialog(currentStage).getAbsolutePath();
         if(downloadDir != null){
-            reporteGenerator.reporte(downloadDir, "/home/jorgito-stark/Desktop/Reports/Favoritos.jrxml","Reporte de Productos Favoritos");
+            reporteGenerator.reporte(downloadDir, "src/main/java/com/sigad/sigad/reportes/Favoritos.jrxml","Reporte de Productos Favoritos");
         }
     }
     

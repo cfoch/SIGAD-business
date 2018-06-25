@@ -47,7 +47,8 @@ public class GenerarReportes {
     public void reporte(String rutaFinal, String fileName, String reportName){
         try {
             //JasperReport report = (JasperReport) JRLoader.loadObjectFromFile("Insumos.jasper");
-            JasperReport report = JasperCompileManager.compileReport(fileName);
+            File f = new File(fileName);
+            JasperReport report = JasperCompileManager.compileReport(f.getAbsolutePath());
             Map parameters = new HashMap();
             iniciarConexion();
             JasperPrint jprint = JasperFillManager.fillReport(report, parameters, conn);
