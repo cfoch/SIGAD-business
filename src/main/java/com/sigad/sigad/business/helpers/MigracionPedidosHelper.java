@@ -22,7 +22,6 @@ import com.sigad.sigad.business.Usuario;
 import com.sigad.sigad.pedido.controller.SolicitarDireccionController;
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -48,11 +47,81 @@ public class MigracionPedidosHelper{
     private ArrayList<Usuario> clientes = new ArrayList<>();
     ;
     private ArrayList<String> direcciones = new ArrayList<>();
-    String[][] dir = {{"Av. Tingo Maria 840, Lima", "Avenida Naciones Unidas 1721, Lima", "Av. Arica 1391, Breña", "Av. la Alborada 1327, Lima", "Av. Rep. de Venezuela 2291"},
-    {"Av de los Precursores 1031, Lima", "Av. Rafael Escardó 545", "Av. Rafael Escardó 414, San Miguel", "Av. de los Patriotas 323, San Miguel", "Av. de la Marina 2563, San Miguel"},
-    {"Av. Angelica Gamarra 1902", "Av. Universitaria 201, San Martín de Porres", "Av. Tomas Valle 1530, Los Olivos", "Av. German Aguirre, San German 569", "Av. German Aguirre 640"},
-    {"Av. Universitaria 1851", "Avenida Manuel Cipriano Dulanto 1898, Pueblo Libre", "Av. La Mar 2382, San Miguel", "Calle Mantaro 356, San Miguel", "Av. La Mal 2342, San Miguel"},
-    {"Av. Sucre 593, Lima", "Jr. Castilla 842, San Miguel", "Av. Miguel Grau 853, Callao", "Av Saenz Peña 603, Callao", "Av. Miguel Grau 819, Callao"}};
+    Double[][][] coo = {
+        {
+            {-12.0541725, -77.0579092},
+            {-12.0538697, -77.0635408},
+            {-12.0563811, -77.0571339},
+            {-12.0611423, -77.0686821},
+            {-12.0570951, -77.0657879}
+        },
+        {
+            {-12.0692001, -77.1043212},
+            {-12.075805, -77.0948737},
+            {-12.0787368, -77.0961094},
+            {-12.0777453, -77.098883},
+            {-12.0782122, -77.0924755}
+        },
+        {
+            {-12.0063392, -77.0841182},
+            {-12.0281101, -77.0785045},
+            {-12.0111311, -77.0776754},
+            {-12.0140737, -77.0729654},
+            {-12.0147389, -77.0735477}
+        },
+        {
+            {-12.009407, -77.0838552},
+            {-12.0754898, -77.0784418},
+            {-12.074466, -77.0857107},
+            {-12.075764, -77.0858657},
+            {-12.074582, -77.0843987}
+        },
+        {
+            {-12.0884318, -77.0799335},
+            {-12.0602683, -77.1444936},
+            {-12.0627079, -77.1424716},
+            {-12.060476, -77.1418855},
+            {-12.0628393, -77.1429997}
+        }
+    };
+
+    String[][] dir = {
+        {
+            "Av. Tingo Maria 840, Lima",
+            "Avenida Naciones Unidas 1721, Lima",
+            "Av. Arica 1391, Breña",
+            "Av. la Alborada 1327, Lima",
+            "Av. Rep. de Venezuela 2291"
+        },
+        {
+            "Av de los Precursores 1031, Lima",
+            "Av. Rafael Escardó 545",
+            "Av. Rafael Escardó 414, San Miguel",
+            "Av. de los Patriotas 323, San Miguel",
+            "Av. de la Marina 2563, San Miguel"
+        },
+        {
+            "Av. Angelica Gamarra 1902",
+            "Av. Universitaria 201, San Martín de Porres",
+            "Av. Tomas Valle 1530, Los Olivos",
+            "Av. German Aguirre, San German 569",
+            "Av. German Aguirre 640"
+        },
+        {
+            "Av. Universitaria 1851",
+            "Avenida Manuel Cipriano Dulanto 1898, Pueblo Libre",
+            "Av. La Mar 2382, San Miguel",
+            "Calle Mantaro 356, San Miguel",
+            "Av. La Mar 2342, San Miguel"
+        },
+        {
+            "Av. Sucre 593, Lima",
+            "Jr. Castilla 842, San Miguel",
+            "Av. Miguel Grau 853, Callao",
+            "Av Saenz Peña 603, Callao",
+            "Av. Miguel Grau 819, Callao"
+        }
+    };
 
     public MigracionPedidosHelper() {
         //crear
@@ -108,6 +177,8 @@ public class MigracionPedidosHelper{
                 Pedido pedido = new Pedido();
                 pedido.setCliente(cliente);
                 pedido.setDireccionDeEnvio(dirUsuario[r]);
+                pedido.setCooXDireccion(coo[z][r][0]);
+                pedido.setCooYDireccion(coo[z][r][1]);
                 pedido.setTienda(tienda);
                 pedido.setMensajeDescripicion("Mensaje");
                 PedidoEstadoHelper hp = new PedidoEstadoHelper();
