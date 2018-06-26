@@ -17,6 +17,7 @@ public class Constantes {
     public static final String ESTADO_PENDIENTE = "Pendiente";
     public static final String ESTADO_DESPACHO = "Despacho";
     public static final String ESTADO_CANCELADO = "Cancelado";
+    public static final String ESTADO_DEVOLUCION = "Devolucion";
     public static final String ESTADO_FINALIZADO = "Finalizado";
     public static final String RUC = "20556106985";
     public static final String TIPO_MOVIMIENTO_SALIDA_LOGICA = "Salida Logica";
