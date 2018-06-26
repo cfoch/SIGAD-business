@@ -117,9 +117,15 @@ public class MigracionPedidosHelper{
                 pedido.setEstado(estado);
                 pedido.setTurno("T");
                 hp.close();
+                // TODO
+                // Sería bueno colocar una fecha de venta anterior a la de la
+                // entrega esperada.
                 Date date = new Date();
                 Timestamp timeStamp = new Timestamp(date.getTime());
                 pedido.setFechaVenta(timeStamp);
+                pedido.setFechaEntregaEsperada(
+                        new java.sql.Date((new Date()).getTime()));
+
                 r = r + 1;
                 Set<DetallePedido> detalles = new HashSet<>();
                 int n = rand.nextInt(cantidadDetalles) + 1;
