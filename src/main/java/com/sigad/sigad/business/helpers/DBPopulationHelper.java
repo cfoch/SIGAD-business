@@ -33,7 +33,8 @@ public class DBPopulationHelper extends BaseHelper {
     static final int DEFAULT_LOTE_INSUMO_COSTO_UNITARIO_MAX = 100;
     static final double DEFAULT_LOTE_INSUMO_PORCENTAJE_PRECIO = 0.72;
 
-    static final int DEFAULT_N_ORDENES_COMPRA_RECIBIDAS = 5;
+    // Todas las órdenes generadas tendrán estado RECIBIDO por ahora.
+    static final int DEFAULT_N_ORDENES_COMPRA_RECIBIDAS = 25;
     static final int DEFAULT_N_ORDENES_COMPRA = 25;
 
     private LoteInsumo generarLoteInsumo(Tienda tienda, Insumo insumo,
