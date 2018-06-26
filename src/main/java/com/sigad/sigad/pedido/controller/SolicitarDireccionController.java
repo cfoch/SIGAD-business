@@ -12,7 +12,7 @@ import com.sigad.sigad.business.Tienda;
 import com.sigad.sigad.business.helpers.GMapsHelper;
 import com.sigad.sigad.business.helpers.GeneralHelper;
 import com.sigad.sigad.business.helpers.TiendaHelper;
-import com.sigad.sigad.pedido.controller.SeleccionarProductosController;
+import com.sigad.sigad.fx.widgets.MapPicker;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -24,8 +24,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import org.apache.commons.lang3.tuple.Pair;
+import org.json.JSONObject;
 
 /**
  * FXML Controller class
@@ -56,11 +58,45 @@ public class SolicitarDireccionController implements Initializable {
     @FXML
     private JFXTextField txtTiendaDireccion;
 
+    @FXML
+    private AnchorPane mapBox;
+
+    private MapPicker mapPicker;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
+        mapPicker = new MapPicker();
+        x = y = null;
         distancia = Double.MAX_VALUE;
-
+        mapBox.getChildren().add(mapPicker);
+        mapPicker.addMarkerAddedPropListener((evt) -> {
+            if (evt.getPropertyName().equals("marker-added")) {
+                try {
+                    Double [] latlng = (Double []) evt.getNewValue();
+                    GMapsHelper helper = new GMapsHelper();
+                    JSONObject ret =
+                            helper.reverseGeoCode(latlng[0], latlng[1]);
+                    JSONObject location;
+                    String formatedAddress;
+                    location = ret.getJSONArray("results").getJSONObject(0);
+                    formatedAddress = location.getString("formatted_address");
+                    // Encode to UTF-8.
+                    byte ptext[] = formatedAddress.getBytes("ISO-8859-1");
+                    formatedAddress = new String(ptext, "UTF-8");
+                    // Update entry text.
+                    txtdireccion.setText(formatedAddress);
+                    // Set latitude && longitude.
+                    x = latlng[0];
+                    y = latlng[1];
+                } catch (Exception ex) {
+                    x = y = null;
+                    txtdireccion.setText("");
+                    ex.printStackTrace();
+                }
+            }
+        });
+        mapPicker.getWebView().setPrefSize(400, 400);
     }
 
     public void initModel(Boolean isEdit, Tienda tienda, StackPane sc) {
@@ -80,14 +116,19 @@ public class SolicitarDireccionController implements Initializable {
             if (txtdireccion.getText().length() <= 0) {
                 return;
             }
-            GMapsHelper helper = GMapsHelper.getInstance();
-            Pair<Double, Double> pair = helper.geocodeAddress(txtdireccion.getText());
-            x = pair.getLeft();
-            y = pair.getRight();
+
+            if (x == null || y == null) {
+                GMapsHelper helper = GMapsHelper.getInstance();
+                Pair<Double, Double> pair = helper.geocodeAddress(txtdireccion.getText());
+
+                x = pair.getLeft();
+                y = pair.getRight();
+                mapPicker.setMarkerAt(x, y);
+            }
             
             TiendaHelper helpertienda = new TiendaHelper();
             helpertienda.getStores().forEach((t) -> {
-                Double d = GeneralHelper.distanceBetweenTwoPoints(pair.getLeft(), t.getCooXDireccion(), pair.getRight(), t.getCooYDireccion());
+                Double d = GeneralHelper.distanceBetweenTwoPoints(x, t.getCooXDireccion(), y, t.getCooYDireccion());
                 if (d < distancia) {
                     tienda = t;
                     distancia = d;
@@ -100,6 +141,8 @@ public class SolicitarDireccionController implements Initializable {
             }
 
         } catch (ApiException | InterruptedException | IOException ex) {
+            Logger.getLogger(SolicitarDireccionController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
             Logger.getLogger(SolicitarDireccionController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
