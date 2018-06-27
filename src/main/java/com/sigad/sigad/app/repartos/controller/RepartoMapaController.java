@@ -10,6 +10,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import com.sigad.sigad.business.Reparto;
 import com.sigad.sigad.business.helpers.AlgoritmoHelper;
+import com.sigad.sigad.business.helpers.PedidoHelper;
 import com.sigad.sigad.fx.utils.Utils;
 import com.sigad.sigad.fx.widgets.VRPMapView;
 import com.sigad.sigad.utils.ui.UIBaseController;
@@ -27,6 +28,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
 import org.jgrapht.graph.GraphWalk;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  * FXML Controller class
@@ -77,10 +80,57 @@ public class RepartoMapaController extends UIBaseController
         return solucion;
     }
 
+    private String decorateSolution(String solution) {
+        int i, j;
+        JSONArray solutionJSON = new JSONArray(solution);
+        for (i = 0; i < solutionJSON.length(); i++) {
+            JSONArray repartoJSON = solutionJSON.getJSONArray(i);
+            for (j = 0; j < repartoJSON.length(); j++) {
+                JSONArray extraJSON;
+                JSONObject extraItemJSON;
+                JSONObject locacionJSON = repartoJSON.getJSONObject(j);
+                PedidoHelper helperPedido = new PedidoHelper();
+                Integer idPedido;
+                String estado;
+                String tipo = locacionJSON.getString("tipo");
+
+                if (tipo.equals("DEPOSITO")) {
+                    continue;
+                }
+                try {
+                    extraJSON = locacionJSON.getJSONArray("extra");
+                } catch (Exception ex) {
+                    extraJSON = null;
+                }
+
+                if (extraJSON == null) {
+                    extraJSON = new JSONArray();
+                }
+
+                helperPedido.getPedidos();
+
+                idPedido = locacionJSON.getInt("id");
+                estado = helperPedido.getPedidoEstado(idPedido.longValue());
+                if (estado != null) {
+                    List<Object> extraList;
+                    extraItemJSON = new JSONObject();
+                    extraItemJSON.put("field", "Estado");
+                    extraItemJSON.put("value", estado);
+                    extraList = extraJSON.toList();
+                    extraList.add(extraItemJSON);
+                    extraJSON = new JSONArray(extraList);
+                    locacionJSON.put("extra", extraJSON);
+                }
+            }
+        }
+        return solutionJSON.toString();
+    }
+
     @FXML
     private void handleButtonAction(ActionEvent event) {
         List<Reparto> uniqueReparto = new ArrayList<>();
         List<List<Locacion>> selectedSolution;
+        String solution;
         boolean validSolution;
         if (selectedIndex == NO_SELECTED_INDEX) {
             return;
@@ -90,13 +140,17 @@ public class RepartoMapaController extends UIBaseController
         selectedSolution = repartos2solution(uniqueReparto);
         System.out.println("Marshallize solutions");
 
-        validSolution =
-                browser.setSolution(
-                        Utils.marshallLocationSolution(selectedSolution));
+        solution = Utils.marshallLocationSolution(selectedSolution);
+        solution = decorateSolution(solution);
+
+        validSolution = browser.setSolution(solution);
         System.out.println("solution: " + validSolution);
         if (!validSolution) {
             return;
         }
+
+
+
         System.out.println("Calling javascript rest funcs");
         browser.createMarkers();
         browser.drawMarkers();
