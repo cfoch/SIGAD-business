@@ -24,7 +24,7 @@ public class BaseHelper {
         init(true);
     }
 
-    protected void init(boolean close) {
+    private void init(boolean close) {
         if (this.session != null && close) {
             this.close();
         }
