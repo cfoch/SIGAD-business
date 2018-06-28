@@ -150,7 +150,6 @@ public class ProductoDescuentoHelper extends BaseHelper {
 
             uNew.setFechaInicio(uOld.getFechaInicio());
             uNew.setFechaFin(uOld.getFechaFin());
-            uNew.setStockMaximo(uOld.getStockMaximo());
             uNew.setValorPct(uOld.getValorPct());
 
             session.merge(uNew);

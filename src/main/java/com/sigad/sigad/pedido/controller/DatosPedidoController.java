@@ -5,26 +5,16 @@
  */
 package com.sigad.sigad.pedido.controller;
 
-import com.itextpdf.text.Chunk;
-import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.FontFactory;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
 import com.jfoenix.controls.*;
-import com.jfoenix.validation.RequiredFieldValidator;
 import com.sigad.sigad.app.controller.ErrorController;
 import com.sigad.sigad.app.controller.HomeController;
 import com.sigad.sigad.app.controller.LoginController;
 import com.sigad.sigad.business.ClienteDescuento;
-import com.sigad.sigad.business.ClienteDireccion;
 import com.sigad.sigad.business.ComboPromocion;
 import com.sigad.sigad.business.Constantes;
 import com.sigad.sigad.business.DetallePedido;
 import com.sigad.sigad.business.Insumo;
-import com.sigad.sigad.business.LoteInsumo;
 import com.sigad.sigad.business.Pedido;
 import com.sigad.sigad.business.PedidoEstado;
 import com.sigad.sigad.business.Producto;
@@ -35,19 +25,12 @@ import com.sigad.sigad.business.helpers.ClienteDescuentoHelper;
 import com.sigad.sigad.business.helpers.GeneralHelper;
 import com.sigad.sigad.business.helpers.LoteInsumoHelper;
 import com.sigad.sigad.business.helpers.PdfHelper;
-import com.sigad.sigad.business.helpers.PedidoHelper;
-import com.sigad.sigad.business.helpers.UsuarioHelper;
 import com.sigad.sigad.business.helpers.PedidoEstadoHelper;
-import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIconView;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import com.sigad.sigad.business.helpers.ProductoHelper;
+import com.sigad.sigad.business.helpers.UsuarioHelper;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Time;
 import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -369,7 +352,11 @@ public class DatosPedidoController implements Initializable {
 
             for (DetallePedido dp : pedido.getDetallePedido()) {
                 if (dp.getProducto() != null) {
-                    calcularInsumos(dp.getProducto(), dp.getCantidad());
+                    ProductoHelper helperProducto = new ProductoHelper();
+                    Producto producto = helperProducto.getProductById(
+                            dp.getProducto().getId().intValue());
+                    calcularInsumos(producto, dp.getCantidad());
+                    helperProducto.close();
                 } else if (dp.getCombo() != null) {
                     ComboPromocion p = dp.getCombo();
                     for (ProductosCombos productosCombos : p.getProductosxComboArray()) {
@@ -390,6 +377,8 @@ public class DatosPedidoController implements Initializable {
             gotoInicio();
 
         } catch (Exception ex) {
+            Logger.getLogger(DatosPedidoController.class.getName())
+                    .log(Level.SEVERE, null, ex);
         }
     }
 

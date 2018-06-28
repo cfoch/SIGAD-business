@@ -4,58 +4,101 @@
 <?import com.jfoenix.controls.JFXListView?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import com.jfoenix.controls.JFXTreeTableView?>
+<?import java.lang.String?>
 <?import java.net.URL?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="680.0" prefWidth="1010.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sigad.sigad.controller.cargaMasiva.CargaMasivaViewController">
-    <stylesheets>
-        <URL value="@/styles/cargamasivaview.css" />
-    </stylesheets>
+<GridPane xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sigad.sigad.controller.cargaMasiva.CargaMasivaViewController">
+   <columnConstraints>
+      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+   </rowConstraints>
    <children>
-      <JFXButton fx:id="cargaMasivaBtn" buttonType="RAISED" layoutX="731.0" layoutY="333.0" style="-fx-background-color: FFFFFF;" text="Carga Masiva">
-         <font>
-            <Font size="15.0" />
-         </font>
-         <effect>
-            <DropShadow />
-         </effect></JFXButton>
-      <JFXButton fx:id="generarOrdenesCompraBtn" buttonType="RAISED" layoutX="731.0" layoutY="393.0" style="-fx-background-color: FFFFFF;" text="Generar órdenes de compra">
-         <font>
-            <Font size="15.0" />
-         </font>
-         <effect>
-            <DropShadow />
-         </effect>
-      </JFXButton>
-      <Label layoutX="48.0" layoutY="59.0" text="Seleccion de entidades (Ctrl + Click para seleccion multiple)" />
-      <Label layoutX="60.0" layoutY="301.0" text="Archivo" />
-      <JFXTextField fx:id="archivoNombre" disable="true" layoutX="61.0" layoutY="319.0" prefHeight="26.0" prefWidth="632.0" />
-      <JFXButton fx:id="plantillaBtn" buttonType="RAISED" layoutX="736.0" layoutY="258.0" style="-fx-background-color: FFFFFF;" text="Plantilla">
-         <font>
-            <Font size="15.0" />
-         </font>
-         <effect>
-            <DropShadow />
-         </effect></JFXButton>
-      <JFXButton fx:id="guardarBtn" buttonType="RAISED" layoutX="898.0" layoutY="616.0" style="-fx-background-color: FFFFFF;" text="Guardar">
-         <font>
-            <Font size="15.0" />
-         </font>
-         <effect>
-            <DropShadow />
-         </effect></JFXButton>
-      <JFXTreeTableView fx:id="tablaPrevia" layoutX="62.0" layoutY="374.0" prefHeight="191.0" prefWidth="632.0" />
-      <JFXListView fx:id="entidadesListView" layoutX="52.0" layoutY="82.0" prefHeight="202.0" prefWidth="640.0" />
-      <JFXButton fx:id="btnGenerarPedidos" buttonType="RAISED" layoutX="731.0" layoutY="454.0" onMouseClicked="#generarOrdenesDeCompra" style="-fx-background-color: FFFFFF;" text="Generar órdenes de compra">
-         <font>
-            <Font size="15.0" />
-         </font>
-         <effect>
-            <DropShadow />
-         </effect>
-      </JFXButton>
+      <AnchorPane id="AnchorPane" prefHeight="680.0" prefWidth="1010.0" styleClass="mainFxmlClass">
+          <stylesheets>
+              <URL value="@/styles/cargamasivaview.css" />
+              <URL value="@/styles/ui_styles.css" />
+          </stylesheets>
+         <children>
+            <JFXButton fx:id="cargaMasivaBtn" layoutX="706.0" layoutY="306.0" text="Seleccionar Archivo" AnchorPane.leftAnchor="705.0" AnchorPane.rightAnchor="99.0">
+               <font>
+                  <Font size="15.0" />
+               </font>
+               <effect>
+                  <DropShadow />
+               </effect>
+               <styleClass>
+                  <String fx:value="btn-general" />
+                  <String fx:value="btn-rectangular" />
+               </styleClass>
+            </JFXButton>
+            <JFXButton fx:id="generarOrdenesCompraBtn" layoutX="703.0" layoutY="448.0" text="Generar Órdenes" AnchorPane.leftAnchor="705.0" AnchorPane.rightAnchor="102.0">
+               <font>
+                  <Font size="15.0" />
+               </font>
+               <effect>
+                  <DropShadow />
+               </effect>
+               <styleClass>
+                  <String fx:value="btn-general" />
+                  <String fx:value="btn-rectangular" />
+               </styleClass>
+            </JFXButton>
+            <Label layoutX="50.0" layoutY="39.0" text="Seleccion de entidades (Ctrl + Click para seleccion multiple)" AnchorPane.leftAnchor="50.0" />
+            <JFXTextField fx:id="archivoNombre" disable="true" layoutX="50.0" layoutY="329.0" prefHeight="26.0" prefWidth="632.0" AnchorPane.leftAnchor="50.0" />
+            <JFXButton fx:id="plantillaBtn" layoutX="712.0" layoutY="235.0" text="Descargar plantilla" AnchorPane.bottomAnchor="416.0" AnchorPane.leftAnchor="705.0" AnchorPane.rightAnchor="100.0">
+               <font>
+                  <Font size="15.0" />
+               </font>
+               <effect>
+                  <DropShadow />
+               </effect>
+               <styleClass>
+                  <String fx:value="btn-general" />
+                  <String fx:value="btn-rectangular" />
+               </styleClass>
+            </JFXButton>
+            <JFXButton fx:id="guardarBtn" layoutX="706.0" layoutY="358.0" text="Carga Masiva" AnchorPane.leftAnchor="705.0" AnchorPane.rightAnchor="99.0">
+               <font>
+                  <Font size="15.0" />
+               </font>
+               <effect>
+                  <DropShadow />
+               </effect>
+               <styleClass>
+                  <String fx:value="btn-general" />
+                  <String fx:value="btn-rectangular" />
+               </styleClass>
+            </JFXButton>
+            <JFXTreeTableView fx:id="tablaPrevia" layoutX="50.0" layoutY="414.0" prefHeight="191.0" prefWidth="632.0" AnchorPane.leftAnchor="50.0" />
+            <JFXListView fx:id="entidadesListView" layoutX="50.0" layoutY="62.0" prefHeight="202.0" prefWidth="637.0" stylesheets="@../../../../../styles/ui_styles.css" AnchorPane.bottomAnchor="416.0" AnchorPane.leftAnchor="50.0">
+               <styleClass>
+                  <String fx:value="mylistview" />
+                  <String fx:value="scroll-pane" />
+               </styleClass></JFXListView>
+            <JFXButton fx:id="btnGenerarPedidos" layoutX="703.0" layoutY="509.0" onMouseClicked="#generarOrdenesDeCompra" text="Generar Pedidos" AnchorPane.leftAnchor="705.0" AnchorPane.rightAnchor="102.0">
+               <font>
+                  <Font size="15.0" />
+               </font>
+               <effect>
+                  <DropShadow />
+               </effect>
+               <styleClass>
+                  <String fx:value="btn-general" />
+                  <String fx:value="btn-rectangular" />
+               </styleClass>
+            </JFXButton>
+            <Label layoutX="50.0" layoutY="312.0" text="Ruta de archivo" />
+            <Label layoutX="50.0" layoutY="387.0" text="Reporte de carga masiva" />
+         </children>
+      </AnchorPane>
    </children>
-</AnchorPane>
+</GridPane>

@@ -38,7 +38,7 @@ public class ProductoDescuento {
     private String codCupon;
     private Double valorDescuento;
     private Integer duracionDias;
-    private Integer stockMaximo;
+
     
     //Fk
     @ManyToOne
@@ -174,18 +174,5 @@ public class ProductoDescuento {
         this.producto = producto;
     }
 
-    /**
-     * @return the stockMaximo
-     */
-    public Integer getStockMaximo() {
-        return stockMaximo;
-    }
-
-    /**
-     * @param stockMaximo the stockMaximo to set
-     */
-    public void setStockMaximo(Integer stockMaximo) {
-        this.stockMaximo = stockMaximo;
-    }
-
+ 
 }

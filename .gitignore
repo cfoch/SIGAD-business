@@ -31,3 +31,6 @@ nbdist/
 /target/
 .DS_Store
 /nbproject/
+
+# Other
+*.pdf

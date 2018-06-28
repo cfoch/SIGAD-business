@@ -78,15 +78,10 @@ public class MantenimientoDescuentosController implements Initializable {
 
     @FXML
     private StackPane stackPaneCmb;
-    @FXML
     private JFXPopup popup;
-    @FXML
     public static JFXDialog descDialog;
-    @FXML
     public static JFXDialog descCatDialog;
-    @FXML
     public static JFXDialog descCliDialog;
-    @FXML
     public static JFXDialog comboDialog;
 
     JFXTreeTableColumn<DescuentosLista, Integer> id = new JFXTreeTableColumn<>("id");

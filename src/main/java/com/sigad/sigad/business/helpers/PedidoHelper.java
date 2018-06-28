@@ -5,7 +5,6 @@
  */
 package com.sigad.sigad.business.helpers;
 
-import com.sigad.sigad.app.controller.LoginController;
 import com.sigad.sigad.business.Pedido;
 import com.sigad.sigad.business.PedidoEstado;
 import com.sigad.sigad.business.Tienda;
@@ -13,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
@@ -28,6 +26,25 @@ public class PedidoHelper extends BaseHelper{
     }
 
 
+    public String getPedidoEstado(Long id) {
+        String estado;
+        try {
+            List<Object[]> rows;
+            Object [] row;
+            Object res;
+            res = session
+                    .createQuery(
+                            "select p.estado.nombre from Pedido p where id = :id")
+                    .setParameter("id", id)
+                    .setMaxResults(1)
+                    .getSingleResult();
+            estado = (String) res;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            estado = null;
+        }
+        return estado;
+    }
     
     public ArrayList<Pedido> getPedidos(){
         ArrayList<Pedido> pedidos = null;

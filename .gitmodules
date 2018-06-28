@@ -1,3 +1,9 @@
 [submodule "common"]
 	path = common
 	url = https://github.com/cfoch/SIGAD-common
+[submodule "Simulated_Annealing_Algorithm"]
+	path = Simulated_Annealing_Algorithm
+	url = https://github.com/cfoch/Simulated_Annealing_Algorithm
+[submodule "SIGAD-fx-widgets"]
+	path = SIGAD-fx-widgets
+	url = https://github.com/cfoch/SIGAD-fx-widgets

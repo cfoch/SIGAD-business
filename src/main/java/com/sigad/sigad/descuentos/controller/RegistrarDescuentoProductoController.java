@@ -295,10 +295,6 @@ public class RegistrarDescuentoProductoController implements Initializable {
 
             txtNuevoPrecio.setDisable(true);
             txtDescuentopct.setText(pct.toString());
-            if (pd.getStockMaximo() != null) {
-                checkboxStock.setSelected(true);
-                txtStockMaximo.setText(pd.getStockMaximo().toString());
-            }
 
         }
     }
@@ -376,7 +372,6 @@ public class RegistrarDescuentoProductoController implements Initializable {
         nuevo.setFechaFin(dateFin);
         nuevo.setValorPct(Double.valueOf(txtDescuentopct.getText()) / 100.0);
         nuevo.setProducto(tblProductos.getSelectionModel().getSelectedItem().getValue().producto);
-        nuevo.setStockMaximo((checkboxStock.isSelected()) ? Integer.valueOf(txtStockMaximo.getText()) : null);
     }
 
     @FXML

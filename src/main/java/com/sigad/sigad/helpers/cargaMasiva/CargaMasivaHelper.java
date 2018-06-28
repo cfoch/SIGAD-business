@@ -437,7 +437,6 @@ public class CargaMasivaHelper {
                             nuevoDescProd.setValorPct(dsctoProd);
                             nuevoDescProd.setFechaInicio(fechaInicio);
                             nuevoDescProd.setFechaFin(fechaFin);
-                            nuevoDescProd.setStockMaximo(stockmaximo);
                             return CargaMasivaHelper.guardarObjeto(nuevoDescProd, session);
                         }
                         LOGGER.log(Level.WARNING, "No se encontro producto referenciada");

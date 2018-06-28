@@ -14,6 +14,7 @@
       <AnchorPane id="AnchorPane" fx:id="containerPane" prefHeight="190.0" prefWidth="370.0" styleClass="mainFxmlClass">
           <stylesheets>
               <URL value="@/styles/perfil.css" />
+              <URL value="@/styles/ui_styles.css" />
           </stylesheets>
          <children>
             <GridPane prefHeight="458.0" prefWidth="615.0">
@@ -41,7 +42,7 @@
                         <Label layoutX="14.0" layoutY="7.0" text="Permisos" />
                      </children>
                   </AnchorPane>
-                  <JFXScrollPane fx:id="permissionPane" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <JFXScrollPane fx:id="permissionPane" styleClass="scroll-pane" stylesheets="@../../../../../styles/ui_styles.css" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                </children>
             </GridPane>
          </children>

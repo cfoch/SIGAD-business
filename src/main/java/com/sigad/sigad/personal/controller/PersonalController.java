@@ -269,6 +269,10 @@ public class PersonalController implements Initializable {
         tienda.setPrefWidth(70);
         tienda.setCellValueFactory((TreeTableColumn.CellDataFeatures<PersonalController.User, String> param) -> param.getValue().getValue().tienda);
         
+        JFXTreeTableColumn<PersonalController.User, String> email = new JFXTreeTableColumn<>("Email");
+        email.setPrefWidth(70);
+        email.setCellValueFactory((TreeTableColumn.CellDataFeatures<PersonalController.User, String> param) -> param.getValue().getValue().correo);
+        
         JFXTreeTableColumn<PersonalController.User, String> active = new JFXTreeTableColumn<>("Activo");
         active.setPrefWidth(70);
         active.setCellValueFactory((TreeTableColumn.CellDataFeatures<PersonalController.User, String> param) -> param.getValue().getValue().activo);
@@ -282,6 +286,7 @@ public class PersonalController implements Initializable {
         userTbl.getColumns().add(profile);
         userTbl.getColumns().add(profileDesc);
         userTbl.getColumns().add(tienda);
+        userTbl.getColumns().add(email);
         userTbl.getColumns().add(active);
         
         //DB
@@ -300,7 +305,7 @@ public class PersonalController implements Initializable {
         
         userTbl.setEditable(true);
         userTbl.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);        
-        userTbl.getColumns().setAll(name,apellidoPaterno,apellidoMaterno, dni, telephone, cellphone, profile, profileDesc, tienda, active);
+        userTbl.getColumns().setAll(name,apellidoPaterno,apellidoMaterno, dni, email, telephone, cellphone, profile, profileDesc, tienda, active);
         userTbl.setRoot(root);
         userTbl.setShowRoot(false);
     }

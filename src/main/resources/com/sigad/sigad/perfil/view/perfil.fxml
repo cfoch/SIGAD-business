@@ -4,6 +4,7 @@
 <?import com.jfoenix.controls.JFXTextField?>
 <?import com.jfoenix.controls.JFXTreeTableView?>
 <?import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIconView?>
+<?import java.lang.String?>
 <?import java.net.URL?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -21,12 +22,11 @@
          <children>
             <GridPane prefHeight="679.0" prefWidth="1011.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
               <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="330.8389587402344" minWidth="0.0" prefWidth="35.411977767944336" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="946.1797485351562" minWidth="10.0" prefWidth="88.09337615966797" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="45.0" minWidth="0.0" prefWidth="45.0" />
                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="946.1797485351562" minWidth="10.0" prefWidth="423.8898620605469" />
                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="492.0418395996094" minWidth="10.0" prefWidth="43.110137939453125" />
                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="666.9972534179688" minWidth="10.0" prefWidth="351.70068359375" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="473.76080322265625" minWidth="10.0" prefWidth="87.781982421875" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="45.0" minWidth="10.0" prefWidth="45.0" />
               </columnConstraints>
               <rowConstraints>
                   <RowConstraints maxHeight="220.8389434814453" minHeight="10.0" prefHeight="54.78278350830078" vgrow="SOMETIMES" />
@@ -37,9 +37,13 @@
                   <RowConstraints maxHeight="111.83892822265625" minHeight="10.0" prefHeight="52.69287109375" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <JFXTreeTableView fx:id="profilesTbl" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                  <AnchorPane prefHeight="56.0" prefWidth="927.0" style="-fx-background-color: #ECEFF1; -fx-border-color: #C8C8C8;" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                  <AnchorPane prefHeight="33.0" prefWidth="927.0" style="-fx-background-color: white; -fx-border-color: #C8C8C8;" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                  <JFXTreeTableView fx:id="profilesTbl" stylesheets="@../../../../../styles/ui_styles.css" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                     <styleClass>
+                        <String fx:value="tbl-general" />
+                        <String fx:value="tree-table-view" />
+                     </styleClass></JFXTreeTableView>
+                  <AnchorPane prefHeight="56.0" prefWidth="927.0" style="-fx-background-color: #ECEFF1; -fx-border-color: #C8C8C8;" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <AnchorPane prefHeight="33.0" prefWidth="927.0" style="-fx-background-color: white; -fx-border-color: #C8C8C8;" GridPane.columnIndex="1" GridPane.rowIndex="1">
                      <children>
                         <Label layoutX="19.0" layoutY="8.0" prefHeight="17.0" prefWidth="145.0" text="Perfiles" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="16.0" AnchorPane.topAnchor="8.0" />
                         <JFXButton fx:id="perfilMoreBtn" contentDisplay="RIGHT" layoutX="847.0" layoutY="-2.0" onAction="#handleAction" text=" " AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
@@ -50,13 +54,16 @@
                         <JFXTextField fx:id="filtro" layoutX="712.0" layoutY="7.0" prefHeight="29.0" prefWidth="203.0" promptText="Buscar" AnchorPane.bottomAnchor="11.0" AnchorPane.rightAnchor="61.0" AnchorPane.topAnchor="6.0" />
                      </children>
                   </AnchorPane>
-                  <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="4">
+                  <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
                      <children>
-                        <JFXButton fx:id="perfilAddBtn" alignment="CENTER" layoutX="833.0" layoutY="5.0" onAction="#handleAction" text="+" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
-                        </JFXButton>
+                        <JFXButton fx:id="perfilAddBtn" alignment="CENTER" layoutX="833.0" layoutY="5.0" onAction="#handleAction" stylesheets="@../../../../../styles/ui_styles.css" text="+" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
+                           <styleClass>
+                              <String fx:value="btn-general" />
+                              <String fx:value="btn-circular" />
+                           </styleClass></JFXButton>
                      </children>
                   </AnchorPane>
-                  <AnchorPane prefHeight="33.0" prefWidth="927.0" style="-fx-background-color: white; -fx-border-color: #C8C8C8;" GridPane.columnIndex="4" GridPane.rowIndex="1">
+                  <AnchorPane prefHeight="33.0" prefWidth="927.0" style="-fx-background-color: white; -fx-border-color: #C8C8C8;" GridPane.columnIndex="3" GridPane.rowIndex="1">
                      <children>
                         <Label layoutX="16.0" layoutY="6.0" prefHeight="17.0" prefWidth="145.0" text="Permiso" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="16.0" AnchorPane.topAnchor="6.0" />
                         <JFXButton fx:id="permisoMoreBtn" contentDisplay="RIGHT" layoutX="847.0" layoutY="-2.0" onAction="#handleAction" text=" " AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
@@ -66,12 +73,19 @@
                         </JFXButton>
                      </children>
                   </AnchorPane>
-                  <AnchorPane prefHeight="56.0" prefWidth="927.0" style="-fx-background-color: #ECEFF1; -fx-border-color: #C8C8C8;" GridPane.columnIndex="4" GridPane.rowIndex="2" />
-                  <JFXTreeTableView fx:id="permissionTbl" GridPane.columnIndex="4" GridPane.rowIndex="3" />
-                  <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="4" GridPane.rowIndex="4">
+                  <AnchorPane prefHeight="56.0" prefWidth="927.0" style="-fx-background-color: #ECEFF1; -fx-border-color: #C8C8C8;" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                  <JFXTreeTableView fx:id="permissionTbl" stylesheets="@../../../../../styles/ui_styles.css" GridPane.columnIndex="3" GridPane.rowIndex="3">
+                     <styleClass>
+                        <String fx:value="tbl-general" />
+                        <String fx:value="tree-table-view" />
+                     </styleClass></JFXTreeTableView>
+                  <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="4">
                      <children>
-                        <JFXButton fx:id="permisoAddBtn" alignment="CENTER" layoutX="248.0" layoutY="1.0" onAction="#handleAction" text="+" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
-                        </JFXButton>
+                        <JFXButton fx:id="permisoAddBtn" alignment="CENTER" layoutX="248.0" layoutY="1.0" onAction="#handleAction" stylesheets="@../../../../../styles/ui_styles.css" text="+" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
+                           <styleClass>
+                              <String fx:value="btn-general" />
+                              <String fx:value="btn-circular" />
+                           </styleClass></JFXButton>
                      </children></AnchorPane>
                </children>
             </GridPane>

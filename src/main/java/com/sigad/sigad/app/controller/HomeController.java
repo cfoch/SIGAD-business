@@ -169,8 +169,6 @@ public class HomeController implements Initializable {
                                     node = (Node) FXMLLoader.load(HomeController.this.getClass().getResource(ReportesController.viewPath));
                                 }else if(name.equals("Carga Masiva")){
                                     node = (Node) FXMLLoader.load(getClass().getResource(CargaMasivaViewController.viewPath));
-                                }else if(name.equals("Configuraciones")){
-                                    
                                 }else if(name.equals("Movimientos")){
                                     node = (Node) FXMLLoader.load(getClass().getResource(MovimientosController.viewPath));
                                 }

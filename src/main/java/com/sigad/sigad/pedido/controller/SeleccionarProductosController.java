@@ -533,7 +533,7 @@ public class SeleccionarProductosController implements Initializable {
         this.pedido.setTienda(tienda);
         this.pedido.setDireccionDeEnvio(direccion);
         this.pedido.setCooXDireccion(x);
-        this.pedido.setCooXDireccion(y);
+        this.pedido.setCooYDireccion(y);
         //Basede datos
         ProductoHelper gest = new ProductoHelper();
         ArrayList<Producto> productosDB = gest.getProducts();

@@ -10,7 +10,16 @@ import com.google.maps.GeocodingApi;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.GeocodingResult;
 import java.io.IOException;
+import java.io.InputStream;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  *
@@ -21,7 +30,7 @@ public class GMapsHelper {
             "AIzaSyBuwWY5-875b_CNPq45NX1id5BuVVItz0A";
     private GeoApiContext context;
 
-    private GMapsHelper() {
+    public GMapsHelper() {
         context = new GeoApiContext.Builder().apiKey(API_KEY).build();
 
     }
@@ -45,6 +54,37 @@ public class GMapsHelper {
         }
         return Pair.of(results[0].geometry.location.lat,
                 results[0].geometry.location.lng);
+    }
+
+    public JSONObject reverseGeoCode(Double lat, Double lng) {
+        HttpGet httpGet = new HttpGet(String.format(
+                "http://maps.google.com/maps/api/geocode/json?latlng=%s,%s"
+                        + "&sensor=false", lat, lng));
+
+        httpGet.setHeader("Content-Type", "text/plain; charset=UTF-8");
+        HttpClient client = new DefaultHttpClient();
+        HttpResponse response;
+        StringBuilder stringBuilder = new StringBuilder();
+
+        try {
+            response = client.execute(httpGet);
+            HttpEntity entity = response.getEntity();
+            InputStream stream = entity.getContent();
+            int b;
+            while ((b = stream.read()) != -1) {
+                stringBuilder.append((char) b);
+            }
+        } catch (ClientProtocolException e) {
+            } catch (IOException e) {
+        }
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = new JSONObject(stringBuilder.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonObject;
     }
 
     public static GMapsHelper getInstance() {

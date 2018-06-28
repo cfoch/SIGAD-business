@@ -67,4 +67,10 @@ public class UICRUDViewWrapperController extends UIBaseController
         return VIEW_PATH;
     }
 
+    /**
+     * @return the stackPane
+     */
+    public StackPane getStackPane() {
+        return stackPane;
+    }
 }
