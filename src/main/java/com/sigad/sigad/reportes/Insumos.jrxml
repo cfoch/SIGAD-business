@@ -6,7 +6,7 @@
 	<queryString>
 		<![CDATA[SELECT P.nombre as proveedor, I.nombre as insumo, SUM(MT.cantidadmovimiento) as total, date_trunc('month', MT.fecha) as MES , T.direccion as tienda
 FROM proveedor P, insumo I, tienda T, proveedorinsumo PI, movimientostienda MT, ordencompra OC, detalleordencompra DOC, loteinsumo LI
-WHERE MT.tipomovimiento_id = (select id from tipomovimiento where nombre = 'Ingreso') and P.id = OC.proveedor_id and OC.id = DOC.orden_id and DOC.loteinsumo_id = LI.id and LI.id = MT.loteinsumo_id and MT.tienda_id = T.id
+WHERE MT.tipomovimiento_id = (select id from tipomovimiento where nombre = 'Entrada Fisica') and P.id = OC.proveedor_id and OC.id = DOC.orden_id and DOC.loteinsumo_id = LI.id and LI.id = MT.loteinsumo_id and MT.tienda_id = T.id
 GROUP BY P.nombre, date_trunc('month', MT.fecha), I.nombre, T.direccion;]]>
 	</queryString>
 	<field name="proveedor" class="java.lang.String"/>
