@@ -5,6 +5,7 @@
  */
 package com.sigad.sigad.reportes;
 
+import com.sigad.sigad.business.Constantes;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -35,7 +36,7 @@ public class GenerarReportes {
     private void iniciarConexion() {
         try{
             LOGGER.log(Level.INFO, "Habriendo conexion para reportes");
-            conn = DriverManager.getConnection("jdbc:postgresql://200.16.7.71:1051/sigadtestdb", "postgres", "8g5334");
+            conn = DriverManager.getConnection(Constantes.BD_CONNECTION_STRING, Constantes.BD_USER, Constantes.BD_PASS);
             LOGGER.log(Level.INFO, "Conexion abierta con exito");
         }
         catch(SQLException e) {

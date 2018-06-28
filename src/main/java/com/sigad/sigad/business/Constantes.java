@@ -26,6 +26,8 @@ public class Constantes {
     public static final String TIPO_MOVIMIENTO_ENTRADA_FISICA = "Entrada Fisica";
     public static final String PERFIL_CLIENTE = "Cliente";
     public static final String PERFIL_VENDEDOR = "Vendedor";
-    
+    public static final String BD_CONNECTION_STRING = "jdbc:postgresql://200.16.7.71:1051/sigadtestdb";
+    public static final String BD_USER = "postgres";
+    public static final String BD_PASS = "8g5334";
     
 }
