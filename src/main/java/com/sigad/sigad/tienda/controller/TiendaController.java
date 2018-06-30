@@ -148,7 +148,7 @@ public class TiendaController implements Initializable {
     
     private void initPopup(){
         JFXButton edit = new JFXButton("Editar");
-        JFXButton delete = new JFXButton("Eliminar");
+        //JFXButton delete = new JFXButton("Eliminar");
         JFXButton verVehiculos = new JFXButton("Ver vehículos");
         
         edit.setOnAction((ActionEvent event) -> {
@@ -160,10 +160,10 @@ public class TiendaController implements Initializable {
             }
         });
         
-        delete.setOnAction((ActionEvent event) -> {
-            popup.hide();
-            deleteUserDialog();
-        });
+//        delete.setOnAction((ActionEvent event) -> {
+//            popup.hide();
+//            deleteUserDialog();
+//        });
 
         verVehiculos.setOnAction((event) -> {
             JFXListView<Label> listView = new JFXListView<Label>();
@@ -213,12 +213,12 @@ public class TiendaController implements Initializable {
         
         edit.setPadding(new Insets(20));
         edit.setPrefSize(145, 40);
-        delete.setPadding(new Insets(20));
-        delete.setPrefSize(145, 40);
+//        delete.setPadding(new Insets(20));
+//        delete.setPrefSize(145, 40);
         verVehiculos.setPadding(new Insets(20));
         verVehiculos.setPrefSize(145, 40);
         
-        VBox vBox = new VBox(edit, delete,verVehiculos);
+        VBox vBox = new VBox(edit,verVehiculos);
         
         popup = new JFXPopup();
         popup.setPopupContent(vBox);

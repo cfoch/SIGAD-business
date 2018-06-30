@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.sigad</groupId>
     <artifactId>SIGAD-business</artifactId>
-    <version>1.0</version>
+    <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -14,7 +14,7 @@
     </properties>
     
     <scm>
-        <developerConnection>scm:svn:file:///Users/jorgeespinoza/Java/SIGAD-business/tags/SIGAD-business-1.0</developerConnection>
+        <developerConnection>scm:svn:file:///Users/jorgeespinoza/Java/SIGAD-business/</developerConnection>
     </scm>
   
     <build>
@@ -57,7 +57,7 @@
                       <configuration>
                          <tasks>
                             <copy todir="${izpack.staging}">
-                               <fileset dir="${basedir}/src/izpack" />
+                               <fileset dir="${basedir}/src/izpack"/>
                             </copy>
                          </tasks>
                       </configuration>
@@ -231,12 +231,12 @@
         <dependency>
             <groupId>com.grupo1</groupId>
             <artifactId>SimulatedAnnealing</artifactId>
-            <version>1.0</version>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.sigad</groupId>
             <artifactId>SIGAD-fx-widgets</artifactId>
-            <version>1.0</version>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
