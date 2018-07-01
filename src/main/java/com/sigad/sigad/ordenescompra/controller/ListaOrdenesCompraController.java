@@ -287,12 +287,6 @@ public class ListaOrdenesCompraController implements Initializable {
         
         
         VBox vBox;
-//        if(!selectedOrdenCompra.getOrdenCompra().isRecibido()){
-//           vBox = new VBox(io);
-//           popup = new JFXPopup();
-//           popup.setPopupContent(vBox);
-//        }
-//        else {
            vBox = new VBox(delete);
            popup = new JFXPopup();
            popup.setPopupContent(vBox);

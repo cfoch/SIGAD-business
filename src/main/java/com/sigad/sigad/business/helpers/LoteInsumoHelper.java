@@ -104,7 +104,7 @@ public class LoteInsumoHelper extends BaseHelper {
         ArrayList<LoteInsumo> listaLotes = null;
         Query query = null;
         try {
-            query = session.createQuery("from LoteInsumo where insumo_id = " + insumo.getId().toString() + " and tienda_id = " + tienda.getId().toString());
+            query = session.createQuery("from LoteInsumo where insumo_id = " + insumo.getId().toString() + " and tienda_id = " + tienda.getId().toString() + " order by date(fechavencimiento) asc");
             if (!query.list().isEmpty()) {
                 listaLotes = (ArrayList<LoteInsumo>) query.list();
             }
@@ -118,7 +118,37 @@ public class LoteInsumoHelper extends BaseHelper {
         ArrayList<LoteInsumo> listaLotes = null;
         Query query = null;
         try {
-            query = session.createQuery("from LoteInsumo where insumo_id = " + insumo.getId().toString() + " and tienda_id = " + tienda.getId().toString() + " and stockfisico > 0");
+            query = session.createQuery("from LoteInsumo where insumo_id = " + insumo.getId().toString() + " and tienda_id = " + tienda.getId().toString() + " and stockfisico > 0 order by date(fechavencimiento) asc");
+            if (!query.list().isEmpty()) {
+                listaLotes = (ArrayList<LoteInsumo>) query.list();
+            }
+        } catch (Exception e) {
+            this.errorMessage = e.getMessage();
+        }
+        return listaLotes;
+    }
+    
+    public ArrayList<LoteInsumo> getLoteInsumosEspecificDisponible(Tienda tienda, Insumo insumo) {
+        ArrayList<LoteInsumo> listaLotes = null;
+        Query query = null;
+        try {
+            query = session.createQuery("from LoteInsumo where insumo_id = " + insumo.getId().toString() + " and tienda_id = " + tienda.getId().toString() + "and date(fechavencimiento) >= :fecha" + " order by date(fechavencimiento) asc");
+            query.setParameter("fecha", new Date());
+            if (!query.list().isEmpty()) {
+                listaLotes = (ArrayList<LoteInsumo>) query.list();
+            }
+        } catch (Exception e) {
+            this.errorMessage = e.getMessage();
+        }
+        return listaLotes;
+    }
+    
+    public ArrayList<LoteInsumo> getLoteInsumosEspecificVencido(Tienda tienda, Insumo insumo) {
+        ArrayList<LoteInsumo> listaLotes = null;
+        Query query = null;
+        try {
+            query = session.createQuery("from LoteInsumo where insumo_id = " + insumo.getId().toString() + " and tienda_id = " + tienda.getId().toString() + "and date(fechavencimiento) < :fecha" + " order by date(fechavencimiento) asc");
+            query.setParameter("fecha", new Date());
             if (!query.list().isEmpty()) {
                 listaLotes = (ArrayList<LoteInsumo>) query.list();
             }
@@ -351,13 +381,13 @@ public class LoteInsumoHelper extends BaseHelper {
                 tx = session.beginTransaction();
             }
 
-            ArrayList<LoteInsumo> loteinsumos = getLoteInsumosEspecific(tienda, insumo);
+            ArrayList<LoteInsumo> loteinsumos = getLoteInsumosEspecificDisponible(tienda, insumo);
             LoteInsumo lowestDateInsumo = loteinsumos.get(0);
-            for (int i = 1; i < loteinsumos.size(); i++) {
-                if (lowestDateInsumo.getFechaVencimiento().compareTo(loteinsumos.get(i).getFechaVencimiento()) > 0) {
-                    lowestDateInsumo = loteinsumos.get(i);
-                }
-            }
+//            for (int i = 1; i < loteinsumos.size(); i++) {
+//                if (lowestDateInsumo.getFechaVencimiento().compareTo(loteinsumos.get(i).getFechaVencimiento()) > 0) {
+//                    lowestDateInsumo = loteinsumos.get(i);
+//                }
+//            }
             return lowestDateInsumo;
         } catch (Exception e) {
             this.errorMessage = e.getMessage();

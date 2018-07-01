@@ -7,17 +7,17 @@ package com.sigad.sigad.tienda.controller;
 
 import com.google.maps.errors.ApiException;
 import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXScrollPane;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleButton;
 import com.jfoenix.validation.DoubleValidator;
-import com.jfoenix.validation.NumberValidator;
 import com.jfoenix.validation.RequiredFieldValidator;
 import com.sigad.sigad.app.controller.ErrorController;
+import com.sigad.sigad.business.LoteInsumo;
 import com.sigad.sigad.business.Tienda;
 import com.sigad.sigad.business.Usuario;
 import com.sigad.sigad.business.helpers.GMapsHelper;
+import com.sigad.sigad.business.helpers.LoteInsumoHelper;
 import com.sigad.sigad.business.helpers.TiendaHelper;
 import com.sigad.sigad.business.helpers.UsuarioHelper;
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
@@ -114,8 +113,25 @@ public class CrearEditarTiendaController implements Initializable {
                 System.out.println("VALIDADO ALL FIELDS");
                 updateFields();
                 
-                TiendaHelper helper = new TiendaHelper();
                 if(!TiendaController.isStoreCreate){
+                    LoteInsumoHelper helperli = new LoteInsumoHelper();
+                    ArrayList<LoteInsumo> lotes = helperli.getLoteInsumos(tienda);
+                    double capacidadActual = 0.0;
+                    
+                    if(lotes!= null){
+                        for (int i = 0; i < lotes.size(); i++) {
+                            capacidadActual += lotes.get(i).getStockFisico()* lotes.get(i).getInsumo().isVolumen();
+                        }
+                        if(tienda.getCapacidad()< capacidadActual){
+                            String errorMessage = "No se puede reducir la capacidad actual porque se cuenta con " + capacidadActual + " m^3 de insumos";
+                            
+                            ErrorController error = new ErrorController();
+                            error.loadDialog("Error", errorMessage, "Ok", hiddenSp);
+                            return;
+                        }
+                    }
+                    
+                    TiendaHelper helper = new TiendaHelper();
                     boolean ok = helper.updateStore(tienda);
                     if(ok){
                         TiendaController.data.remove(TiendaController.selectedStore);
@@ -125,7 +141,9 @@ public class CrearEditarTiendaController implements Initializable {
                         ErrorController error = new ErrorController();
                         error.loadDialog("Error", helper.getErrorMessage(), "Ok", hiddenSp);
                     }
+                    helper.close();
                 }else{
+                    TiendaHelper helper = new TiendaHelper();
                     Long id = helper.saveStore(tienda);
                     if(id != null){
                         TiendaController.updateTable(tienda);
@@ -134,8 +152,9 @@ public class CrearEditarTiendaController implements Initializable {
                         ErrorController error = new ErrorController();
                         error.loadDialog("Error", helper.getErrorMessage(), "Ok", hiddenSp);
                     }
-                    
+                    helper.close();
                 }
+                
             }
         });
         

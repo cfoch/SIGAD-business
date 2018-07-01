@@ -251,7 +251,7 @@ public class VehiculoController implements Initializable {
         VehiculoViewer veh = new VehiculoViewer(vehiculo.getPlaca(),nombre,vehiculo.getNombre(),vehiculo.getId());
         veh.setVehiculo(vehiculo);
         if (vehiculo.getTienda() != null) {
-            veh.setTienda(vehiculo.getTienda().getDescripcion());
+            veh.setTienda(vehiculo.getTienda().getDireccion());
         }
         vehiculosList.add(veh);
     }
@@ -332,7 +332,7 @@ public class VehiculoController implements Initializable {
             box.getChildren().add(listView);
 
             asignarBtn.setOnAction((evt) -> {
-                System.out.println("HOLAaaaaaaaa");
+                //System.out.println("HOLAaaaaaaaa");
                 List<Integer> selection =
                         listView.getSelectionModel().getSelectedIndices();
                 if (selection.isEmpty()) {
