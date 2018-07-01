@@ -48,6 +48,7 @@ import com.sigad.sigad.business.helpers.ProductoFragilidadHelper;
 import com.sigad.sigad.business.helpers.ProductoInsumoHelper;
 import com.sigad.sigad.business.helpers.TiendaHelper;
 import com.sigad.sigad.personal.controller.PersonalController.User;
+import java.util.Objects;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Label;
 
@@ -93,9 +94,12 @@ public class ProductosManagementController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         initializeResources();
-        if(ProductosIndexController.selectedProductList != null){
+        if(ProductosIndexController.selectedProduct != null){
             this.update = true;
             loadProduct(ProductosIndexController.selectedProduct);
+        }
+        else{
+            this.producto = null;
         }
         
         initializeMainTable();
@@ -189,8 +193,10 @@ public class ProductosManagementController implements Initializable {
                     Double ammount = null;
                     if(savedRegisters != null){
                         for (ProductoInsumo savedRegister : savedRegisters) {
-                            if(savedRegister.getInsumo().getId() == insumo.getId())
+                            if(Objects.equals(savedRegister.getInsumo().getId(), insumo.getId())){
                                 ammount = savedRegister.getCantidad();
+                                break;
+                            }
                         }   
                     }
                     

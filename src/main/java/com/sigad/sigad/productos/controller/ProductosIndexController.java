@@ -193,7 +193,7 @@ public class ProductosIndexController implements Initializable {
         //DB
         getDataFromDB();
         
-        //Double click on row
+        //Double click on 
         productosTabla.setRowFactory(ord -> {
             JFXTreeTableRow<ProductoLista> row = new JFXTreeTableRow<>();
             row.setOnMouseClicked((event) -> {
@@ -206,7 +206,14 @@ public class ProductosIndexController implements Initializable {
                     
                     //data.remove(selectedUser);
                     try {
-                        CreateEdditProductDialog(false);
+                        Tienda currentStore = LoginController.user.getTienda();
+                        if(currentStore == null){
+                            ErrorController error = new ErrorController();
+                            error.loadDialog("Error","No puede editar un producto si es superAdmin","OK", hiddenSp);
+                        }
+                        else{
+                            CreateEdditProductDialog(false);
+                        }
                     } catch (IOException ex) {
                         Logger.getLogger(PersonalController.class.getName()).log(Level.SEVERE, "initUserTbl(): CreateEdditProductDialog()", ex);
                     }
