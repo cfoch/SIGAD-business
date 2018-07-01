@@ -3,6 +3,7 @@
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXTreeTableView?>
 <?import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIconView?>
+<?import java.lang.String?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TreeTableView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -47,7 +48,11 @@
             <AnchorPane prefHeight="14.0" prefWidth="919.0" style="-fx-background-color: #ECEFF1; -fx-border-color: #C8C8C8;" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
                <children>
-                  <JFXButton fx:id="addBtn" layoutX="892.0" layoutY="1.0" onAction="#handleAction" text="+" />
+                  <JFXButton fx:id="addBtn" layoutX="892.0" layoutY="1.0" onAction="#handleAction" stylesheets="@../../../../../styles/ui_styles.css" text="+">
+                     <styleClass>
+                        <String fx:value="btn-circular" />
+                        <String fx:value="btn-general" />
+                     </styleClass></JFXButton>
                </children>
             </AnchorPane>
          </children>

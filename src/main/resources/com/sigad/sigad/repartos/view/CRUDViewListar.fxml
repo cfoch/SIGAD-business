@@ -12,12 +12,22 @@
    <children>
       <VBox fx:id="box">
          <children>
-            <VBox prefHeight="277.0" prefWidth="521.0">
+            <VBox>
                <children>
-                  <JFXTreeTableView fx:id="treeView" style="-fx-background-insets: 0;" />
+                    <JFXTreeTableView fx:id="treeView" prefHeight="491.0" prefWidth="830.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                        <columnResizePolicy>
+                           <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                        </columnResizePolicy>
+                    </JFXTreeTableView>
                </children>
             </VBox>
          </children>
       </VBox>
    </children>
 </StackPane>
+
+<!--<JFXTreeTableView fx:id="treeView" prefHeight="491.0" prefWidth="830.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+    <columnResizePolicy>
+       <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+    </columnResizePolicy>
+</JFXTreeTableView>-->

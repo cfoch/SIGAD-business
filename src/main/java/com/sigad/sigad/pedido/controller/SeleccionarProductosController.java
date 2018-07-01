@@ -411,12 +411,13 @@ public class SeleccionarProductosController implements Initializable {
         try {
             Double total = Double.valueOf(lblTotal.getText());
             for (PedidoLista ped : pedidos) {
-                if(ped.cantidad.getValue() == 0)
+                if (ped.cantidad.getValue() == 0) {
                     return false;
+                }
             }
-            if (total == 0){
+            if (total == 0) {
                 return false;
-            }else {
+            } else {
                 return true;
             }
         } catch (NumberFormatException e) {
@@ -730,12 +731,12 @@ public class SeleccionarProductosController implements Initializable {
 
     public void gotoEditarDatosPedido() {
         try {
-                Node node;
-                FXMLLoader loader = new FXMLLoader(SeleccionarProductosController.this.getClass().getResource(DatosPedidoController.viewPath));
-                node = (Node) loader.load();
-                DatosPedidoController desc = loader.getController();
-                desc.initModel(pedido, stackPane);
-                stackPane.getChildren().setAll(node);
+            Node node;
+            FXMLLoader loader = new FXMLLoader(SeleccionarProductosController.this.getClass().getResource(DatosPedidoController.viewPath));
+            node = (Node) loader.load();
+            DatosPedidoController desc = loader.getController();
+            desc.initModel(pedido, stackPane);
+            stackPane.getChildren().setAll(node);
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
             Logger.getLogger(DescripcionProductosController.class.getName()).log(Level.SEVERE, null, ex);
@@ -773,9 +774,11 @@ public class SeleccionarProductosController implements Initializable {
             for (Producto t : productosDB) {
                 boolean esta = false;
                 for (PedidoLista pedido1 : pedidos) {
-                    esta = (pedido1.producto.getId().equals(t.getId()));
-                    if (esta) {
-                        break;
+                    if (pedido1.producto != null) {
+                        esta = (pedido1.producto.getId().equals(t.getId()));
+                        if (esta) {
+                            break;
+                        }
                     }
                 }
                 if (!esta) {
@@ -795,7 +798,12 @@ public class SeleccionarProductosController implements Initializable {
             combosDB.forEach((t) -> {
                 boolean esta = false;
                 for (PedidoLista pedido1 : pedidos) {
-                    esta = (pedido1.combo.getId().equals(t.getId()));
+                    if (pedido1.combo != null) {
+                        esta = (pedido1.combo.getId().equals(t.getId()));
+                        if (esta) {
+                            break;
+                        }
+                    }
                 }
                 if (!esta) {
                     prod.add(new ProductoLista(t, "0", false));

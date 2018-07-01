@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXListView?>
+<?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXTabPane?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import com.jfoenix.controls.JFXTreeTableView?>
+<?import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIconView?>
+<?import java.lang.String?>
 <?import java.net.URL?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.layout.AnchorPane?>
 
@@ -11,20 +16,21 @@
       <URL value="@/styles/repartos.css" />
     </stylesheets>
     <children>
-      <JFXTabPane layoutX="1.0" layoutY="1.0" prefHeight="677.0" prefWidth="1019.0">
+      <JFXTabPane fx:id="tabPane" layoutX="1.0" layoutY="1.0" prefHeight="677.0" prefWidth="1019.0">
          <tabs>
             <Tab text="Vehiculos">
               <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="1019.0">
-                     <children>
-                        <JFXListView fx:id="mainListView" layoutX="190.0" layoutY="90.0" prefHeight="268.0" prefWidth="318.0" />
-                     </children>
-                  </AnchorPane>
+                <AnchorPane fx:id="hiddenSpVehiculos" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="1010.0"/>
               </content>
             </Tab>
             <Tab text="Repartidores">
               <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                <AnchorPane fx:id="hiddenSpRepartidores" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="1010.0" />
+              </content>
+            </Tab>
+            <Tab text="Repartos">
+              <content>
+                <AnchorPane fx:id="hiddenSpRepartos" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="1010.0" />
               </content>
             </Tab>
          </tabs>

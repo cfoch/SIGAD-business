@@ -223,6 +223,9 @@ public class VehiculoCrearController implements Initializable {
 //            return false;
 //        }
 //        else 
+        if(tblTipoVehiculo.getSelectionModel().getSelectedIndex()<0){
+            return false;
+        }
             return true;
     }
     

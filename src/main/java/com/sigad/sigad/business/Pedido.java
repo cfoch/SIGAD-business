@@ -40,7 +40,6 @@ public class Pedido {
     private Double total;
     @NotNull
     private Boolean activo;
-    @NotNull
     private Boolean modificable;
     @NotNull
     private String mensajeDescripicion;

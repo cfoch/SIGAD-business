@@ -18,7 +18,9 @@ import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import com.sigad.sigad.app.controller.ErrorController;
+import com.sigad.sigad.app.controller.LoginController;
 import com.sigad.sigad.business.Producto;
+import com.sigad.sigad.business.Tienda;
 import com.sigad.sigad.business.Usuario;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -111,6 +113,22 @@ public class ProductosIndexController implements Initializable {
                 ));
     }
     
+    public static void refreshMainTable(){
+        data.clear();
+        ProductoHelper productoHelper = new ProductoHelper();
+        
+        ArrayList<Producto> productos = productoHelper.getProducts();
+        
+        if(productos != null){
+            productos.forEach((p) ->{
+                Producto t = p;
+                updateTable(p);
+            });
+        }
+        
+        productoHelper.close();
+    }
+    
     private void getDataFromDB() {
         ProductoHelper productoHelper = new ProductoHelper();
         
@@ -137,7 +155,7 @@ public class ProductosIndexController implements Initializable {
         });        
         
         JFXTreeTableColumn<ProductoLista,String> productoNombre = new JFXTreeTableColumn<>("Nombre");
-        productoNombre.setPrefWidth(100);
+        productoNombre.setPrefWidth(200);
         productoNombre.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<ProductoLista, String>, ObservableValue<String>>(){
             @Override
             public ObservableValue<String> call(TreeTableColumn.CellDataFeatures<ProductoLista,String> param){
@@ -146,7 +164,7 @@ public class ProductosIndexController implements Initializable {
         });
         
         JFXTreeTableColumn<ProductoLista,String> productoDescripcion = new JFXTreeTableColumn<>("Descripcion");
-        productoDescripcion.setPrefWidth(70);
+        productoDescripcion.setPrefWidth(400);
         productoDescripcion.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<ProductoLista, String>, ObservableValue<String>>(){
             @Override
             public ObservableValue<String> call(TreeTableColumn.CellDataFeatures<ProductoLista,String> param){
@@ -155,7 +173,7 @@ public class ProductosIndexController implements Initializable {
         });        
         
         JFXTreeTableColumn<ProductoLista,String> productoActivo = new JFXTreeTableColumn<>("Estado");
-        productoActivo.setPrefWidth(50);
+        productoActivo.setPrefWidth(100);
         productoActivo.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<ProductoLista, String>, ObservableValue<String>>(){
             @Override
             public ObservableValue<String> call(TreeTableColumn.CellDataFeatures<ProductoLista,String> param){
@@ -164,7 +182,7 @@ public class ProductosIndexController implements Initializable {
         });        
         
         JFXTreeTableColumn<ProductoLista,String> productoPrecio = new JFXTreeTableColumn<>("Precio");
-        productoPrecio.setPrefWidth(50);
+        productoPrecio.setPrefWidth(100);
         productoPrecio.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<ProductoLista, String>, ObservableValue<String>>(){
             @Override
             public ObservableValue<String> call(TreeTableColumn.CellDataFeatures<ProductoLista,String> param){
@@ -243,27 +261,42 @@ public class ProductosIndexController implements Initializable {
     @FXML
     private void handleAction(ActionEvent event) {
         if(event.getSource() == addBtn){
-            try {
-                CreateEdditProductDialog(true);
-            } catch (IOException ex) {
-                Logger.getLogger(PersonalController.class.getName()).log(Level.SEVERE, "handleAction()", ex);
+            Tienda currentStore = LoginController.user.getTienda();
+            if(currentStore == null){
+                ErrorController error = new ErrorController();
+                error.loadDialog("Error","No puede crear un producto si es superAdmin","OK", hiddenSp);
+                return;
+            }
+            else{
+                try {
+                    CreateEdditProductDialog(true);
+                } catch (IOException ex) {
+                    Logger.getLogger(PersonalController.class.getName()).log(Level.SEVERE, "handleAction()", ex);
+                }   
             }
         }else if(event.getSource() == moreBtn){
-            int count = productosTabla.getSelectionModel().getSelectedCells().size();
-            if( count > 1){
+            Tienda currentStore = LoginController.user.getTienda();
+            if(currentStore == null){
                 ErrorController error = new ErrorController();
-                error.loadDialog("Atención", "Debe seleccionar solo un registro de la tabla", "Ok", hiddenSp);
-            }else if(count<=0){
-                ErrorController error = new ErrorController();
-                error.loadDialog("Atención", "Debe seleccionar al menos un registro de la tabla", "Ok", hiddenSp);
-            }else{
-                int selected  = productosTabla.getSelectionModel().getSelectedIndex();
-                selectedProductList = (ProductoLista) productosTabla.getSelectionModel().getModelItem(selected).getValue();
-                
-                initPopup();
-                popup.show(moreBtn, JFXPopup.PopupVPosition.TOP, JFXPopup.PopupHPosition.RIGHT);
+                error.loadDialog("Error","No puede editar un producto si es superAdmin","OK", hiddenSp);
+                return;
             }
-            
+            else{
+                int count = productosTabla.getSelectionModel().getSelectedCells().size();
+                if( count > 1){
+                    ErrorController error = new ErrorController();
+                    error.loadDialog("Atención", "Debe seleccionar solo un registro de la tabla", "Ok", hiddenSp);
+                }else if(count<=0){
+                    ErrorController error = new ErrorController();
+                    error.loadDialog("Atención", "Debe seleccionar al menos un registro de la tabla", "Ok", hiddenSp);
+                }else{
+                    int selected  = productosTabla.getSelectionModel().getSelectedIndex();
+                    selectedProductList = (ProductoLista) productosTabla.getSelectionModel().getModelItem(selected).getValue();
+
+                    initPopup();
+                    popup.show(moreBtn, JFXPopup.PopupVPosition.TOP, JFXPopup.PopupHPosition.RIGHT);
+                }   
+            }
         }
     }
     
@@ -324,8 +357,10 @@ public class ProductosIndexController implements Initializable {
         
         JFXDialogLayout content =  new JFXDialogLayout();
         
-        if(iscreate){
+        if(isProductCreate){
             content.setHeading(new Text("Crear Producto"));
+            selectedProduct = null;
+            selectedProductList = null;
         }else{
             content.setHeading(new Text("Editar Producto"));
             if(!setCurrentProduct(selectedProductList)){

@@ -49,6 +49,7 @@ import com.sigad.sigad.business.helpers.ProductoInsumoHelper;
 import com.sigad.sigad.business.helpers.TiendaHelper;
 import com.sigad.sigad.personal.controller.PersonalController.User;
 import javafx.event.ActionEvent;
+import javafx.scene.control.Label;
 
 /**
  * FXML Controller class
@@ -84,6 +85,8 @@ public class ProductosManagementController implements Initializable {
     private static Usuario currentUser = LoginController.user;
     @FXML
     private JFXTextField filtro;
+    @FXML
+    private Label warningTxt;
     /**
      * Initializes the controller class.
      */
@@ -103,7 +106,18 @@ public class ProductosManagementController implements Initializable {
                 saveProduct();
             }
         });
-        
+
+        productPrice.setOnAction(new EventHandler<ActionEvent>(){
+            @Override
+            public void handle(ActionEvent event){
+                Double precioBruto = Double.parseDouble(finalPrice.getText());
+                Double precioVenta = Double.parseDouble(productPrice.getText());
+                if(precioBruto > precioVenta)
+                    warningTxt.setText("El precio de venta es menor al costo del producto");
+                else
+                    warningTxt.setText("");
+            }
+        });
         agregarFiltro();
     }
     
@@ -253,6 +267,7 @@ public class ProductosManagementController implements Initializable {
         this.selectFragilidad.getSelectionModel().select(this.producto.getFragilidad().getDescripcion());
         this.txtDescripcion.setText(this.producto.getDescripcion());
         this.txtPeso.setText(String.valueOf(this.producto.getPeso()));
+        this.finalPrice.setText(String.valueOf(this.producto.getPrecioCompra()));
         this.productPrice.setText(String.valueOf(this.producto.getPrecio()));
         //productSupplies();
     }
@@ -323,6 +338,7 @@ public class ProductosManagementController implements Initializable {
         nuevoProducto.setNombre(txtNombre.getText());
         nuevoProducto.setPeso(Double.parseDouble(txtPeso.getText()));
         nuevoProducto.setDescripcion(txtDescripcion.getText());
+        nuevoProducto.setPrecioCompra(Double.parseDouble(finalPrice.getText()));
         nuevoProducto.setPrecio(Double.parseDouble(productPrice.getText()));
         
         ProductoHelper productoHelper = new ProductoHelper();
@@ -388,10 +404,8 @@ public class ProductosManagementController implements Initializable {
                 }
             }            
         }
-        
-        //prodcutoInsumoHelper.close();
-        //productoHelper.close();
-        //categoriaHelper.close();
+        ProductosIndexController.refreshMainTable();
+        ProductosIndexController.productDialog.close();
         //fragilidadHelper.close();
         //insumoHelper.close();
     }

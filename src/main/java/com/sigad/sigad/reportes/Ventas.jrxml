@@ -3,9 +3,12 @@
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="55"/>
+	<parameter name="idTienda" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
 	<queryString>
 		<![CDATA[SELECT P.direcciondeenvio, extract(day from P.fechaventa), P.total
-FROM pedido P, pedidoestado PE WHERE PE.nombre = 'Finalizado' and P.estado_id = PE.id and extract(year from P.fechaventa) = extract(year from current_date) and extract(month from P.fechaventa) = extract(month from current_date) order by P.fechaventa;]]>
+FROM pedido P, pedidoestado PE WHERE PE.nombre = 'Finalizado' and P.estado_id = PE.id and extract(year from P.fechaventa) = extract(year from current_date) and extract(month from P.fechaventa) = extract(month from current_date) and case when $P{idTienda} = 0 then true else P.tienda_id = $P{idTienda} end order by P.fechaventa;]]>
 	</queryString>
 	<field name="direcciondeenvio" class="java.lang.String"/>
 	<field name="date_part" class="java.lang.Double"/>

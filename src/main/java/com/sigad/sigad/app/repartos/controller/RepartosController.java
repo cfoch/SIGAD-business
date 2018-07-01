@@ -5,8 +5,24 @@
  */
 package com.sigad.sigad.app.repartos.controller;
 
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXDialog;
+import com.jfoenix.controls.JFXDialogLayout;
 import com.jfoenix.controls.JFXListView;
+import com.jfoenix.controls.JFXPopup;
+import com.jfoenix.controls.JFXTabPane;
+import com.jfoenix.controls.JFXTreeTableColumn;
+import com.jfoenix.controls.JFXTreeTableRow;
+import com.jfoenix.controls.JFXTreeTableView;
+import com.jfoenix.controls.RecursiveTreeItem;
+import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
+import com.sigad.sigad.app.controller.ErrorController;
 import com.sigad.sigad.app.controller.HomeController;
+import com.sigad.sigad.app.controller.LoginController;
+import com.sigad.sigad.business.Tienda;
+import com.sigad.sigad.business.Vehiculo;
+import com.sigad.sigad.business.helpers.TiendaHelper;
+import com.sigad.sigad.business.helpers.VehiculoHelper;
 import com.sigad.sigad.utils.ui.UICRUDViewWrapperController;
 import com.sigad.sigad.utils.ui.UIFuncs;
 import java.io.IOException;
@@ -18,11 +34,29 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import com.sigad.sigad.utils.ui.UIFuncs.Dialogs.SimplePopupMenuFactory;
+import java.util.ArrayList;
+import java.util.List;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
+import javafx.geometry.Insets;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeTableColumn;
+import javafx.scene.text.Text;
+import javafx.scene.input.MouseButton;
+import javafx.scene.layout.AnchorPane;
+import org.hibernate.Session;
 
 /**
  * FXML Controller class
@@ -31,6 +65,24 @@ import javafx.scene.control.Label;
  */
 public class RepartosController implements Initializable {
 
+    @FXML
+    private JFXTabPane tabPane;
+
+    public static String VIEW_PATH =
+            "/com/sigad/sigad/repartos/view/repartos.fxml";
+
+    private HomeController homeController;
+
+    private Map<Label, SIGADRepartosMainMenuType> mainMenu;
+
+    private JFXListView<Label> mainListView;
+    @FXML
+    private AnchorPane hiddenSpVehiculos;
+    @FXML
+    private AnchorPane hiddenSpRepartidores;
+    @FXML
+    private AnchorPane hiddenSpRepartos;
+ 
     /**
      * @return the homeController
      */
@@ -71,26 +123,41 @@ public class RepartosController implements Initializable {
             }
         }
     }
-
-    public static String VIEW_PATH =
-            "/com/sigad/sigad/repartos/view/repartos.fxml";
-
-    private HomeController homeController;
-
-    private Map<Label, SIGADRepartosMainMenuType> mainMenu;
-
-    @FXML
-    private JFXListView<Label> mainListView;
-
+    
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-        initializeMainMenu();
+        // Repartos
+//        initializeMainMenu();
+        connectMainMenuClickActions();
+        
+        initFirstMenu();
     }
+    
+    private void initFirstMenu() {
+        try {
+            System.out.println("gg");
+            Node nd;
+            URL resource;
+            String resourcePath;
+            FXMLLoader loader;
 
+            resourcePath = VehiculoController.viewPath;
+            resource = getClass().getResource(resourcePath);
+
+            loader = new FXMLLoader();
+
+            nd = (Node) loader.load(resource);
+            
+            hiddenSpVehiculos.getChildren().setAll(nd);
+        } catch (IOException ex) {
+            Logger.getLogger(RepartosController.class.getName())
+                    .log(Level.SEVERE, null, ex);
+        }
+    }
+    
     private void initializeMainMenu() {
         mainMenu = new HashMap<>();
         for (SIGADRepartosMainMenuType item :
@@ -108,14 +175,27 @@ public class RepartosController implements Initializable {
     }
 
     private void connectMainMenuClickActions() {
-        ReadOnlyObjectProperty<Label> selectedItemProp;
-        selectedItemProp =
-                mainListView.getSelectionModel().selectedItemProperty();
-        selectedItemProp.addListener((ObservableValue<? extends Label> obs,
-                Label oldValue, Label selectedLabel) -> {
-            SIGADRepartosMainMenuType menuType;
-            menuType = mainMenu.get(selectedLabel);
-            switch (menuType) {
+//        ReadOnlyObjectProperty<Label> selectedItemProp;
+
+        tabPane.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>() {
+            @Override
+            public void changed(ObservableValue<? extends Tab> ov, Tab oldValue, Tab newValue) {
+                System.out.println("Changed oldValue:" + oldValue.getText() + " newValue:"+ newValue.getText());
+                SIGADRepartosMainMenuType menuType;
+                switch (newValue.getText()){
+                    case "Vehiculos":
+                        menuType = SIGADRepartosMainMenuType.VEHICULOS;
+                        break;
+                    case "Repartidores":
+                        menuType = SIGADRepartosMainMenuType.REPARTIDORES;
+                        break;
+                    case "Repartos":
+                        menuType = SIGADRepartosMainMenuType.REPARTOS;
+                        break;
+                    default:
+                        menuType = SIGADRepartosMainMenuType.VEHICULOS;
+                }
+                switch (menuType) {
                 case REPARTIDORES: {
                     try {
                         Node nd;
@@ -130,34 +210,14 @@ public class RepartosController implements Initializable {
 
                         nd = (Node) loader.load(resource);
 
-                        homeController.getFirstPanel().getChildren().setAll(nd);
+//                        homeController.getFirstPanel().getChildren().setAll(nd);
+                        hiddenSpRepartidores.getChildren().setAll(nd);
                     } catch (IOException ex) {
                         Logger.getLogger(HomeController.class.getName())
                                 .log(Level.SEVERE, null, ex);
                     }
                     break;
                 }
-//                case VEHICULOS_TIPO: {
-//                    try {
-//                        Node nd;
-//                        URL resource;
-//                        String resourcePath;
-//                        FXMLLoader loader;
-//
-//                        resourcePath = VehiculoTipoController.VIEW_PATH;
-//                        resource = getClass().getResource(resourcePath);
-//
-//                        loader = new FXMLLoader();
-//
-//                        nd = (Node) loader.load(resource);
-//
-//                        homeController.getFirstPanel().getChildren().setAll(nd);
-//                    } catch (IOException ex) {
-//                        Logger.getLogger(HomeController.class.getName())
-//                                .log(Level.SEVERE, null, ex);
-//                    }
-//                    break;
-//                }
                 case VEHICULOS:
 
                     try {
@@ -173,7 +233,8 @@ public class RepartosController implements Initializable {
 
                         nd = (Node) loader.load(resource);
 
-                        homeController.getFirstPanel().getChildren().setAll(nd);
+//                        homeController.getFirstPanel().getChildren().setAll(nd);
+                        hiddenSpVehiculos.getChildren().setAll(nd);
                     } catch (IOException ex) {
                         Logger.getLogger(HomeController.class.getName())
                                 .log(Level.SEVERE, null, ex);
@@ -196,7 +257,8 @@ public class RepartosController implements Initializable {
                         controllerWrapper.getListarController()
                                 .setParentStackPane(
                                         controllerWrapper.getStackPane());
-                        homeController.getFirstPanel().getChildren().setAll(nodeWrapper);
+//                        homeController.getFirstPanel().getChildren().setAll(nodeWrapper);
+                        hiddenSpRepartos.getChildren().setAll(nodeWrapper);
                     } catch (InstantiationException | IllegalAccessException ex) {
                         Logger.getLogger(RepartosController.class.getName())
                                 .log(Level.SEVERE, null, ex);
@@ -204,6 +266,7 @@ public class RepartosController implements Initializable {
                     break;
                 }
             }
-        });
+            }
+        }); 
     }
 }

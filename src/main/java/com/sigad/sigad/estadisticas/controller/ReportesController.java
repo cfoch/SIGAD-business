@@ -6,6 +6,8 @@
 package com.sigad.sigad.estadisticas.controller;
 
 import com.jfoenix.controls.JFXButton;
+import com.sigad.sigad.app.controller.LoginController;
+import com.sigad.sigad.business.Tienda;
 import static com.sigad.sigad.helpers.cargaMasiva.CargaMasivaHelper.generarCargaMasivaTemplate;
 import com.sigad.sigad.reportes.GenerarReportes;
 import java.net.URL;
@@ -70,7 +72,14 @@ public class ReportesController implements Initializable {
         DirectoryChooser dirChooser = new DirectoryChooser();
         String downloadDir = dirChooser.showDialog(currentStage).getAbsolutePath();
         if(downloadDir != null){
-            reporteGenerator.reporte(downloadDir, "src/main/java/com/sigad/sigad/reportes/Ventas.jrxml","Reporte de Ventas");
+            Long idTienda = 0L;
+            String reporteTitulo = "Reporte General de Ventas";
+            Tienda currentStore = LoginController.user.getTienda();
+            if(currentStore != null){
+                idTienda = currentStore.getId();
+                reporteTitulo = "Reporte de Ventas para la tienda " + currentStore.getDireccion();
+            }
+            reporteGenerator.reporteVentas(downloadDir, "src/main/java/com/sigad/sigad/reportes/Ventas.jrxml",reporteTitulo, idTienda);
         }
     }
     
