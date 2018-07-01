@@ -86,6 +86,10 @@ public class ListaInsumoController implements Initializable {
     JFXTreeTableColumn<InsumoViewer,Boolean> selectCol = new JFXTreeTableColumn<>("Seleccionar");
     JFXTreeTableColumn<InsumoViewer,String> nombreCol = new JFXTreeTableColumn<>("Nombre");
     JFXTreeTableColumn<InsumoViewer,Integer> stockFCol = new JFXTreeTableColumn<>("Stock");
+    
+    JFXTreeTableColumn<InsumoViewer,Integer> stockFColDisponible = new JFXTreeTableColumn<>("Stock Disponible");
+    JFXTreeTableColumn<InsumoViewer,Integer> stockFColVencido = new JFXTreeTableColumn<>("Stock Vencido");
+    
     JFXTreeTableColumn<InsumoViewer,String> volumenCol = new JFXTreeTableColumn<>("Volumen");
     JFXTreeTableColumn<InsumoViewer,String> estadoCol = new JFXTreeTableColumn<>("Estado");
     static ObservableList<InsumoViewer> insumosList;
@@ -108,6 +112,22 @@ public class ListaInsumoController implements Initializable {
 
         public SimpleIntegerProperty getStockTotalFisico() {
             return stockTotalFisico;
+        }
+        
+        public SimpleIntegerProperty getStockDisponible() {
+            return stockDisponible;
+        }
+
+        public void setStockDisponible(Integer stockDisponible) {
+            this.stockDisponible = new SimpleIntegerProperty(stockDisponible);
+        }
+
+        public SimpleIntegerProperty getStockVencido() {
+            return stockVencido;
+        }
+
+        public void setStockVencido(Integer stockVencido) {
+            this.stockVencido = new SimpleIntegerProperty(stockVencido);
         }
 
         public void setStockTotalLogico(Integer stockTotalLogico) {
@@ -141,10 +161,6 @@ public class ListaInsumoController implements Initializable {
             return volumen;
         }
 
-        public BooleanProperty getSeleccion() {
-            return seleccion;
-        }
-
         public void setNombre(String nombre) {
             this.nombre = new SimpleStringProperty(nombre);
         }
@@ -164,19 +180,7 @@ public class ListaInsumoController implements Initializable {
         public void setVolumen(String volumen) {
             this.volumen = new SimpleStringProperty(volumen);
         }
-
-        public void setSeleccion(BooleanProperty seleccion) {
-            this.seleccion = seleccion;
-        }
         
-        public SimpleIntegerProperty getCantidad() {
-            return cantidad;
-        }
-
-        public void setCantidad(Integer cantidad) {
-            this.cantidad = new SimpleIntegerProperty(cantidad);
-        }
-
         public Long getId() {
             return id;
         }
@@ -188,24 +192,24 @@ public class ListaInsumoController implements Initializable {
         private SimpleStringProperty nombre;
         private SimpleStringProperty descripcion;
         private SimpleStringProperty tiempoVida;
+        
         private SimpleIntegerProperty stockTotalLogico;
         private SimpleIntegerProperty stockTotalFisico;
+        private SimpleIntegerProperty stockDisponible;
+        private SimpleIntegerProperty stockVencido;
+        
         private SimpleBooleanProperty activo;
         private SimpleStringProperty volumen;
         private BooleanProperty seleccion;
-        private SimpleIntegerProperty cantidad;
         private Long id;
         private Insumo insumo;
         
-        public InsumoViewer(String nombre,String descripcion, String tiempoVida,Integer stockTotalLogico, Integer stockTotalFisico, Boolean activo, String volumen, Integer cantidad,Long id) {
+        public InsumoViewer(String nombre,String descripcion, String tiempoVida, Boolean activo, String volumen,Long id) {
             this.nombre = new SimpleStringProperty(nombre);
             this.descripcion = new SimpleStringProperty(descripcion);
             this.tiempoVida = new SimpleStringProperty(tiempoVida);
-            this.stockTotalLogico = new SimpleIntegerProperty(stockTotalLogico);
-            this.stockTotalFisico = new SimpleIntegerProperty(stockTotalFisico);
             this.activo = new SimpleBooleanProperty(activo);
             this.volumen = new SimpleStringProperty(volumen);
-            this.cantidad = new SimpleIntegerProperty(cantidad);
             this.id = id;
         }
     }
@@ -231,6 +235,10 @@ public class ListaInsumoController implements Initializable {
         nombreCol.setCellValueFactory((TreeTableColumn.CellDataFeatures<InsumoViewer, String> param) -> param.getValue().getValue().getNombre() //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         );
         stockFCol.setCellValueFactory((TreeTableColumn.CellDataFeatures<InsumoViewer, Integer> param) -> param.getValue().getValue().getStockTotalFisico().asObject()//throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        );
+        stockFColDisponible.setCellValueFactory((TreeTableColumn.CellDataFeatures<InsumoViewer, Integer> param) -> param.getValue().getValue().getStockDisponible().asObject()//throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        );
+        stockFColVencido.setCellValueFactory((TreeTableColumn.CellDataFeatures<InsumoViewer, Integer> param) -> param.getValue().getValue().getStockVencido().asObject()//throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         );
         volumenCol.setCellValueFactory((TreeTableColumn.CellDataFeatures<InsumoViewer, String> param) -> param.getValue().getValue().getVolumen() //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         );
@@ -258,7 +266,13 @@ public class ListaInsumoController implements Initializable {
     private void addColumns(){
         final TreeItem<InsumoViewer> rootInsumo = new RecursiveTreeItem<>(insumosList,RecursiveTreeObject::getChildren);
         tblInsumos.setEditable(true);
-        tblInsumos.getColumns().setAll(nombreCol,stockFCol,volumenCol,estadoCol);
+        if(LoginController.user.getPerfil().getNombre().equals(Constantes.PERFIL_SUPERADMIN)){
+            tblInsumos.getColumns().setAll(nombreCol,stockFCol,volumenCol,estadoCol);
+        }
+        else {
+            tblInsumos.getColumns().setAll(nombreCol,stockFColDisponible,stockFColVencido,volumenCol,estadoCol);
+        }
+        
         tblInsumos.setRoot(rootInsumo);
         tblInsumos.setShowRoot(false);
     }
@@ -283,19 +297,28 @@ public class ListaInsumoController implements Initializable {
             newinsumov = new InsumoViewer(insumo.getNombre(),
                                          insumo.getDescripcion(),
                                          Integer.toString(insumo.getTiempoVida()),
-                                         insumo.getStockTotalLogico(),
-                                         insumo.getStockTotalLogico(),
                                          insumo.isActivo(),
                                          insumo.isVolumen().toString(),
-                                         0,
                                          insumo.getId());
+            //setter de stock
+            newinsumov.setStockTotalFisico(insumo.getStockTotalFisico());
+            newinsumov.setStockTotalLogico(insumo.getStockTotalLogico());
+            newinsumov.setStockDisponible(0);
+            newinsumov.setStockVencido(0);
             newinsumov.setInsumo(insumo);
             insumosList.add(newinsumov);
         }
         else{
             // List only insumos from store to other roles
+            
+            Integer stockDisponible = 0;
+            Integer stockVencido = 0;
+                
             LoteInsumoHelper helperli = new LoteInsumoHelper();
             ArrayList<LoteInsumo> li = helperli.getLoteInsumosEspecific(LoginController.user.getTienda(), insumo);
+            ArrayList<LoteInsumo> lidisp = helperli.getLoteInsumosEspecificDisponible(LoginController.user.getTienda(), insumo);
+            ArrayList<LoteInsumo> livenc = helperli.getLoteInsumosEspecificVencido(LoginController.user.getTienda(), insumo);
+            helperli.close();
 
             if(li != null){
                 for (LoteInsumo li1 : li) {
@@ -305,29 +328,62 @@ public class ListaInsumoController implements Initializable {
                 newinsumov = new InsumoViewer(insumo.getNombre(),
                                          insumo.getDescripcion(),
                                          Integer.toString(insumo.getTiempoVida()),
-                                         stockLogico,
-                                         stockFisico,
                                          insumo.isActivo(),
                                          insumo.isVolumen().toString(),
-                                         0,
                                          insumo.getId());
                 
+                newinsumov.setStockTotalFisico(stockLogico);
+                newinsumov.setStockTotalLogico(stockFisico);
+
+                //si todos son disponibles
+                if(lidisp != null && livenc == null){
+                    for(LoteInsumo lid: lidisp){
+                        stockDisponible += lid.getStockFisico();
+                    }
+                    newinsumov.setStockDisponible(stockDisponible);
+                    newinsumov.setStockVencido(0);
+                }
+                //ninguno disponible
+                else if(lidisp == null && livenc != null){
+                    for(LoteInsumo lind: livenc){
+                        stockVencido += lind.getStockFisico();
+                    }
+                    newinsumov.setStockDisponible(0);
+                    newinsumov.setStockVencido(stockVencido);
+                }
+                //ni vencidos ni disponibles
+                else if(lidisp != null && livenc != null) {
+                    for(LoteInsumo lid: lidisp){
+                        stockDisponible += lid.getStockFisico();
+                    }
+                    for(LoteInsumo lind: livenc){
+                        stockVencido += lind.getStockFisico();
+                    }
+                    newinsumov.setStockDisponible(stockDisponible);
+                    newinsumov.setStockVencido(stockVencido);
+                }
+                else{
+                    newinsumov.setStockTotalFisico(0);
+                    newinsumov.setStockTotalLogico(0);
+                    newinsumov.setStockDisponible(0);
+                    newinsumov.setStockVencido(0);
+                }
             }
             else{
                 newinsumov = new InsumoViewer(insumo.getNombre(),
                                          insumo.getDescripcion(),
                                          Integer.toString(insumo.getTiempoVida()),
-                                         0,
-                                         0,
                                          insumo.isActivo(),
                                          insumo.isVolumen().toString(),
-                                         0,
                                          insumo.getId());
                 
+                newinsumov.setStockTotalFisico(0);
+                newinsumov.setStockTotalLogico(0);
+                newinsumov.setStockDisponible(0);
+                newinsumov.setStockVencido(0);
             }
             newinsumov.setInsumo(insumo);
-            insumosList.add(newinsumov);
-            
+            insumosList.add(newinsumov);            
         }
     }
     @FXML

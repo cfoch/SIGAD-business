@@ -244,6 +244,7 @@ public class VehiculoCrearController implements Initializable {
         vehiculo.setPlaca(placaTxt.getText());
         vehiculo.setDescripcion(descripcionTxtArea.getText());
         vehiculo.setTipo(tblTipoVehiculo.getSelectionModel().getSelectedItem().getValue().getVeh());
+        vehiculo.setTienda(LoginController.user.getTienda());
     }
     public void setColumns(){
         marcaCol.setCellValueFactory((TreeTableColumn.CellDataFeatures<TipoVehiculoViewer, String> param) -> param.getValue().getValue().getMarca()

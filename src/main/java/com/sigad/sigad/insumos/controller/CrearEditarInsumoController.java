@@ -120,7 +120,7 @@ public class CrearEditarInsumoController implements Initializable {
                 //verify if insumo has stock
                 if(insumo.getStockTotalLogico() > 0 || insumo.getStockTotalFisico() > 0){
                     ErrorController error = new ErrorController();
-                    error.loadDialog("Error", "No puede desactivar el insumo, este cuenta con stock", "Ok", hiddenSp);
+                    error.loadDialog("Error", "No puede desactivar el insumo, este cuenta con stock en una tienda", "Ok", hiddenSp);
                     tglActive.setSelected(true);
                 }
             }

@@ -101,6 +101,7 @@ public class RegistrarIngresoSalidaInsumoController implements Initializable {
     JFXTreeTableColumn<LoteInsumoViewer,String> codigoCol = new JFXTreeTableColumn<>("Codigo");
     JFXTreeTableColumn<LoteInsumoViewer,String> fechaCol = new JFXTreeTableColumn<>("Fecha Vencimiento");
     JFXTreeTableColumn<LoteInsumoViewer,String> stockCol = new JFXTreeTableColumn<>("Stock Fisico");
+    JFXTreeTableColumn<LoteInsumoViewer,String> vencimientoCol = new JFXTreeTableColumn<>("Estado");
     
     
     public static class LoteInsumoViewer extends RecursiveTreeObject<LoteInsumoViewer>{
@@ -137,10 +138,19 @@ public class RegistrarIngresoSalidaInsumoController implements Initializable {
             this.lote = lote;
         }
         
+        public SimpleStringProperty getVencido() {
+            return vencido;
+        }
+
+        public void setVencido(String vencido) {
+            this.vencido = new SimpleStringProperty(vencido);
+        }
+        
         private SimpleStringProperty codigo;
         private SimpleStringProperty fechaVencimiento;
         private LoteInsumo lote;
         private SimpleStringProperty stock;
+        private SimpleStringProperty vencido;
         
         public LoteInsumoViewer(String codigo,String fechaVencimiento,String stock){
             this.codigo = new SimpleStringProperty(codigo);
@@ -241,12 +251,14 @@ public class RegistrarIngresoSalidaInsumoController implements Initializable {
         fechaCol.setCellValueFactory((TreeTableColumn.CellDataFeatures<LoteInsumoViewer, String> param) -> param.getValue().getValue().getFechaVencimiento()
         );        
         stockCol.setCellValueFactory((TreeTableColumn.CellDataFeatures<LoteInsumoViewer, String> param) -> param.getValue().getValue().getStock()
-        );        
+        );
+        vencimientoCol.setCellValueFactory((TreeTableColumn.CellDataFeatures<LoteInsumoViewer, String> param) -> param.getValue().getValue().getVencido()
+        );
     }
     private void addColumns(){
         final TreeItem<LoteInsumoViewer> rootInsumo = new RecursiveTreeItem<>(lotesList,RecursiveTreeObject::getChildren);
         tblLotes.setEditable(false);
-        tblLotes.getColumns().setAll(codigoCol, fechaCol,stockCol);
+        tblLotes.getColumns().setAll(codigoCol, fechaCol,stockCol,vencimientoCol);
         tblLotes.setRoot(rootInsumo);
         tblLotes.setShowRoot(false);
         
@@ -254,6 +266,12 @@ public class RegistrarIngresoSalidaInsumoController implements Initializable {
     public void updateTable(LoteInsumo lote){
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         LoteInsumoViewer loteinsumoviewer = new LoteInsumoViewer(lote.getId().toString(),df.format(lote.getFechaVencimiento()),lote.getStockFisico().toString());
+        Date d = new Date();
+        if(lote.getFechaVencimiento().compareTo(d) < 0){
+            loteinsumoviewer.setVencido("Vencido");
+        }else {
+            loteinsumoviewer.setVencido("Vigente");
+        }
         loteinsumoviewer.setLote(lote);
         lotesList.add(loteinsumoviewer);
         
@@ -341,9 +359,9 @@ public class RegistrarIngresoSalidaInsumoController implements Initializable {
                         c.setTime(date);
                         
                         c.add(Calendar.DATE, insumo.getTiempoVida());
-                        Date currentDatePlusOne = c.getTime();
+                        Date currentDatePlus = c.getTime();
                         
-                        loteDefault.setFechaVencimiento(date);
+                        loteDefault.setFechaVencimiento(currentDatePlus);
                         loteDefault.setInsumo(insumo);
                         loteDefault.setStockFisico(newCantidad);
                         loteDefault.setStockLogico(newCantidad);
@@ -453,7 +471,12 @@ public class RegistrarIngresoSalidaInsumoController implements Initializable {
         containerPane.getChildren().add(cancel);
     }
     public boolean validateFields() {
-        if(cbxTipo.getValue().getNombre().equals("Salida") && tblLotes.getSelectionModel().getSelectedItem() == null){
+        if(cbxTipo.getValue() == null){
+            ErrorController error = new ErrorController();
+            error.loadDialog("Error","Debe seleccionar un tipo de movimiento", "Ok", hiddenSp);
+            return false;
+        }
+        else if(cbxTipo.getValue().getNombre().equals(Constantes.TIPO_MOVIMIENTO_SALIDA_FISICA) && tblLotes.getSelectionModel().getSelectedItem() == null){
             ErrorController error = new ErrorController();
             error.loadDialog("Error","Debe seleccionar un lote de insumos", "Ok", hiddenSp);
             return false;
