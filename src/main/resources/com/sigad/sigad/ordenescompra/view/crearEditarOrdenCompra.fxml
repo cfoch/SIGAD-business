@@ -4,6 +4,7 @@
 <?import com.jfoenix.controls.JFXDatePicker?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import com.jfoenix.controls.JFXTreeTableView?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TreeTableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -18,8 +19,8 @@
             <GridPane minWidth="-Infinity" prefHeight="450.0" prefWidth="760.0">
                <columnConstraints>
                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="333.0" minWidth="10.0" prefWidth="89.50468444824219" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="964.0" minWidth="10.0" prefWidth="589.6248168945312" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="188.19683837890625" minWidth="10.0" prefWidth="82.37518310546875" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="964.0" minWidth="10.0" prefWidth="514.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="188.19683837890625" minWidth="10.0" prefWidth="157.0" />
                </columnConstraints>
                <rowConstraints>
                   <RowConstraints maxHeight="109.0" minHeight="8.611417770385742" prefHeight="8.611417770385742" vgrow="SOMETIMES" />
@@ -35,11 +36,19 @@
                         <JFXTextField fx:id="txtProveedor" disable="true" focusColor="#455a64" layoutX="105.0" layoutY="66.0" />
                      </children>
                   </AnchorPane>
-                  <JFXTreeTableView fx:id="tblInsumos" prefHeight="216.0" prefWidth="589.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                  <JFXTreeTableView fx:id="tblInsumos" prefHeight="246.0" prefWidth="483.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                      <columnResizePolicy>
                         <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                      </columnResizePolicy>
                   </JFXTreeTableView>
+                  <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                     <children>
+                        <Label layoutX="25.0" layoutY="35.0" text="I.G.V." />
+                        <Label fx:id="lblIgv" layoutX="69.0" layoutY="35.0" />
+                        <Label layoutX="24.0" layoutY="69.0" text="Total" />
+                        <Label fx:id="lblTotal" layoutX="69.0" layoutY="68.0" />
+                     </children>
+                  </AnchorPane>
                </children>
             </GridPane>
          </children>

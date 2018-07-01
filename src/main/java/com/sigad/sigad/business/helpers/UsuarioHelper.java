@@ -130,7 +130,10 @@ public class UsuarioHelper extends BaseHelper{
             uNew.setCorreo(uOld.getCorreo());
             uNew.setDni(uOld.getDni());
             uNew.setIntereses(uOld.getIntereses());
-            uNew.setPassword(uOld.getPassword());
+            //uNew.setPassword(uOld.getPassword());
+            if(uOld.getPassword()!=null){
+                uNew.setPassword(LoginController.encrypt(uOld.getPassword()));
+            }
             uNew.setPerfil(uOld.getPerfil());
             if (uOld.getPerfil().getNombre().equals("Cliente")){
                 uNew.setClienteDirecciones(new HashSet<>(uOld.getClienteDirecciones()));

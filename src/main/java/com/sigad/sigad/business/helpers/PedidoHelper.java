@@ -7,6 +7,8 @@ package com.sigad.sigad.business.helpers;
 
 import com.sigad.sigad.business.Pedido;
 import com.sigad.sigad.business.PedidoEstado;
+import com.sigad.sigad.business.ProductoInsumo;
+import com.sigad.sigad.business.ProductosCombos;
 import com.sigad.sigad.business.Tienda;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -19,7 +21,7 @@ import org.hibernate.query.Query;
  *
  * @author Alexandra
  */
-public class PedidoHelper extends BaseHelper{
+public class PedidoHelper extends BaseHelper {
 
     public PedidoHelper() {
         super();
@@ -54,12 +56,105 @@ public class PedidoHelper extends BaseHelper{
             pedidos = (ArrayList<Pedido>) query.list();
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
+            session.getTransaction().rollback();
             errorMessage = e.getMessage();
-        } finally{
+        } finally {
             return pedidos;
         }
-    };
-    public ArrayList<Pedido> getPedidosCliente(Long userId){
+    }
+
+    ;
+    
+    public Pedido getPedido(Long pedido_id) {
+        Pedido pedido = null;
+        Query query = null;
+        try {
+            query = session.createQuery("from Pedido where id = " + pedido_id);
+            pedido = (Pedido) query.list().get(0);
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            session.getTransaction().rollback();
+            errorMessage = e.getMessage();
+        } finally {
+            return pedido;
+        }
+    }
+
+    public Pedido getPedidoEager(Long pedido_id) {
+        Pedido pedido = null;
+        Query query = null;
+        try {
+            query = session.createQuery("from Pedido where id = " + pedido_id);
+            pedido = (Pedido) query.list().get(0);
+            pedido.getEstadosPedido().size();
+            pedido.getDetallePedido().forEach((t) -> {
+                t.getDescuentoCategoria();
+                t.getDescuentoProducto();
+                if (t.getProducto() != null) {
+                    t.getProducto().getCategoria();
+                    ArrayList<ProductoInsumo> pd = new ArrayList(t.getProducto().getProductoxInsumos());
+                    pd.forEach((p) -> {
+                        p.getInsumo();
+                    });
+                } else if (t.getCombo() != null) {
+                    ArrayList<ProductosCombos> pd = new ArrayList(t.getCombo().getProductosxCombo());
+                    pd.forEach((p) -> {
+                        p.getProducto();
+                        ArrayList<ProductoInsumo> pi = new ArrayList(p.getProducto().getProductoxInsumos());
+                        pi.forEach((m) -> {
+                            m.getCantidad();
+                            m.getInsumo();
+                        });
+                    });
+                }
+            });
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+            System.out.println("Error: " + e.getMessage());
+        } finally {
+            return pedido;
+        }
+    }
+
+    ;
+    
+    public boolean updatePedido(Pedido tOld){
+        boolean ok = false;
+        try {
+            Transaction tx;
+            if(session.getTransaction().isActive()){
+                tx = session.getTransaction();
+            }else{
+                tx = session.beginTransaction();
+            }
+            
+            Pedido tNew = session.load(Pedido.class, tOld.getId());
+            
+            tNew.setActivo(tOld.isActivo());
+            tNew.setDescuentoCliente(tOld.getDescuentoCliente());
+            tNew.setDetallePedido(tOld.getDetallePedido());
+            tNew.setDocumentos(tOld.getDocumentos());
+            tNew.setFechaEntregaEsperada(tOld.getFechaEntregaEsperada());
+            tNew.setFechaVenta(tOld.getFechaVenta());
+            tNew.setMensajeDescripicion(tOld.getMensajeDescripicion());
+            tNew.setNombreEmpresa(tOld.getNombreEmpresa());
+            tNew.setRucFactura(tOld.getRucFactura());
+            tNew.setTipoPago(tOld.getTipoPago());
+            tNew.setTotal(tOld.getTotal());
+            tNew.setTurno(tOld.getTurno());
+            tNew.setVolumenTotal(tOld.getVolumenTotal());
+            session.merge(tNew);
+            tx.commit();
+            ok = true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            session.getTransaction().rollback();
+            this.errorMessage = e.getMessage();
+        }
+        return ok;
+    }
+    
+    public ArrayList<Pedido> getPedidosCliente(Long userId) {
         ArrayList<Pedido> pedidos = null;
         Query query = null;
         try {
@@ -67,13 +162,14 @@ public class PedidoHelper extends BaseHelper{
             pedidos = (ArrayList<Pedido>) query.list();
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
+            session.getTransaction().rollback();
             errorMessage = e.getMessage();
-        } finally{
+        } finally {
             return pedidos;
         }
     }
-    
-    public ArrayList<Pedido> getPedidosVendedor(Long userId){
+
+    public ArrayList<Pedido> getPedidosVendedor(Long userId) {
         ArrayList<Pedido> pedidos = null;
         Query query = null;
         try {
@@ -81,11 +177,13 @@ public class PedidoHelper extends BaseHelper{
             pedidos = (ArrayList<Pedido>) query.list();
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
+            session.getTransaction().rollback();
             errorMessage = e.getMessage();
-        } finally{
+        } finally {
             return pedidos;
         }
     }
+
     /*Get all the Pedidos*/
     public Long savePedido(Pedido pedido) {
         Long id = null;
@@ -96,15 +194,16 @@ public class PedidoHelper extends BaseHelper{
             } else {
                 tx = session.beginTransaction();
             }
-            
+
             session.save(pedido);
-            if (pedido.getId()== null) {
+            if (pedido.getId() == null) {
                 id = pedido.getId();
             }
             tx.commit();
             session.close();
         } catch (Exception e) {
             System.out.println(e.getMessage());
+            session.getTransaction().rollback();
             this.errorMessage = e.getMessage();
         } finally {
             return id;

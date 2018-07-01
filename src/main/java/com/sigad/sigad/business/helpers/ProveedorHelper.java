@@ -15,20 +15,10 @@ import org.hibernate.query.Query;
  *
  * @author chrs
  */
-public class ProveedorHelper {
+public class ProveedorHelper extends BaseHelper {
     
-    Session session = null;
-    private String errorMessage = "";
     public ProveedorHelper() {
-        session = LoginController.serviceInit();
-    }
-    
-    public void close(){
-        session.close();
-    }
-        
-    public String getErrorMessage(){
-        return errorMessage;
+        super();
     }
     
     public ArrayList<Proveedor> getProveedores() {

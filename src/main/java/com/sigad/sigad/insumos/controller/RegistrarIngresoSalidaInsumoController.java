@@ -176,20 +176,25 @@ public class RegistrarIngresoSalidaInsumoController implements Initializable {
     public void fillData(){
         TipoMovimientoHelper helpertm = new TipoMovimientoHelper();
        
-        ArrayList<TipoMovimiento> tipos = null;
+        ArrayList<TipoMovimiento> tipos;
         tipos = helpertm.getTiposMovimientos();
+        helpertm.close();
         LoteInsumoHelper helperli = new LoteInsumoHelper();
         ArrayList<LoteInsumo> insumosSpecific = helperli.getLoteInsumosEspecificPositive(LoginController.user.getTienda(),insumo);
+        helperli.close();
+        
         if(tipos!= null) {
             tipos.forEach((i)->{
-                if(!(i.getNombre().equals(Constantes.TIPO_MOVIMIENTO_SALIDA_FISICA) && insumosSpecific == null) && !i.getNombre().equals(Constantes.TIPO_MOVIMIENTO_SALIDA_LOGICA)
-                            && !i.getNombre().equals(Constantes.TIPO_MOVIMIENTO_ENTRADA_LOGICA)){
-                   cbxTipo.getItems().add(i); 
+//                if(!(i.getNombre().equals(Constantes.TIPO_MOVIMIENTO_SALIDA_FISICA) && insumosSpecific == null) && i.getNombre().equals(Constantes.TIPO_MOVIMIENTO_SALIDA_LOGICA)
+//                            && !i.getNombre().equals(Constantes.TIPO_MOVIMIENTO_ENTRADA_LOGICA)){
+//                    
+//                }
+                if((i.getNombre().equals(Constantes.TIPO_MOVIMIENTO_SALIDA_FISICA) && insumosSpecific != null)|| i.getNombre().equals(Constantes.TIPO_MOVIMIENTO_ENTRADA_FISICA) ){
+                    cbxTipo.getItems().add(i);
                 }
             });
             cbxTipo.setPromptText("Tipo Movimiento");
             cbxTipo.setConverter(new StringConverter<TipoMovimiento>() {
-                
                 Long id = null;
                 String des = null;
                 
@@ -210,7 +215,6 @@ public class RegistrarIngresoSalidaInsumoController implements Initializable {
                 }
             });
         }
-        helpertm.close();
         
         cbxTipo.valueProperty().addListener((ObservableValue<? extends Object> observable, Object oldValue, Object newValue) -> {
             TipoMovimiento li = (TipoMovimiento) newValue;
@@ -229,8 +233,7 @@ public class RegistrarIngresoSalidaInsumoController implements Initializable {
         }
         Date inputDate = new Date();
         LocalDate date = inputDate .toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        pckDate.setValue(date);
-        helperli.close();
+        pckDate.setValue(date);      
     }
     private void setColumns(){
         codigoCol.setCellValueFactory((TreeTableColumn.CellDataFeatures<LoteInsumoViewer, String> param) -> param.getValue().getValue().getCodigo()
@@ -272,9 +275,6 @@ public class RegistrarIngresoSalidaInsumoController implements Initializable {
                 double capacidadActual = 0.0;
                 
                 LoteInsumoHelper helperli = new LoteInsumoHelper();
-                MovimientoHelper helpermo = new MovimientoHelper();
-                InsumosHelper helperi = new InsumosHelper();
-                
                 ArrayList<LoteInsumo> lotesInsumo = helperli.getLoteInsumosEspecific(currentStore, insumo);
                 
                 if(cbxTipo.getValue().getNombre().equals(Constantes.TIPO_MOVIMIENTO_ENTRADA_FISICA)){
@@ -292,7 +292,7 @@ public class RegistrarIngresoSalidaInsumoController implements Initializable {
                         }
                         
                         //siempre existira porque la lista no es vacia
-                        LoteInsumo recentLote = helperli.getMostRecentLoteInsumo(currentStore);
+                        LoteInsumo recentLote = helperli.getMostRecentLoteInsumo(currentStore,insumo);
                         //realizar ingreso seleccionando el lote y  validar la cantidad que ingresa.
                         recentLote.setStockFisico(recentLote.getStockFisico() + newCantidad);
                         recentLote.setStockLogico(recentLote.getStockLogico() + newCantidad);
@@ -302,29 +302,34 @@ public class RegistrarIngresoSalidaInsumoController implements Initializable {
                         movimiento.setLoteInsumo(recentLote);
                         
                         Boolean saveLote = helperli.updateLoteInsumo(recentLote);
-                        Boolean saveInsumo = helperi.updateInsumo(insumo);
-                        Boolean saveMov = helpermo.saveMovement(movimiento);
-                        
-                        if(saveLote) {
-                            if(saveInsumo) {
-                                if(saveMov) {
-                                    ListaInsumoController.insumosList.remove(ListaInsumoController.selectedInsumo);                                   
-                                    ListaInsumoController.updateTable(insumo);
-                                    ListaInsumoController.insumoDialog.close();
-                                }
-                                else{
-                                    ErrorController error = new ErrorController();
-                                    error.loadDialog("Error", helpermo.getErrorMessage(), "Ok", hiddenSp);
-                                }
-                            }
-                            else{
-                                ErrorController error = new ErrorController();
-                                error.loadDialog("Error", helperi.getErrorMessage(), "Ok", hiddenSp);
-                            }
-                        }
-                        else{
-                             ErrorController error = new ErrorController();
+                        if(!saveLote){
+                            ErrorController error = new ErrorController();
                             error.loadDialog("Error", helperli.getErrorMessage(), "Ok", hiddenSp);
+                        }
+                        helperli.close();
+                        
+                        
+                        InsumosHelper helperi = new InsumosHelper();
+                        Boolean saveInsumo = helperi.updateInsumo(insumo);
+                        if(!saveInsumo){
+                            ErrorController error = new ErrorController();
+                            error.loadDialog("Error", helperi.getErrorMessage(), "Ok", hiddenSp);
+                        }
+                        helperi.close();
+                        
+                        
+                        MovimientoHelper helpermo = new MovimientoHelper();
+                        Boolean saveMov = helpermo.saveMovement(movimiento);
+                        if(!saveMov){
+                            ErrorController error = new ErrorController();
+                            error.loadDialog("Error", helperli.getErrorMessage(), "Ok", hiddenSp);
+                        }
+                        helpermo.close();
+                        
+                        if(saveLote && saveInsumo && saveMov){
+                            ListaInsumoController.insumosList.remove(ListaInsumoController.selectedInsumo);                                   
+                            ListaInsumoController.updateTable(insumo);
+                            ListaInsumoController.insumoDialog.close();
                         }
                     }
                     else {
@@ -349,30 +354,29 @@ public class RegistrarIngresoSalidaInsumoController implements Initializable {
                         movimiento.setLoteInsumo(loteDefault);
                         
                         Long saveLote = helperli.saveLoteInsumo(loteDefault);
-                        helperli.close();
-                        Boolean saveInsumo = helperi.updateInsumo(insumo);
-                        Boolean saveMov = helpermo.saveMovement(movimiento);
-                        
-                        if(saveLote != null) {
-                            if(saveInsumo) {
-                                if(saveMov) {
-                                    ListaInsumoController.insumosList.remove(ListaInsumoController.selectedInsumo);                                   
-                                    ListaInsumoController.updateTable(insumo);
-                                    ListaInsumoController.insumoDialog.close();
-                                }
-                                else{
-                                    ErrorController error = new ErrorController();
-                                    error.loadDialog("Error", helpermo.getErrorMessage(), "Ok", hiddenSp);
-                                }
-                            }
-                            else{
-                                ErrorController error = new ErrorController();
-                                error.loadDialog("Error", helperi.getErrorMessage(), "Ok", hiddenSp);
-                            }
-                        }
-                        else{
+                        if(saveLote!=null){
                             ErrorController error = new ErrorController();
                             error.loadDialog("Error", helperli.getErrorMessage(), "Ok", hiddenSp);
+                        }                       
+                        
+                        InsumosHelper helperi = new InsumosHelper();
+                        Boolean saveInsumo = helperi.updateInsumo(insumo);
+                        if(!saveInsumo){
+                            ErrorController error = new ErrorController();
+                            error.loadDialog("Error", helperi.getErrorMessage(), "Ok", hiddenSp);
+                        }
+                        
+                        MovimientoHelper helpermo = new MovimientoHelper();
+                        Boolean saveMov = helpermo.saveMovement(movimiento);
+                        if(!saveMov){
+                            ErrorController error = new ErrorController();
+                            error.loadDialog("Error", helpermo.getErrorMessage(), "Ok", hiddenSp);
+                        }
+                        
+                        if(saveLote!=null && saveInsumo && saveMov){
+                            ListaInsumoController.insumosList.remove(ListaInsumoController.selectedInsumo);                                   
+                            ListaInsumoController.updateTable(insumo);
+                            ListaInsumoController.insumoDialog.close();
                         }
                     }
                 }
@@ -398,29 +402,34 @@ public class RegistrarIngresoSalidaInsumoController implements Initializable {
                             movimiento.setLoteInsumo(loteSelected);                        
 
                             Boolean saveLote = helperli.updateLoteInsumo(loteSelected);
-                            Boolean saveInsumo = helperi.updateInsumo(insumo);
-                            Boolean saveMov = helpermo.saveMovement(movimiento);
-
-                            if(saveLote) {
-                                if(saveInsumo) {
-                                    if(saveMov) {
-                                        ListaInsumoController.insumosList.remove(ListaInsumoController.selectedInsumo);                                   
-                                        ListaInsumoController.updateTable(insumo);
-                                        ListaInsumoController.insumoDialog.close();
-                                    }
-                                    else{
-                                        ErrorController error = new ErrorController();
-                                        error.loadDialog("Error", helpermo.getErrorMessage(), "Ok", hiddenSp);
-                                    }
-                                }
-                                else{
-                                    ErrorController error = new ErrorController();
-                                    error.loadDialog("Error", helperi.getErrorMessage(), "Ok", hiddenSp);
-                                }
-                            }
-                            else{
-                                 ErrorController error = new ErrorController();
+                            if(!saveLote){
+                                ErrorController error = new ErrorController();
                                 error.loadDialog("Error", helperli.getErrorMessage(), "Ok", hiddenSp);
+                            }
+                            helperli.close();
+
+
+                            InsumosHelper helperi = new InsumosHelper();
+                            Boolean saveInsumo = helperi.updateInsumo(insumo);
+                            if(!saveInsumo){
+                                ErrorController error = new ErrorController();
+                                error.loadDialog("Error", helperi.getErrorMessage(), "Ok", hiddenSp);
+                            }
+                            helperi.close();
+
+
+                            MovimientoHelper helpermo = new MovimientoHelper();
+                            Boolean saveMov = helpermo.saveMovement(movimiento);
+                            if(!saveMov){
+                                ErrorController error = new ErrorController();
+                                error.loadDialog("Error", helperli.getErrorMessage(), "Ok", hiddenSp);
+                            }
+                            helpermo.close();
+
+                            if(saveLote && saveInsumo && saveMov){
+                                ListaInsumoController.insumosList.remove(ListaInsumoController.selectedInsumo);                                   
+                                ListaInsumoController.updateTable(insumo);
+                                ListaInsumoController.insumoDialog.close();
                             }
                         }
                     }
@@ -429,9 +438,6 @@ public class RegistrarIngresoSalidaInsumoController implements Initializable {
                         error.loadDialog("Error", "No puede realizar una salida, no existe ningun lote del insumo", "Ok", hiddenSp);
                     }
                 }
-                helperi.close();
-                helpermo.close();
-                helperli.close();
             }
         });
 

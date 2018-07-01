@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
-<?import com.jfoenix.controls.JFXCheckBox?>
 <?import com.jfoenix.controls.JFXDatePicker?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import com.jfoenix.controls.JFXTreeTableView?>
@@ -36,8 +35,6 @@
                         <DropShadow color="#000000f3" />
                      </effect>
                   </JFXButton>
-                  <JFXCheckBox fx:id="checkboxStock" layoutX="339.0" layoutY="296.0" text=" " />
-                  <JFXTextField fx:id="txtStockMaximo" labelFloat="true" layoutX="368.0" layoutY="292.0" promptText="Stock Maximo" />
                   <JFXTextField fx:id="txtNuevoPrecio" disable="true" labelFloat="true" layoutX="360.0" layoutY="225.0" promptText="Nuevo precio" />
                   <JFXTextField fx:id="txtPrecio" disable="true" labelFloat="true" layoutX="40.0" layoutY="225.0" promptText="Precio" />
                   <Label fx:id="lblError" layoutX="37.0" layoutY="347.0" prefHeight="21.0" prefWidth="171.0" textFill="#de0000">

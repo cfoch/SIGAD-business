@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import java.net.URL?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+
+<StackPane fx:id="stackPane" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sigad.sigad.pedido.controller.PagoPedidoController">
+   <children>
+      <AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" styleClass="mainFxmlClass">
+          <stylesheets>
+              <URL value="@/styles/pagopedido.css" />
+          </stylesheets>
+         <children>
+            <JFXTextField fx:id="txtMontoTotal" disable="true" labelFloat="true" layoutX="316.0" layoutY="61.0" promptText="Total a pagar" text="0.0">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </JFXTextField>
+            <JFXTextField fx:id="txtnotaCredito" labelFloat="true" layoutX="40.0" layoutY="131.0" prefHeight="25.0" prefWidth="235.0" promptText="Codigo de nota de credito" />
+            <JFXTextField fx:id="txtDepositoBanco" labelFloat="true" layoutX="40.0" layoutY="238.0" prefHeight="25.0" prefWidth="235.0" promptText="Codigo deposito banco" />
+            <JFXTextField fx:id="txtmontonota" disable="true" labelFloat="true" layoutX="316.0" layoutY="131.0" prefHeight="25.0" prefWidth="218.0" promptText="Monto de nota de credito" text="0.0" />
+            <JFXTextField fx:id="txtmontoBanco" disable="true" labelFloat="true" layoutX="316.0" layoutY="238.0" prefHeight="25.0" prefWidth="218.0" promptText="Monto del deposito" text="0.0" />
+            <JFXTextField fx:id="txtMontoPagado" disable="true" labelFloat="true" layoutX="316.0" layoutY="291.0" prefHeight="25.0" prefWidth="218.0" promptText="Monto Total" text="0.0" />
+            <JFXButton fx:id="btnVerificar" buttonType="RAISED" layoutX="364.0" layoutY="346.0" onMouseClicked="#verificarTransaccion" prefHeight="25.0" prefWidth="123.0" style="-fx-background-color: #FFFFFF;" text="Verificar transaccion">
+               <effect>
+                  <DropShadow />
+               </effect>
+            </JFXButton>
+            <JFXButton fx:id="btnClose" buttonType="RAISED" layoutX="96.0" layoutY="346.0" onMouseClicked="#close" prefHeight="25.0" prefWidth="123.0" style="-fx-background-color: #FFFFFF;" text="Cerrar">
+               <effect>
+                  <DropShadow />
+               </effect>
+            </JFXButton>
+         </children>
+      </AnchorPane>
+   </children>
+</StackPane>

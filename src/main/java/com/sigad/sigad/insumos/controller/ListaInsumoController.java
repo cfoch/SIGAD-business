@@ -17,6 +17,7 @@ import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import com.sigad.sigad.app.controller.ErrorController;
 import com.sigad.sigad.app.controller.LoginController;
+import com.sigad.sigad.business.Constantes;
 import com.sigad.sigad.business.Insumo;
 import com.sigad.sigad.business.LoteInsumo;
 import com.sigad.sigad.business.helpers.InsumosHelper;
@@ -84,8 +85,7 @@ public class ListaInsumoController implements Initializable {
     
     JFXTreeTableColumn<InsumoViewer,Boolean> selectCol = new JFXTreeTableColumn<>("Seleccionar");
     JFXTreeTableColumn<InsumoViewer,String> nombreCol = new JFXTreeTableColumn<>("Nombre");
-    JFXTreeTableColumn<InsumoViewer,String> stockLCol = new JFXTreeTableColumn<>("Stock Total Logico");
-    JFXTreeTableColumn<InsumoViewer,String> stockFCol = new JFXTreeTableColumn<>("Stock Total Fisico");
+    JFXTreeTableColumn<InsumoViewer,Integer> stockFCol = new JFXTreeTableColumn<>("Stock");
     JFXTreeTableColumn<InsumoViewer,String> volumenCol = new JFXTreeTableColumn<>("Volumen");
     JFXTreeTableColumn<InsumoViewer,String> estadoCol = new JFXTreeTableColumn<>("Estado");
     static ObservableList<InsumoViewer> insumosList;
@@ -102,20 +102,20 @@ public class ListaInsumoController implements Initializable {
             this.insumo = insumo;
         }
 
-        public SimpleStringProperty getStockTotalLogico() {
+        public SimpleIntegerProperty getStockTotalLogico() {
             return stockTotalLogico;
         }
 
-        public SimpleStringProperty getStockTotalFisico() {
+        public SimpleIntegerProperty getStockTotalFisico() {
             return stockTotalFisico;
         }
 
-        public void setStockTotalLogico(String stockTotalLogico) {
-            this.stockTotalLogico = new SimpleStringProperty(stockTotalLogico);
+        public void setStockTotalLogico(Integer stockTotalLogico) {
+            this.stockTotalLogico = new SimpleIntegerProperty(stockTotalLogico);
         }
 
-        public void setStockTotalFisico(String stockTotalFisico) {
-            this.stockTotalFisico = new SimpleStringProperty(stockTotalFisico);
+        public void setStockTotalFisico(Integer stockTotalFisico) {
+            this.stockTotalFisico = new SimpleIntegerProperty(stockTotalFisico);
         }
 
         public SimpleStringProperty getNombre() {
@@ -188,8 +188,8 @@ public class ListaInsumoController implements Initializable {
         private SimpleStringProperty nombre;
         private SimpleStringProperty descripcion;
         private SimpleStringProperty tiempoVida;
-        private SimpleStringProperty stockTotalLogico;
-        private SimpleStringProperty stockTotalFisico;
+        private SimpleIntegerProperty stockTotalLogico;
+        private SimpleIntegerProperty stockTotalFisico;
         private SimpleBooleanProperty activo;
         private SimpleStringProperty volumen;
         private BooleanProperty seleccion;
@@ -197,12 +197,12 @@ public class ListaInsumoController implements Initializable {
         private Long id;
         private Insumo insumo;
         
-        public InsumoViewer(String nombre,String descripcion, String tiempoVida,String stockTotalLogico, String stockTotalFisico, Boolean activo, String volumen, Integer cantidad,Long id) {
+        public InsumoViewer(String nombre,String descripcion, String tiempoVida,Integer stockTotalLogico, Integer stockTotalFisico, Boolean activo, String volumen, Integer cantidad,Long id) {
             this.nombre = new SimpleStringProperty(nombre);
             this.descripcion = new SimpleStringProperty(descripcion);
             this.tiempoVida = new SimpleStringProperty(tiempoVida);
-            this.stockTotalLogico = new SimpleStringProperty(stockTotalLogico);
-            this.stockTotalFisico = new SimpleStringProperty(stockTotalFisico);
+            this.stockTotalLogico = new SimpleIntegerProperty(stockTotalLogico);
+            this.stockTotalFisico = new SimpleIntegerProperty(stockTotalFisico);
             this.activo = new SimpleBooleanProperty(activo);
             this.volumen = new SimpleStringProperty(volumen);
             this.cantidad = new SimpleIntegerProperty(cantidad);
@@ -221,7 +221,7 @@ public class ListaInsumoController implements Initializable {
     public void agregarFiltro() {
         filtro.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
             tblInsumos.setPredicate((TreeItem<InsumoViewer> t) -> {
-                Boolean flag = t.getValue().nombre.getValue().contains(newValue) || t.getValue().volumen.getValue().contains(newValue) || t.getValue().stockTotalLogico.getValue().contains(newValue) || t.getValue().stockTotalFisico.getValue().contains(newValue) || t.getValue().activo.getValue().toString().contains(newValue);
+                Boolean flag = t.getValue().nombre.getValue().contains(newValue) || t.getValue().volumen.getValue().contains(newValue) || t.getValue().stockTotalLogico.getValue().toString().contains(newValue) || t.getValue().stockTotalFisico.getValue().toString().contains(newValue) || t.getValue().activo.getValue().toString().contains(newValue);
                 return flag;
             });
         });
@@ -230,9 +230,7 @@ public class ListaInsumoController implements Initializable {
     private void setColumns(){
         nombreCol.setCellValueFactory((TreeTableColumn.CellDataFeatures<InsumoViewer, String> param) -> param.getValue().getValue().getNombre() //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         );
-        stockLCol.setCellValueFactory((TreeTableColumn.CellDataFeatures<InsumoViewer, String> param) -> param.getValue().getValue().getStockTotalLogico()//throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        );
-        stockFCol.setCellValueFactory((TreeTableColumn.CellDataFeatures<InsumoViewer, String> param) -> param.getValue().getValue().getStockTotalFisico()//throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        stockFCol.setCellValueFactory((TreeTableColumn.CellDataFeatures<InsumoViewer, Integer> param) -> param.getValue().getValue().getStockTotalFisico().asObject()//throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         );
         volumenCol.setCellValueFactory((TreeTableColumn.CellDataFeatures<InsumoViewer, String> param) -> param.getValue().getValue().getVolumen() //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         );
@@ -260,7 +258,7 @@ public class ListaInsumoController implements Initializable {
     private void addColumns(){
         final TreeItem<InsumoViewer> rootInsumo = new RecursiveTreeItem<>(insumosList,RecursiveTreeObject::getChildren);
         tblInsumos.setEditable(true);
-        tblInsumos.getColumns().setAll(nombreCol,stockLCol,stockFCol,volumenCol,estadoCol);
+        tblInsumos.getColumns().setAll(nombreCol,stockFCol,volumenCol,estadoCol);
         tblInsumos.setRoot(rootInsumo);
         tblInsumos.setShowRoot(false);
     }
@@ -275,30 +273,62 @@ public class ListaInsumoController implements Initializable {
         helper.close();
     }
     public static void updateTable(Insumo insumo){
-        LoteInsumoHelper helperli = new LoteInsumoHelper();
+        
         Integer stockFisico = 0;
         Integer stockLogico = 0;
-        ArrayList<LoteInsumo> li = helperli.getLoteInsumosEspecific(LoginController.user.getTienda(), insumo);
-        
-        if(li != null){
-            for (LoteInsumo li1 : li) {
-                stockFisico += li1.getStockFisico();
-                stockLogico += li1.getStockLogico();
-            }
-        }
-        
-        InsumoViewer newinsumov = new InsumoViewer(insumo.getNombre(),
+               
+        InsumoViewer newinsumov = null;
+        //List all insumos for super admin
+        if(LoginController.user.getPerfil().getNombre().equals(Constantes.PERFIL_SUPERADMIN)){
+            newinsumov = new InsumoViewer(insumo.getNombre(),
                                          insumo.getDescripcion(),
                                          Integer.toString(insumo.getTiempoVida()),
-                                         stockLogico.toString(),
-                                         stockFisico.toString(),
+                                         insumo.getStockTotalLogico(),
+                                         insumo.getStockTotalLogico(),
                                          insumo.isActivo(),
                                          insumo.isVolumen().toString(),
                                          0,
                                          insumo.getId());
-        newinsumov.setInsumo(insumo);
-        
-        insumosList.add(newinsumov);
+            newinsumov.setInsumo(insumo);
+            insumosList.add(newinsumov);
+        }
+        else{
+            // List only insumos from store to other roles
+            LoteInsumoHelper helperli = new LoteInsumoHelper();
+            ArrayList<LoteInsumo> li = helperli.getLoteInsumosEspecific(LoginController.user.getTienda(), insumo);
+
+            if(li != null){
+                for (LoteInsumo li1 : li) {
+                    stockFisico += li1.getStockFisico();
+                    stockLogico += li1.getStockLogico();
+                }
+                newinsumov = new InsumoViewer(insumo.getNombre(),
+                                         insumo.getDescripcion(),
+                                         Integer.toString(insumo.getTiempoVida()),
+                                         stockLogico,
+                                         stockFisico,
+                                         insumo.isActivo(),
+                                         insumo.isVolumen().toString(),
+                                         0,
+                                         insumo.getId());
+                
+            }
+            else{
+                newinsumov = new InsumoViewer(insumo.getNombre(),
+                                         insumo.getDescripcion(),
+                                         Integer.toString(insumo.getTiempoVida()),
+                                         0,
+                                         0,
+                                         insumo.isActivo(),
+                                         insumo.isVolumen().toString(),
+                                         0,
+                                         insumo.getId());
+                
+            }
+            newinsumov.setInsumo(insumo);
+            insumosList.add(newinsumov);
+            
+        }
     }
     @FXML
     private void handleAction(ActionEvent event) {
@@ -361,7 +391,7 @@ public class ListaInsumoController implements Initializable {
         io.setPrefSize(145, 40);
         
         VBox vBox;
-        if(selectedInsumo.getInsumo().isActivo()){
+        if(selectedInsumo.getInsumo().isActivo() && !LoginController.user.getPerfil().getNombre().equals(Constantes.PERFIL_SUPERADMIN)){
            vBox = new VBox(io,edit,delete);
            popup = new JFXPopup();
            popup.setPopupContent(vBox);
@@ -374,7 +404,7 @@ public class ListaInsumoController implements Initializable {
         
     }
     private void deleteInsumosDialog() {
-        if((Integer.parseInt(selectedInsumo.getStockTotalLogico().getValue()) >= 0)|| (Integer.parseInt(selectedInsumo.getStockTotalFisico().getValue()) >= 0)) {
+        if((selectedInsumo.getStockTotalLogico().getValue() >= 0)|| (selectedInsumo.getStockTotalFisico().getValue() >= 0)) {
             ErrorController error = new ErrorController();
             error.loadDialog("Atención", "No puede desactivar un insumo con stock", "OK", hiddenSp);
         }

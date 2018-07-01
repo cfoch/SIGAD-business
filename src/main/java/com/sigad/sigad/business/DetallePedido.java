@@ -6,6 +6,7 @@
 package com.sigad.sigad.business;
 
 import java.util.Date;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -22,10 +23,11 @@ import org.hibernate.annotations.UpdateTimestamp;
  */
 @Entity
 public class DetallePedido {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
-    
+
     @NotNull
     private boolean activo;
     @NotNull
@@ -34,26 +36,23 @@ public class DetallePedido {
     private Double precioUnitario;
     @NotNull
     private Integer numEntregados;
-    
+
     //Fk
     @ManyToOne
     private Producto producto;
-    
-    
-    
     @ManyToOne
     private ProductoDescuento descuento;
-    
+
     @ManyToOne
     private ComboPromocion combo;
-    
+
     @ManyToOne
     private ProductoCategoriaDescuento descuentoCategoria;
     @ManyToOne(optional = false)
     private Pedido pedido;
-    
+
     //Campos de auditoria
-    @Column (name = "`timestamp`")
+    @Column(name = "`timestamp`")
     @CreationTimestamp
     private Date timestamp;
     @Column(name = "updated_on")
@@ -63,7 +62,7 @@ public class DetallePedido {
     public DetallePedido() {
     }
 
-    public DetallePedido( boolean activo, Integer cantidad, Double precioUnitario, Integer numEntregados, Producto producto, Pedido pedido) {
+    public DetallePedido(boolean activo, Integer cantidad, Double precioUnitario, Integer numEntregados, Producto producto, Pedido pedido) {
         this.activo = activo;
         this.cantidad = cantidad;
         this.precioUnitario = precioUnitario;
@@ -71,18 +70,8 @@ public class DetallePedido {
         this.producto = producto;
         this.pedido = pedido;
     }
-    
-    public DetallePedido( boolean activo, Integer cantidad, Double precioUnitario, Integer numEntregados, Producto producto, Pedido pedido, ProductoDescuento descuento) {
-        this.activo = activo;
-        this.cantidad = cantidad;
-        this.precioUnitario = precioUnitario;
-        this.numEntregados = numEntregados;
-        this.producto = producto;
-        this.pedido = pedido;
-        this.descuento = descuento;
-    }
-    
-    public DetallePedido( boolean activo, Integer cantidad, Double precioUnitario, Integer numEntregados, Producto producto, Pedido pedido, ProductoDescuento descuento, ProductoCategoriaDescuento descuentoCategoria) {
+
+    public DetallePedido(boolean activo, Integer cantidad, Double precioUnitario, Integer numEntregados, Producto producto, Pedido pedido, ProductoDescuento descuento) {
         this.activo = activo;
         this.cantidad = cantidad;
         this.precioUnitario = precioUnitario;
@@ -91,8 +80,18 @@ public class DetallePedido {
         this.pedido = pedido;
         this.descuento = descuento;
     }
-    
-    public DetallePedido( boolean activo, Integer cantidad, Double precioUnitario, Integer numEntregados, ComboPromocion combo, Pedido pedido) {
+
+    public DetallePedido(boolean activo, Integer cantidad, Double precioUnitario, Integer numEntregados, Producto producto, Pedido pedido, ProductoDescuento descuento, ProductoCategoriaDescuento descuentoCategoria) {
+        this.activo = activo;
+        this.cantidad = cantidad;
+        this.precioUnitario = precioUnitario;
+        this.numEntregados = numEntregados;
+        this.producto = producto;
+        this.pedido = pedido;
+        this.descuento = descuento;
+    }
+
+    public DetallePedido(boolean activo, Integer cantidad, Double precioUnitario, Integer numEntregados, ComboPromocion combo, Pedido pedido) {
         this.activo = activo;
         this.cantidad = cantidad;
         this.precioUnitario = precioUnitario;
@@ -100,13 +99,20 @@ public class DetallePedido {
         this.pedido = pedido;
         this.combo = combo;
     }
-    
-    
+
+
     /**
      * @return the id
      */
     public Long getId() {
         return id;
+    }
+
+    /**
+     * @param id to set
+     */
+    public void setId(Long id) {
+        this.id = id;
     }
 
     /**
@@ -178,7 +184,6 @@ public class DetallePedido {
 //    public void setPedidoVenta(Pedido pedidoVenta) {
 //        this.pedidoVenta = pedidoVenta;
 //    }
-
     /**
      * @return the producto
      */
@@ -249,6 +254,4 @@ public class DetallePedido {
         this.pedido = pedido;
     }
 
-  
-    
 }

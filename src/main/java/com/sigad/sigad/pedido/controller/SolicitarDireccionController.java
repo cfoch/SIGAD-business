@@ -71,12 +71,13 @@ public class SolicitarDireccionController implements Initializable {
         distancia = Double.MAX_VALUE;
         mapBox.getChildren().add(mapPicker);
         mapPicker.addMarkerAddedPropListener((evt) -> {
+            System.out.println(evt.getPropertyName());
             if (evt.getPropertyName().equals("marker-added")) {
                 try {
-                    Double [] latlng = (Double []) evt.getNewValue();
+                    Double[] latlng = (Double[]) evt.getNewValue();
                     GMapsHelper helper = new GMapsHelper();
-                    JSONObject ret =
-                            helper.reverseGeoCode(latlng[0], latlng[1]);
+                    JSONObject ret
+                            = helper.reverseGeoCode(latlng[0], latlng[1]);
                     JSONObject location;
                     String formatedAddress;
                     location = ret.getJSONArray("results").getJSONObject(0);
@@ -97,14 +98,16 @@ public class SolicitarDireccionController implements Initializable {
             }
         });
         mapPicker.getWebView().setPrefSize(400, 400);
+        txtdireccion.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.length() == 0 || txtTiendaDireccion.getText().length() == 0) {
+                btnContinuar.setDisable(true);
+            } else {
+                btnContinuar.setDisable(false);
+            }
+        });
     }
 
     public void initModel(Boolean isEdit, Tienda tienda, StackPane sc) {
-//        if (isEdit) {
-//
-//        } else {
-//
-//        }
         this.sc = sc;
         this.tienda = tienda;
 
@@ -117,15 +120,15 @@ public class SolicitarDireccionController implements Initializable {
                 return;
             }
 
-            if (x == null || y == null) {
-                GMapsHelper helper = GMapsHelper.getInstance();
-                Pair<Double, Double> pair = helper.geocodeAddress(txtdireccion.getText());
+            GMapsHelper helper = GMapsHelper.getInstance();
+            Pair<Double, Double> pair = helper.geocodeAddress(txtdireccion.getText());
 
-                x = pair.getLeft();
-                y = pair.getRight();
-                mapPicker.setMarkerAt(x, y);
-            }
-            
+            x = pair.getLeft();
+            y = pair.getRight();
+            System.out.println("x->" + x + "y->" + y);
+            mapPicker.setMarkerAt(x, y);
+            tienda = null;
+            distancia = Double.MAX_VALUE;
             TiendaHelper helpertienda = new TiendaHelper();
             helpertienda.getStores().forEach((t) -> {
                 Double d = GeneralHelper.distanceBetweenTwoPoints(x, t.getCooXDireccion(), y, t.getCooYDireccion());
@@ -138,6 +141,8 @@ public class SolicitarDireccionController implements Initializable {
                 txtTiendaDireccion.setText(tienda.getDireccion());
                 btnContinuar.setDisable(false);
 
+            } else {
+                txtTiendaDireccion.setText("");
             }
 
         } catch (ApiException | InterruptedException | IOException ex) {
@@ -154,7 +159,12 @@ public class SolicitarDireccionController implements Initializable {
             FXMLLoader loader = new FXMLLoader(SolicitarDireccionController.this.getClass().getResource(SeleccionarProductosController.viewPath));
             node = (Node) loader.load();
             SeleccionarProductosController sel = loader.getController();
-            sel.initModel(new Pedido(), sc, tienda, txtdireccion.getText(), x, y);
+            Pedido pedido = new Pedido();
+            pedido.setTienda(tienda);
+            pedido.setDireccionDeEnvio(txtdireccion.getText());
+            pedido.setCooXDireccion(x);
+            pedido.setCooYDireccion(y);
+            sel.initModel(pedido, sc);
             sc.getChildren().setAll(node);
 
         } catch (Exception ex) {

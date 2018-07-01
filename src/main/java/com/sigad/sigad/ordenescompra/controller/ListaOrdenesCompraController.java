@@ -97,47 +97,46 @@ public class ListaOrdenesCompraController implements Initializable {
     
     public static class OrdenCompraViewer extends RecursiveTreeObject<OrdenCompraViewer>{
 
-        /**
-         * @return the codigo
-         */
         public SimpleStringProperty getCodigo() {
             return codigo;
         }
 
-        /**
-         * @param codigo the codigo to set
-         */
         public void setCodigo(SimpleStringProperty codigo) {
             this.codigo = codigo;
         }
 
-        /**
-         * @return the fecha
-         */
         public SimpleStringProperty getFecha() {
             return fecha;
         }
 
-        /**
-         * @param fecha the fecha to set
-         */
         public void setFecha(SimpleStringProperty fecha) {
             this.fecha = fecha;
         }
 
-        /**
-         * @return the precio
-         */
         public SimpleDoubleProperty getPrecio() {
             return precio;
         }
 
-        /**
-         * @param precio the precio to set
-         */
         public void setPrecio(Double precio) {
             this.precio = new SimpleDoubleProperty(precio);
         }
+        
+        public OrdenCompra getOrdenCompra() {
+            return ordenCompra;
+        }
+
+        public void setOrdenCompra(OrdenCompra ordenCompra) {
+            this.ordenCompra = ordenCompra;
+        }
+        
+        public SimpleStringProperty getRecibido() {
+            return recibido;
+        }
+
+        public void setRecibido(String recibido) {
+            this.recibido = new SimpleStringProperty(recibido);
+        }
+        
         private SimpleStringProperty codigo;
         private SimpleStringProperty fecha;
         private SimpleStringProperty recibido;
@@ -149,21 +148,6 @@ public class ListaOrdenesCompraController implements Initializable {
             this.fecha = new SimpleStringProperty(fecha);
             this.precio = new SimpleDoubleProperty(precio);
             this.recibido = new SimpleStringProperty(recibido? "Recibido": "Creado");
-        }
-
-        public OrdenCompra getOrdenCompra() {
-            return ordenCompra;
-        }
-
-        public void setOrdenCompra(OrdenCompra ordenCompra) {
-            this.ordenCompra = ordenCompra;
-        }
-        public SimpleStringProperty getRecibido() {
-            return recibido;
-        }
-
-        public void setRecibido(String recibido) {
-            this.recibido = new SimpleStringProperty(recibido);
         }
     }
     @Override
@@ -221,14 +205,20 @@ public class ListaOrdenesCompraController implements Initializable {
         
     }
     private void fillData() {
-        OrdenCompraHelper helpero = new OrdenCompraHelper();
-        ArrayList<OrdenCompra> listaOrdenes= helpero.getOrdenesUser(LoginController.user.getId());
+        OrdenCompraHelper helpero = new OrdenCompraHelper();        
+        ArrayList<OrdenCompra> listaOrdenes; 
+        if(LoginController.user.getPerfil().getNombre().equals(Constantes.PERFIL_SUPERADMIN)){
+            listaOrdenes = helpero.getOrdenes();
+        }
+        else{
+           listaOrdenes = helpero.getOrdenesStore(LoginController.user.getTienda());
+        }
+        helpero.close();
         if(listaOrdenes != null){
             listaOrdenes.forEach((i)->{
                 updateTable(i);
             });
-        }
-        helpero.close();
+        }        
     }
     public static void updateTable(OrdenCompra orden) {
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
@@ -271,84 +261,8 @@ public class ListaOrdenesCompraController implements Initializable {
     }
     private void showOptions(){
         JFXButton edit = new JFXButton("Editar");
-        JFXButton io = new JFXButton("Ingreso");
         JFXButton delete = new JFXButton("No hay opciones");
         
-        io.setOnAction((ActionEvent event) -> {
-            popup.hide();
-            Tienda currentStore = LoginController.user.getTienda();
-            double capacidadTotal = currentStore.getCapacidad();
-
-            double capacidadActual = 0.0;
-            LoteInsumoHelper helperli = new LoteInsumoHelper();
-            ArrayList<LoteInsumo> lotes = helperli.getLoteInsumos(currentStore);
-            for (int i = 0; i < lotes.size(); i++) {
-                LoteInsumo next = lotes.get(i);
-                capacidadActual += next.getInsumo().getStockTotalFisico()* next.getInsumo().isVolumen();
-            }
-
-            OrdenCompraHelper helperoc = new OrdenCompraHelper();
-            ArrayList<DetalleOrdenCompra> detalle = helperoc.getDetalles(selectedOrdenCompra.getOrdenCompra().getId());
-            if(detalle!= null){
-                for (int i = 0; i < detalle.size(); i++) {
-                    DetalleOrdenCompra next = detalle.get(i);
-                    capacidadActual += next.getLoteInsumo().getInsumo().isVolumen() * next.getLoteInsumo().getStockLogico();
-                }
-            }
-            
-            if(capacidadActual > capacidadTotal){
-                ErrorController error = new ErrorController();
-                error.loadDialog("Error", "No puede agregar " + (capacidadActual) + " porque supera la capacidad actual de la tienda es " + (capacidadTotal), "Ok", hiddenSp);
-                return;
-            }
-            
-            
-            selectedOrdenCompra.getOrdenCompra().setRecibido(true);
-            selectedOrdenCompra.recibido.set("Recibido");
-            
-            helperoc.updateOrdenCompra(selectedOrdenCompra.getOrdenCompra());
-            helperoc.close();
-            
-            int index = tblOrdenesCompra.getSelectionModel().getSelectedIndex();
-            ordenesList.remove(index);
-            ordenesList.add(index, selectedOrdenCompra);
-            
-            InsumosHelper helperi = new InsumosHelper();
-            OrdenCompraHelper helperoctemp = new OrdenCompraHelper();
-            MovimientoHelper helpermo= new MovimientoHelper();
-            TipoMovimientoHelper helpertm = new TipoMovimientoHelper();
-            ArrayList<DetalleOrdenCompra> detallesOrdenes = helperoctemp.getDetalles(selectedOrdenCompra.getOrdenCompra().getId());
-            if(detallesOrdenes!=null){
-                for (int i = 0; i < detallesOrdenes.size(); i++) {
-                
-                    //stock lote
-                    LoteInsumo loteNew = detallesOrdenes.get(i).getLoteInsumo();
-                    loteNew.setStockFisico(loteNew.getStockLogico());
-                    helperli.updateLoteInsumo(loteNew);
-
-                    //stock insumo
-                    Insumo insumoNew = helperi.getInsumo(loteNew.getInsumo().getId());
-                    insumoNew.setStockTotalFisico(insumoNew.getStockTotalFisico() + loteNew.getStockLogico());
-                    helperi.updateInsumo(insumoNew);
-                    
-                    //registrar movimiento
-                    MovimientosTienda movNew = new MovimientosTienda();
-                    movNew.setCantidadMovimiento(loteNew.getStockLogico());
-                    movNew.setFecha(new Date());
-                    movNew.setTienda(currentStore);
-                    movNew.setTipoMovimiento(helpertm.getTipoMov(Constantes.TIPO_MOVIMIENTO_ENTRADA_FISICA));
-                    movNew.setTrabajador(LoginController.user);
-                    movNew.setLoteInsumo(loteNew);
-                    helpermo.saveMovement(movNew);
-
-                }
-            }
-            helperi.close();
-            helperoctemp.close();
-            helpermo.close();
-            helpertm.close();
-            helperli.close();
-        });
         edit.setOnAction((ActionEvent event) -> {
             popup.hide();
             try {
@@ -368,21 +282,21 @@ public class ListaOrdenesCompraController implements Initializable {
         edit.setPrefSize(145, 40);
         delete.setPadding(new Insets(20));
         delete.setPrefSize(145, 40);
-        io.setPadding(new Insets(20));
-        io.setPrefSize(145, 40);
+//        io.setPadding(new Insets(20));
+//        io.setPrefSize(145, 40);
         
         
         VBox vBox;
-        if(!selectedOrdenCompra.getOrdenCompra().isRecibido()){
-           vBox = new VBox(io);
-           popup = new JFXPopup();
-           popup.setPopupContent(vBox);
-        }
-        else {
+//        if(!selectedOrdenCompra.getOrdenCompra().isRecibido()){
+//           vBox = new VBox(io);
+//           popup = new JFXPopup();
+//           popup.setPopupContent(vBox);
+//        }
+//        else {
            vBox = new VBox(delete);
            popup = new JFXPopup();
            popup.setPopupContent(vBox);
-        }
+//        }
 
     }
     private void deleteOrdenesDialog() {

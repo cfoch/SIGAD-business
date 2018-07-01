@@ -15,6 +15,7 @@ import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import com.jfoenix.validation.NumberValidator;
 import com.sigad.sigad.app.controller.ErrorController;
+import com.sigad.sigad.app.controller.HomeController;
 import com.sigad.sigad.app.controller.LoginController;
 import com.sigad.sigad.business.Constantes;
 import com.sigad.sigad.business.DetalleOrdenCompra;
@@ -25,6 +26,7 @@ import com.sigad.sigad.business.OrdenCompra;
 import com.sigad.sigad.business.Proveedor;
 import com.sigad.sigad.business.ProveedorInsumo;
 import com.sigad.sigad.business.Tienda;
+import com.sigad.sigad.business.helpers.GeneralHelper;
 import com.sigad.sigad.business.helpers.InsumosHelper;
 import com.sigad.sigad.business.helpers.LoteInsumoHelper;
 import com.sigad.sigad.business.helpers.MovimientoHelper;
@@ -104,6 +106,11 @@ public class CrearEditarOrdenCompraController implements Initializable {
     @FXML
     private JFXTreeTableView<InsumoViewerOrden> tblInsumos;
     
+    @FXML
+    private Label lblIgv;
+
+    @FXML
+    private Label lblTotal;
     
     @FXML
     private JFXTextField txtProveedor;
@@ -176,8 +183,6 @@ public class CrearEditarOrdenCompraController implements Initializable {
             this.insumoLocal = insumoLocal;
         }
         
-        
-
         private SimpleStringProperty nombre;
         private SimpleStringProperty volumen;
         private SimpleStringProperty precio;
@@ -193,8 +198,6 @@ public class CrearEditarOrdenCompraController implements Initializable {
             this.precio = new SimpleStringProperty(precio);
             this.cantidad = new SimpleStringProperty(cantidad);
             this.subTotal = new SimpleStringProperty(subtotal);
-            //this.fechaVencimiento = new SimpleStringProperty(fecha);
-            
         }
     }
     
@@ -255,61 +258,67 @@ public class CrearEditarOrdenCompraController implements Initializable {
                     error.loadDialog("Error", "No puede agregar " + (capacidadActual) + " porque supera la capacidad actual de la tienda:  " + (capacidadTotal), "Ok", hiddenSp);
                     return;
                 }
+                
+                InsumosHelper helperi = new InsumosHelper();
                 ArrayList <LoteInsumo> listaLotes = new ArrayList<>();
-                if(listaLotes!= null){
-                    insumosList.forEach((i)-> {
-                        if(!i.getCantidad().getValue().equals("")){
-                            LoteInsumo li = new LoteInsumo();
-                            //setear datos lote insumo
-                            li.setInsumo(i.insumoLocal);
-                            
-                            Date date =  new Date();
-                            Calendar c = Calendar.getInstance();
-                            c.setTime(date);
+                
+                //para cada lote insumo
+                insumosList.forEach((i)-> {
+                    if(!i.getCantidad().getValue().equals("")){
+                        LoteInsumo li = new LoteInsumo();
+                        //setear datos lote insumo
+                        li.setInsumo(i.insumoLocal);
 
-                            c.add(Calendar.DATE, i.getInsumoLocal().getTiempoVida());
-                            Date currentDatePlusOne = c.getTime();
+                        Date date =  new Date();
+                        Calendar c = Calendar.getInstance();
+                        c.setTime(date);
 
-                            li.setFechaVencimiento(currentDatePlusOne);
-                            li.setCostoUnitario(Double.parseDouble(i.getPrecio().getValue()));
-                            li.setStockFisico(0);
-                            li.setStockLogico(Integer.parseInt(i.getCantidad().getValue()));
-                            li.setTienda(currentStore);
-                            listaLotes.add(li);
-                        }
-                    });
-                }
+                        c.add(Calendar.DATE, i.getInsumoLocal().getTiempoVida());
+                        Date currentDatePlusDate = c.getTime();
+
+                        li.setFechaVencimiento(currentDatePlusDate);
+                        li.setCostoUnitario(Double.parseDouble(i.getPrecio().getValue()));
+                        li.setStockFisico(Integer.parseInt(i.getCantidad().getValue()));
+                        li.setStockLogico(Integer.parseInt(i.getCantidad().getValue()));
+                        li.setTienda(currentStore);
+                        
+                        
+                        //setear datos de stock de insumo
+                        Insumo insumoNew = helperi.getInsumo(i.insumoLocal.getId());
+                        insumoNew.setStockTotalFisico(insumoNew.getStockTotalFisico() + li.getStockFisico());
+                        insumoNew.setStockTotalLogico(insumoNew.getStockTotalLogico() + li.getStockLogico());
+                        helperi.updateInsumo(insumoNew);
+
+                        listaLotes.add(li);
+                    }
+                });
                 
                 
                 OrdenCompraHelper helper = new OrdenCompraHelper();
                 //creacion
-                if(ListaOrdenesCompraController.isOrdenCreate){                   
+                if(ListaOrdenesCompraController.isOrdenCreate){  
+                    //save lista lotes - lista detalle orden
                     Integer id = helper.saveOrden(orden, listaLotes);
-                    
                     MovimientoHelper helpermo= new MovimientoHelper();
                     TipoMovimientoHelper helpertm = new TipoMovimientoHelper();
                     OrdenCompraHelper helperoctemp = new OrdenCompraHelper();
-                    ArrayList<DetalleOrdenCompra> detallesOrdenes = helperoctemp.getDetalles(id);
+                    ArrayList<DetalleOrdenCompra> detallesOrdenes = helperoctemp.getDetalles(id);                                        
                     if(detallesOrdenes!=null){
                         for (int i = 0; i < detallesOrdenes.size(); i++) {
-
-                            //registrar movimiento
+                            //registrar movimiento fisico
                             MovimientosTienda movNew = new MovimientosTienda();
                             movNew.setCantidadMovimiento(detallesOrdenes.get(i).getLoteInsumo().getStockLogico());
                             movNew.setFecha(new Date());
                             movNew.setTienda(currentStore);
-                            movNew.setTipoMovimiento(helpertm.getTipoMov(Constantes.TIPO_MOVIMIENTO_ENTRADA_LOGICA));
+                            movNew.setTipoMovimiento(helpertm.getTipoMov(Constantes.TIPO_MOVIMIENTO_ENTRADA_FISICA));
                             movNew.setTrabajador(LoginController.user);
                             movNew.setLoteInsumo(detallesOrdenes.get(i).getLoteInsumo());
                             helpermo.saveMovement(movNew);
-
                         }
                     }
-                    
-                    helpertm.close();
                     helpermo.close();
+                    helpertm.close();
                     helperoctemp.close();
-                    
                     if(id != null){
                         ListaOrdenesCompraController.updateTable(orden);
                         ListaOrdenesCompraController.ordenDialog.close();
@@ -317,17 +326,7 @@ public class CrearEditarOrdenCompraController implements Initializable {
                         ErrorController error = new ErrorController();
                         error.loadDialog("Error", helper.getErrorMessage(), "Ok", hiddenSp);
                     }
-//                    Long id = helper.updateInsumo(insumo,null);
-//                    if(id != null){
-//                        ListaInsumoController.insumosList.remove(ListaInsumoController.selectedInsumo);
-//                        ListaInsumoController.updateTable(insumo);
-//                        ListaInsumoController.insumoDialog.close();
-//                    }else{
-//                        ErrorController error = new ErrorController();
-//                        error.loadDialog("Error", helper.getErrorMessage(), "Ok", hiddenSp);
-//                    }
                 }
-                
                 helper.close();
             }
         });
@@ -384,19 +383,16 @@ public class CrearEditarOrdenCompraController implements Initializable {
             Double sub = Double.parseDouble(a)*Double.parseDouble(d);
             insumosList.get(i).setSubTotal(sub.toString());
             
-//            insumosList.forEach((o) -> {
-//                        if(!o.getCantidad().getValue().equals("")){
-//                            String a = event.getRowValue().getValue().getPrecio().getValue();
-//                            String d = event.getNewValue();
-//                            Double sub = Double.parseDouble(a)*Double.parseDouble(d);
-//                            //System.out.println("gg" + sub);
-//                            o.setSubTotal(sub.toString());
-//                        }
-//                        else {
-//                            o.setSubTotal("");
-//                        }
-//                        System.out.println(o.getCantidad().getValue());
-//                    });
+            Double total = 0.0;
+            for (int j = 0; j < insumosList.size(); j++) {
+                Double s = Double.parseDouble(insumosList.get(j).getSubTotal().getValue());
+                total += s;
+            }
+            
+            Double totalIGV= GeneralHelper.roundTwoDecimals((total) * HomeController.IGV);
+            Double totalGeneral = GeneralHelper.roundTwoDecimals(total + totalIGV);
+            lblIgv.setText(totalIGV.toString());
+            lblTotal.setText(totalGeneral.toString());            
         });
         
         subtotalCol.setCellValueFactory((TreeTableColumn.CellDataFeatures<InsumoViewerOrden, String> param) -> param.getValue().getValue().getSubTotal()
@@ -426,6 +422,17 @@ public class CrearEditarOrdenCompraController implements Initializable {
                 });
             }
             helperor.close();
+            
+            Double total = 0.0;
+            for (int j = 0; j < insumosList.size(); j++) {
+                Double s = Double.parseDouble(insumosList.get(j).getSubTotal().getValue());
+                total += s;
+            }
+            
+            Double totalIGV= GeneralHelper.roundTwoDecimals((total) * HomeController.IGV);
+            Double totalGeneral = GeneralHelper.roundTwoDecimals(total + totalIGV);
+            lblIgv.setText(totalIGV.toString());
+            lblTotal.setText(totalGeneral.toString());   
         }
         else{
             ProveedorHelper helperp = new ProveedorHelper();
@@ -506,7 +513,7 @@ public class CrearEditarOrdenCompraController implements Initializable {
     
 
     private void fillFields(){
-        orden.setRecibido(false);
+        orden.setRecibido(true);
         orden.setUsuario(LoginController.user);
         orden.setProveedor(cbxProv.getValue());
         orden.setFecha(new Date());

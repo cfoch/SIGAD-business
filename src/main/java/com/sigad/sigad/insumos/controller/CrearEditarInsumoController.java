@@ -387,7 +387,7 @@ public class CrearEditarInsumoController implements Initializable {
         cantidadCol.setCellFactory((TreeTableColumn<ProveedorViewer,String> param) -> new EditingCell());
         cantidadCol.setOnEditCommit((TreeTableColumn.CellEditEvent<ProveedorViewer, String> event) -> {
             Integer i = listaProv.indexOf(event.getRowValue().getValue());
-            listaProv.get(i).setPrecio(event.getNewValue());
+            listaProv.get(i).precio = new SimpleStringProperty(event.getNewValue());
         });
     }
     private void addColumns(){

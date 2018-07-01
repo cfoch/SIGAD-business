@@ -5,7 +5,6 @@
  */
 package com.sigad.sigad.pedido.controller;
 
-import com.itextpdf.text.DocumentException;
 import com.jfoenix.controls.*;
 import com.sigad.sigad.app.controller.ErrorController;
 import com.sigad.sigad.app.controller.HomeController;
@@ -20,14 +19,9 @@ import com.sigad.sigad.business.PedidoEstado;
 import com.sigad.sigad.business.Producto;
 import com.sigad.sigad.business.ProductoInsumo;
 import com.sigad.sigad.business.ProductosCombos;
+import com.sigad.sigad.business.TipoPago;
 import com.sigad.sigad.business.Usuario;
-import com.sigad.sigad.business.helpers.ClienteDescuentoHelper;
-import com.sigad.sigad.business.helpers.GeneralHelper;
-import com.sigad.sigad.business.helpers.LoteInsumoHelper;
-import com.sigad.sigad.business.helpers.PdfHelper;
-import com.sigad.sigad.business.helpers.PedidoEstadoHelper;
-import com.sigad.sigad.business.helpers.ProductoHelper;
-import com.sigad.sigad.business.helpers.UsuarioHelper;
+import com.sigad.sigad.business.helpers.*;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Timestamp;
@@ -36,7 +30,6 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -72,13 +65,16 @@ public class DatosPedidoController implements Initializable {
     private ToggleGroup genero;
 
     @FXML
+    private ToggleGroup pago;
+
+    @FXML
     private JFXRadioButton btnFactura;
 
     @FXML
     private JFXRadioButton btnEfectivo;
 
     @FXML
-    private ToggleGroup pago;
+    private JFXRadioButton btnDeposito;
 
     @FXML
     private JFXTextArea cmbDedicatoria;
@@ -120,9 +116,6 @@ public class DatosPedidoController implements Initializable {
     private JFXTextField txtcorreo;
 
     @FXML
-    private JFXButton btnGenerar;
-
-    @FXML
     private JFXTextField txtTipo;
 
     @FXML
@@ -141,11 +134,23 @@ public class DatosPedidoController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         cmbInicio.getItems().addAll("M", "T", "N");
+        setuValidations();
     }
 
     public void initModel(Pedido pedido, StackPane stackPane) {
         this.pedido = pedido;
         this.stackPane = stackPane;
+
+        if (pedido.getId() != null) {
+            LocalDate localDate = pedido.getFechaEntregaEsperada().toLocalDate();
+            dpFechaEntrega.setValue(localDate);
+            cmbInicio.setValue(pedido.getTurno());
+            cmbDedicatoria.setText(pedido.getMensajeDescripicion());
+            btnBoleta.setSelected((pedido.getRucFactura()==null));
+            btnFactura.setSelected((pedido.getRucFactura()!=null));
+            btnBoleta.setDisable(true);
+            btnFactura.setDisable(true);
+        }
         txtTotal.setText(pedido.getTotal().toString());
         txtTotal.setDisable(true);
         txtdestino.setText(pedido.getDireccionDeEnvio());
@@ -278,7 +283,11 @@ public class DatosPedidoController implements Initializable {
             return false;
         } else if (!btnFactura.isSelected() && !btnBoleta.isSelected()) {
             ErrorController err = new ErrorController();
-            err.loadDialog("Aviso", "Seleccion un documento legal", "ok", stackPane);
+            err.loadDialog("Aviso", "Selecciona un documento legal", "ok", stackPane);
+            return false;
+        } else if (!btnDeposito.isSelected() && !btnEfectivo.isSelected()) {
+            ErrorController err = new ErrorController();
+            err.loadDialog("Aviso", "Selecciona un tipo de pago", "ok", stackPane);
             return false;
         } else if (dpFechaEntrega.getValue() == null) {
             ErrorController err = new ErrorController();
@@ -296,41 +305,40 @@ public class DatosPedidoController implements Initializable {
 
     public void construirPedido() {
         pedido.setMensajeDescripicion(cmbDedicatoria.getText());
-            Date date = Date.from(dpFechaEntrega.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
-            Timestamp timeStamp = new Timestamp(date.getTime());
-            pedido.setFechaVenta(timeStamp);
+        Timestamp timeStamp = new Timestamp(System.currentTimeMillis());
+        pedido.setFechaVenta(timeStamp);
+        java.sql.Date fechaentrega = java.sql.Date.valueOf(dpFechaEntrega.getValue());
+        pedido.setFechaEntregaEsperada(fechaentrega);
         pedido.setVendedor(LoginController.user);
-        PedidoEstadoHelper hp = new PedidoEstadoHelper();
-        pedido.setTurno(cmbInicio.getValue());
-        PedidoEstado estado = hp.getEstadoByName(Constantes.ESTADO_VENTA);
-        pedido.addEstado(estado);
-        pedido.setEstado(estado);
+        TipoPagoHelper tpagohelper = new TipoPagoHelper();
+        if (btnDeposito.isSelected()) {
+            TipoPago tipo = tpagohelper.getTipoPago(Constantes.TIPO_PAGO_DEPOSITO);
+            pedido.setTipoPago(tipo);
+            tpagohelper.close();
+            pedido.setTurno(cmbInicio.getValue());
+            PedidoEstadoHelper hp = new PedidoEstadoHelper();
+            PedidoEstado estado = hp.getEstadoByName(Constantes.ESTADO_PENDIENTE);
+            pedido.addEstado(estado);
+            pedido.setEstado(estado);
+            hp.close();
+        } else if (btnEfectivo.isSelected()) {
+            TipoPago tipo = tpagohelper.getTipoPago(Constantes.TIPO_PAGO_EFECTIVO);
+            pedido.setTipoPago(tipo);
+            tpagohelper.close();
+            pedido.setTurno(cmbInicio.getValue());
+            PedidoEstadoHelper hp = new PedidoEstadoHelper();
+            PedidoEstado estado = hp.getEstadoByName(Constantes.ESTADO_VENTA);
+            pedido.addEstado(estado);
+            pedido.setEstado(estado);
+            hp.close();
+        }
         if (btnFactura.isSelected()) {
             pedido.setNombreEmpresa(txtEmpresa.getText());
             pedido.setRucFactura(txtdoc.getText());
         }
-        hp.close();
+        
 
     }
-
-    @FXML
-    public void generarDocumento(MouseEvent event) throws DocumentException {
-        PdfHelper helper = new PdfHelper();
-        if (btnBoleta.isSelected()) {
-            helper.crearBoletaVenta(pedido);
-            ErrorController err = new ErrorController();
-            err.loadDialog("Aviso", "Documento generado satisfactoriamente", "Ok", stackPane);
-        } else if (btnFactura.isSelected()) {
-            helper.crearFacturaVenta(pedido);
-            ErrorController err = new ErrorController();
-            err.loadDialog("Aviso", "Documento generado satisfactoriamente", "Ok", stackPane);
-        } else {
-            ErrorController err = new ErrorController();
-            err.loadDialog("Aviso", "No ha seleccionado un tipo de documento", "Ok", stackPane);
-        }
-
-    }
-
     void calcularInsumos(Producto p, Integer cantidad) {
         ArrayList<ProductoInsumo> pxi = new ArrayList(p.getProductoxInsumos());
         for (ProductoInsumo productoInsumo : pxi) {
@@ -353,8 +361,7 @@ public class DatosPedidoController implements Initializable {
             for (DetallePedido dp : pedido.getDetallePedido()) {
                 if (dp.getProducto() != null) {
                     ProductoHelper helperProducto = new ProductoHelper();
-                    Producto producto = helperProducto.getProductById(
-                            dp.getProducto().getId().intValue());
+                    Producto producto = helperProducto.getProductById(dp.getProducto().getId().intValue());
                     calcularInsumos(producto, dp.getCantidad());
                     helperProducto.close();
                 } else if (dp.getCombo() != null) {
@@ -374,6 +381,7 @@ public class DatosPedidoController implements Initializable {
                 ErrorController err = new ErrorController();
                 err.loadDialog("Alerta", "No hay insumos", "ok", stackPane);
             }
+            lihelper.close();
             gotoInicio();
 
         } catch (Exception ex) {

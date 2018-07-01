@@ -70,6 +70,7 @@
         <mapping class="com.sigad.sigad.business.DocumentoLegal"/>
         <mapping class="com.sigad.sigad.business.ProductoCategoriaDescuento"/>
         <mapping class="com.sigad.sigad.business.ClienteDescuento"/>
+        <mapping class="com.sigad.sigad.business.NotaCredito"/>
         
         <!--
         <mapping class="com.sigad.sigad.business.Grupo"/>

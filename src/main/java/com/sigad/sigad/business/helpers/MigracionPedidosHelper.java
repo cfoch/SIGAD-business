@@ -18,6 +18,7 @@ import com.sigad.sigad.business.ProductoCategoriaDescuento;
 import com.sigad.sigad.business.ProductoDescuento;
 import com.sigad.sigad.business.ProductoInsumo;
 import com.sigad.sigad.business.Tienda;
+import com.sigad.sigad.business.TipoPago;
 import com.sigad.sigad.business.Usuario;
 import com.sigad.sigad.pedido.controller.SolicitarDireccionController;
 import java.io.IOException;
@@ -36,7 +37,7 @@ import org.apache.commons.lang3.tuple.Pair;
  *
  * @author Alexandra
  */
-public class MigracionPedidosHelper{
+public class MigracionPedidosHelper {
 
     private ArrayList<Pedido> pedidos = new ArrayList<>();
     ;
@@ -188,6 +189,11 @@ public class MigracionPedidosHelper{
                 pedido.setEstado(estado);
                 pedido.setTurno("T");
                 hp.close();
+                TipoPagoHelper tphelper = new TipoPagoHelper();
+                TipoPago tipopago = tphelper.getTipoPago(Constantes.TIPO_PAGO_DEPOSITO);
+                pedido.setTipoPago(tipopago);
+                tphelper.close();
+                pedido.setCodigoBanco("XXXXXXXX");
                 // TODO
                 // Sería bueno colocar una fecha de venta anterior a la de la
                 // entrega esperada.
@@ -213,7 +219,7 @@ public class MigracionPedidosHelper{
                     detalle.setProducto(producto);
                     detalle.setActivo(true);
                     detalle.setPrecioUnitario(producto.getPrecio());
-                    
+
                     int cant = rand.nextInt(5) + 1;
                     if (cant > maxStockProductos.get(producto)) {
                         cant = maxStockProductos.get(producto);
@@ -224,7 +230,7 @@ public class MigracionPedidosHelper{
                         continue;
                     }
                     total = total + producto.getPrecio() * cant;
-                    volumen = volumen  + producto.getVolumen() * cant;
+                    volumen = volumen + producto.getVolumen() * cant;
                     detalle.setCantidad(cant);
                     detalle.setNumEntregados(0);
 
@@ -280,7 +286,7 @@ public class MigracionPedidosHelper{
             }
             z = z + 1;
             helperTienda.close();
-            
+
         }
         setDirecciones();
 
@@ -293,7 +299,7 @@ public class MigracionPedidosHelper{
                 Pair<Double, Double> pair = helper.geocodeAddress(t.getDireccionDeEnvio());
                 t.setCooXDireccion(pair.getLeft());
                 t.setCooYDireccion(pair.getRight());
-                
+
             } catch (ApiException | InterruptedException | IOException ex) {
                 Logger.getLogger(SolicitarDireccionController.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -303,7 +309,7 @@ public class MigracionPedidosHelper{
 
     void calcularInsumos(Producto p, Integer cantidad, HashMap<Insumo, Integer> insumos) {
         ProductoHelper helper = new ProductoHelper();
-        p= helper.getProductById(p.getId().intValue());
+        p = helper.getProductById(p.getId().intValue());
         ArrayList<ProductoInsumo> pxi = new ArrayList(p.getProductoxInsumos());
         for (ProductoInsumo productoInsumo : pxi) {
             if (insumos.get(productoInsumo.getInsumo()) != null) {

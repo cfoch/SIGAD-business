@@ -51,7 +51,7 @@
             <ToggleGroup fx:id="genero" />
          </toggleGroup></JFXRadioButton>
       <JFXRadioButton id="btnFactura" fx:id="btnFactura" layoutX="361.0" layoutY="369.0" onMouseClicked="#clickFactura" text="Factura" toggleGroup="$genero" />
-      <JFXRadioButton id="btnEfectivo" fx:id="btnEfectivo" layoutX="655.0" layoutY="369.0" selected="true" text="Efectivo - Depósito">
+      <JFXRadioButton id="btnEfectivo" fx:id="btnEfectivo" layoutX="655.0" layoutY="369.0" selected="true" text="Efectivo">
          <toggleGroup>
             <ToggleGroup fx:id="pago" />
          </toggleGroup></JFXRadioButton>
@@ -135,14 +135,6 @@
             <Font size="10.0" />
          </font>
       </JFXTextField>
-      <JFXButton id="btnCancelar" fx:id="btnGenerar" buttonType="RAISED" layoutX="619.0" layoutY="636.0" onMouseClicked="#generarDocumento" style="-fx-background-color: #FFFFFF;" text="Generar Comprobante">
-         <font>
-            <Font size="14.0" />
-         </font>
-         <effect>
-            <DropShadow />
-         </effect>
-      </JFXButton>
       <JFXTextField fx:id="txtTipo" disable="true" labelFloat="true" layoutX="349.0" layoutY="206.0" prefHeight="25.0" prefWidth="157.0" promptText="Tipo">
          <font>
             <Font size="10.0" />
@@ -159,5 +151,6 @@
             <Font size="10.0" />
          </font>
       </JFXTextField>
+      <JFXRadioButton id="btnEfectivo" fx:id="btnDeposito" layoutX="769.0" layoutY="369.0" selected="true" text="Depósito" toggleGroup="$pago" />
    </children>
 </AnchorPane>

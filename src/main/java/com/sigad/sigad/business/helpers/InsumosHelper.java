@@ -22,26 +22,15 @@ import org.hibernate.query.Query;
  *
  * @author chrs
  */
-public class InsumosHelper {
+public class InsumosHelper extends BaseHelper {
     
-    Session session = null;
-    private String errorMessage = "";
     private final static Logger LOGGER = Logger.getLogger(InsumosHelper.class.getName());
     
     /////////////////////////
     
     public InsumosHelper() {
-        session = LoginController.serviceInit();
+        super();
     }
-    
-    public void close(){
-        session.close();
-    }
-    
-    public String getErrorMessage(){
-        return errorMessage;
-    }
-    
     
     public Long saveInsumo(Insumo newInsumo, List<ProveedorInsumo>  lista_proveedoresxInsumo) {
         Long id = null;

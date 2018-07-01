@@ -5,15 +5,14 @@
  */
 package com.sigad.sigad.business.helpers;
 
-import com.sigad.sigad.app.controller.LoginController;
 import com.sigad.sigad.business.DetalleOrdenCompra;
 import com.sigad.sigad.business.LoteInsumo;
 import com.sigad.sigad.business.OrdenCompra;
+import com.sigad.sigad.business.Tienda;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
@@ -21,18 +20,10 @@ import org.hibernate.query.Query;
  *
  * @author chrs
  */
-public class OrdenCompraHelper {
+public class OrdenCompraHelper extends BaseHelper {
     private final static Logger LOGGER = Logger.getLogger(OrdenCompraHelper.class.getName());
-    Session session = null;
-    private String errorMessage = "";
     public OrdenCompraHelper(){
-        session = LoginController.serviceInit();
-    }
-    public void close(){
-        session.close();
-    }
-    public String getErrorMessage(){
-        return errorMessage;
+        super();
     }
     public OrdenCompra getOrden(Integer id){
         session.beginTransaction();
@@ -99,6 +90,21 @@ public class OrdenCompraHelper {
             errorMessage = e.getMessage();
         }
         return ordenes;
+    }
+    public ArrayList<OrdenCompra> getOrdenesStore(Tienda tienda){
+        ArrayList<OrdenCompra> ordenes = null;
+        Query query = null;
+        try {
+            query = session.createQuery("SELECT ORD from Usuario US INNER JOIN OrdenCompra ORD on US.id = ORD.usuario where US.tienda = :tiendaId");
+            query.setParameter("tiendaId",tienda);
+            if(!query.list().isEmpty()){
+                ordenes = (ArrayList<OrdenCompra>)query.list();
+            }
+        } catch (Exception e) {
+            errorMessage = e.getMessage();
+        }
+        return ordenes;
+        
     }
     public ArrayList<DetalleOrdenCompra> getDetalles(Integer id){
         ArrayList<DetalleOrdenCompra> ordenes = null;

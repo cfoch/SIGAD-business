@@ -34,9 +34,20 @@ public class MovimientosTienda {
     private LoteInsumo LoteInsumo;
     @ManyToOne
     private Pedido pedido;
-    public MovimientosTienda() {
+    public MovimientosTienda() {    
     }
 
+    public MovimientosTienda(Integer cantidadMovimiento, Date fecha, TipoMovimiento tipoMovimiento, Usuario trabajador, Tienda tienda, LoteInsumo LoteInsumo, Pedido pedido) {
+        this.cantidadMovimiento = cantidadMovimiento;
+        this.fecha = fecha;
+        this.tipoMovimiento = tipoMovimiento;
+        this.trabajador = trabajador;
+        this.tienda = tienda;
+        this.LoteInsumo = LoteInsumo;
+        this.pedido = pedido;
+    }
+
+    
     
     /**
      * @return the id

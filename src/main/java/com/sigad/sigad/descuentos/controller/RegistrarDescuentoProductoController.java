@@ -6,7 +6,6 @@
 package com.sigad.sigad.descuentos.controller;
 
 import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXSnackbar;
 import com.jfoenix.controls.JFXTextField;
@@ -15,8 +14,6 @@ import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import com.jfoenix.validation.RequiredFieldValidator;
-import com.jfoenix.validation.ValidationFacade;
-import com.sigad.sigad.app.controller.ErrorController;
 import com.sigad.sigad.business.Producto;
 import com.sigad.sigad.business.ProductoDescuento;
 import com.sigad.sigad.business.helpers.GeneralHelper;
@@ -27,7 +24,6 @@ import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIconView;
 import java.net.URL;
 import java.sql.Date;
-import java.text.ParseException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -38,7 +34,6 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -94,9 +89,6 @@ public class RegistrarDescuentoProductoController implements Initializable {
     private JFXTextField txtDescuentopct;
 
     @FXML
-    private JFXCheckBox checkboxStock;
-
-    @FXML
     private JFXTextField filtro;
 
     @FXML
@@ -104,9 +96,6 @@ public class RegistrarDescuentoProductoController implements Initializable {
 
     @FXML
     private JFXButton btnCancelar;
-
-    @FXML
-    private JFXTextField txtStockMaximo;
 
     private Boolean isEdit;
     private ProductoDescuento pd;
@@ -127,7 +116,6 @@ public class RegistrarDescuentoProductoController implements Initializable {
 
         columnas();
         agregarColumnas();
-        seleccionStock();
         cargarDatos();
         setuValidations();
         txtDescuentopct.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -178,19 +166,7 @@ public class RegistrarDescuentoProductoController implements Initializable {
             }
         });
 
-        r = new RequiredFieldValidator();
-        r.setIcon(new MaterialDesignIconView(MaterialDesignIcon.CLOSE_CIRCLE));
-        r.setMessage("Campo obligatorio");
-        txtStockMaximo.getValidators().add(r);
-        txtStockMaximo.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-            if (!newValue && checkboxStock.isSelected()) {
-                if (!txtStockMaximo.validate() && GeneralHelper.isNumeric(txtStockMaximo.getText())) {
-                    txtStockMaximo.setFocusColor(new Color(0.58, 0.34, 0.09, 1));
-                } else {
-                    txtStockMaximo.setFocusColor(new Color(0.30, 0.47, 0.23, 1));
-                }
-            }
-        });
+     
 
         JFXDatePicker minDate = new JFXDatePicker();
         minDate.setValue(LocalDate.now(ZoneId.systemDefault())); // colocar la fecha de hoy como el minimo
@@ -278,7 +254,6 @@ public class RegistrarDescuentoProductoController implements Initializable {
 
         this.isEdit = isedit;
         this.stackpane = stackpane;
-        checkboxStock.setSelected(false);
         agregarFiltro();
         this.pd = pd;
         if (isedit) {
@@ -334,8 +309,7 @@ public class RegistrarDescuentoProductoController implements Initializable {
     }
 
     public Boolean validarCampos() {
-        return txtFechaFin.getValue().toString() != "" && txtFechaFin.getValue().toString() != "" && txtDescuentopct.getText() != ""
-                && (checkboxStock.isSelected()) ? txtStockMaximo.getText() != "" : true;
+        return txtFechaFin.getValue().toString() != "" && txtFechaFin.getValue().toString() != "" && txtDescuentopct.getText() != "";
 
     }
 
@@ -344,17 +318,13 @@ public class RegistrarDescuentoProductoController implements Initializable {
             txtDescuentopct.setFocusColor(new Color(0.58, 0.34, 0.09, 1));
             txtDescuentopct.requestFocus();
             return false;
-        } else if (txtStockMaximo.lengthProperty().getValue().equals(0) && checkboxStock.isSelected() && !GeneralHelper.isNumeric(txtDescuentopct.getText())) {
-            txtStockMaximo.setFocusColor(new Color(0.58, 0.34, 0.09, 1));
-            txtStockMaximo.requestFocus();
-            return false;
-        } else if (txtFechaInicio.getValue() == null) {
+        }  else if (txtFechaInicio.getValue() == null) {
             lblError.setText("Fecha inicio incorrecta");
             return false;
         } else if (txtFechaInicio.getValue().isAfter(txtFechaFin.getValue())) {
             lblError.setText("Verifique el rango de fechas");
             return false;
-        }  else if (txtFechaFin.getValue() == null) {
+        } else if (txtFechaFin.getValue() == null) {
             lblError.setText("Fecha fin incorrecta");
             return false;
         } else {
@@ -401,19 +371,6 @@ public class RegistrarDescuentoProductoController implements Initializable {
 
     public void seleccionStock() {
 
-        checkboxStock.selectedProperty().addListener(new ChangeListener<Boolean>() {
-            public void changed(ObservableValue<? extends Boolean> ov, Boolean old_val, Boolean new_val) {
-                if (checkboxStock.isSelected()) {
-                    txtStockMaximo.setEditable(true);
-                } else {
-                    txtStockMaximo.clear();
-                    txtStockMaximo.setEditable(false);
-                    txtStockMaximo.setFocusColor(colorStd);
-
-                }
-            }
-        });
-        checkboxStock.setSelected(false);
 
     }
 

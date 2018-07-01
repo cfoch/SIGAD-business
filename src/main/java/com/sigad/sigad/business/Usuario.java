@@ -284,7 +284,7 @@ public class Usuario {
     public void addClienteFecha(ClienteFecha clienteFecha) {
         if (clienteFecha.getUsuario() == this) {
             clienteFechas.add(clienteFecha);
-        }
+        }   
     }
 
     public ArrayList<ClienteDireccion> getClienteDirecciones() {

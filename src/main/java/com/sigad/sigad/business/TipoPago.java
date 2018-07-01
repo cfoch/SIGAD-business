@@ -27,6 +27,9 @@ public class TipoPago {
     public TipoPago() {
     }
     
+    public TipoPago(String nombre) {
+        descripcion = nombre;
+    }
     /**
      * @return the id
      */

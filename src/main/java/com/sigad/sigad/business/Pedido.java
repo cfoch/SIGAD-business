@@ -13,11 +13,13 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -33,24 +35,24 @@ public class Pedido {
     @NotNull
     private Timestamp fechaVenta;
     private Date fechaEntregaEsperada;
-    private Date fechaEntrega ;
+    private Date fechaEntrega;
     @NotNull
     private Double total;
     @NotNull
-    private boolean activo;
+    private Boolean activo;
     @NotNull
-    private boolean modificable;
+    private Boolean modificable;
     @NotNull
     private String mensajeDescripicion;
     @NotNull
     private String direccionDeEnvio;
     @NotNull
-    private double cooXDireccion;
+    private Double cooXDireccion;
     @NotNull
-    private double cooYDireccion;
+    private Double cooYDireccion;
     private String rucFactura;
     private String nombreEmpresa;
-    
+
     @ManyToOne(optional = false)
     private PedidoEstado estado;
     private String turno;
@@ -58,6 +60,11 @@ public class Pedido {
     @ManyToOne
     private Reparto reparto;
     private Integer secuenciaReparto;
+    private String codigoBanco;
+    @OneToOne(mappedBy = "pedidoPago", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private NotaCredito notacreditopago;//Pago con nota de credito
+    @OneToOne(mappedBy = "pedidoOrigen", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private NotaCredito notacreditogenerada;//Pago con nota de credito
 
     //fk
     @ManyToOne
@@ -77,10 +84,10 @@ public class Pedido {
 
     @ManyToOne
     private Tienda tienda;
-    
+
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<DocumentoLegal> documentos = new HashSet<>();
-    
+
     @ManyToOne
     private ClienteDescuento descuentoCliente;
 
@@ -240,7 +247,8 @@ public class Pedido {
      * @param detallePedido the detallePedido to set
      */
     public void setDetallePedido(Set<DetallePedido> detallePedido) {
-        this.detallePedido = detallePedido;
+        this.detallePedido.clear();
+        this.detallePedido.addAll(detallePedido);
     }
 
     /**
@@ -315,6 +323,7 @@ public class Pedido {
 
     /**
      * Obtiene la Locacion de un pedido en la estructura de SimmulatedAnnealing.
+     *
      * @return Una locacion de SimulatedAnnealing.
      */
     public Locacion getLocacion() {
@@ -484,5 +493,47 @@ public class Pedido {
      */
     public void setFechaEntrega(Date fechaEntrega) {
         this.fechaEntrega = fechaEntrega;
+    }
+
+    /**
+     * @return the notacredito
+     */
+    public NotaCredito getNotacredito() {
+        return notacreditopago;
+    }
+
+    /**
+     * @param notacredito the notacredito to set
+     */
+    public void setNotacredito(NotaCredito notacredito) {
+        this.notacreditopago = notacredito;
+    }
+
+    /**
+     * @return the notacreditogenerada
+     */
+    public NotaCredito getNotacreditogenerada() {
+        return notacreditogenerada;
+    }
+
+    /**
+     * @param notacreditogenerada the notacreditogenerada to set
+     */
+    public void setNotacreditogenerada(NotaCredito notacreditogenerada) {
+        this.notacreditogenerada = notacreditogenerada;
+    }
+
+    /**
+     * @return the codigoBanco
+     */
+    public String getCodigoBanco() {
+        return codigoBanco;
+    }
+
+    /**
+     * @param codigoBanco the codigoBanco to set
+     */
+    public void setCodigoBanco(String codigoBanco) {
+        this.codigoBanco = codigoBanco;
     }
 }

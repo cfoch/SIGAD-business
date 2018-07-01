@@ -34,7 +34,7 @@
             <DropShadow />
          </effect>
       </JFXButton>
-      <JFXButton id="btnRegistrar" fx:id="btnRegistrar" buttonType="RAISED" layoutX="667.0" layoutY="600.0" onMouseClicked="#registrarCliente" style="-fx-background-color: #FFFFFF;" text="Registrar cliente">
+      <JFXButton id="btnRegistrar" fx:id="btnRegistrar" buttonType="RAISED" layoutX="933.0" layoutY="473.0" onMouseClicked="#registrarCliente" style="-fx-background-color: #FFFFFF; -fx-background-radius: 50;" text="+">
          <font>
             <Font size="14.0" />
          </font>
