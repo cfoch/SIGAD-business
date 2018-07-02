@@ -12,18 +12,26 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="79" splitType="Stretch">
+		<band height="51" splitType="Stretch">
 			<staticText>
-				<reportElement x="14" y="22" width="318" height="35"/>
-				<textElement>
-					<font size="24" isBold="true" isUnderline="true"/>
+				<reportElement x="26" y="0" width="554" height="48"/>
+				<textElement textAlignment="Center">
+					<font size="24" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Productos Favoritos]]></text>
+				<text><![CDATA[Módulo de Reportes SIGAD]]></text>
 			</staticText>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="35" splitType="Stretch"/>
+		<band height="35" splitType="Stretch">
+			<staticText>
+				<reportElement x="1" y="0" width="554" height="25" forecolor="#FF0000"/>
+				<textElement textAlignment="Center">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Reporte de Productos Favoritos]]></text>
+			</staticText>
+		</band>
 	</pageHeader>
 	<columnHeader>
 		<band height="43" splitType="Stretch">
@@ -35,11 +43,11 @@
 				<text><![CDATA[Producto]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="350" y="2" width="100" height="20"/>
+				<reportElement x="350" y="2" width="175" height="31"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[Cantidad]]></text>
+				<text><![CDATA[Cantidad de usuarios que lo consideran favorito]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
@@ -58,12 +66,34 @@
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="45" splitType="Stretch"/>
+		<band height="26" splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band height="54" splitType="Stretch"/>
+		<band height="28" splitType="Stretch">
+			<staticText>
+				<reportElement x="1" y="0" width="112" height="20"/>
+				<textElement/>
+				<text><![CDATA[Reporte obtenido el :]]></text>
+			</staticText>
+			<textField pattern="yyyy.MMMMM.dd GGG hh:mm aaa">
+				<reportElement x="113" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="294" y="0" width="231" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.lang.String"><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+		</band>
 	</pageFooter>
 	<summary>
-		<band height="42" splitType="Stretch"/>
+		<band height="42" splitType="Stretch">
+			<staticText>
+				<reportElement x="11" y="2" width="554" height="30"/>
+				<textElement/>
+				<text><![CDATA[Este reporte tiene como finalidad identificar los productos favoritos de los usuarios]]></text>
+			</staticText>
+		</band>
 	</summary>
 </jasperReport>

@@ -221,7 +221,7 @@ public class PdfHelper {
             document.addTitle("Factura");
             document.addSubject("MaragaritaTel");
             //Primeros parrafos
-            Chunk chunk = new Chunk("Boleta de venta", chapterFont);
+            Chunk chunk = new Chunk("Factura de venta", chapterFont);
             chunk.setBackground(BaseColor.WHITE);
             Chunk chunk2 = new Chunk("MargaritaTel - RUC: " + Constantes.RUC, smallBold);
             Chapter chapter = new Chapter(new Paragraph(chunk), 0);
