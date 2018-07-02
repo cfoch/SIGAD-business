@@ -83,6 +83,11 @@ public class AlgoritmoHelper extends BaseHelper {
             List<Vehiculo> vehiculos = tienda.getVehiculos();
             pedidos = helperPedido.getPedidosPorTienda(tienda, estado,
                     turno, new Date());
+            if (pedidos.isEmpty()) {
+                throw new Exception(String.format("No hay pedidos disponibles"
+                        + "en estado 'Venta' asignados a la tienda (id=%d) para"
+                        + " el día de hoy.", tienda.getId().intValue()));
+            }
             // FIXME
             // Si no hubiera vehiculos asignados para la tienda, se rompe.
             try {
@@ -137,6 +142,11 @@ public class AlgoritmoHelper extends BaseHelper {
                         .setParameter("tienda_id", tienda.getId())
                         .list();
             } catch (Exception ex) {
+                customMsg = true;
+                throw new Exception(String.format("No existen repartidores "
+                        + "para la tienda con id='%d'.", tienda.getId()));
+            }
+            if (repartidores.isEmpty()) {
                 customMsg = true;
                 throw new Exception(String.format("No existen repartidores "
                         + "para la tienda con id='%d'.", tienda.getId()));
