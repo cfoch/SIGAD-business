@@ -5,7 +5,9 @@
  */
 package com.sigad.sigad.reportes;
 
+import com.sigad.sigad.app.controller.LoginController;
 import com.sigad.sigad.business.Constantes;
+import com.sigad.sigad.business.helpers.BaseHelper;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -22,6 +24,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperExportManager;
+import org.hibernate.Session;
+import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
 
 /**
  *
@@ -29,14 +33,17 @@ import net.sf.jasperreports.engine.JasperExportManager;
  */
 public class GenerarReportes {
     
+    private Session session = null;
     private Connection conn = null;
     private final static Logger LOGGER = Logger.getLogger(GenerarReportes.class.getName());
     
     // metodo para iniciar conexion
     private void iniciarConexion() {
         try{
+            session = LoginController.serviceInit();
             LOGGER.log(Level.INFO, "Habriendo conexion para reportes");
-            conn = DriverManager.getConnection(Constantes.BD_CONNECTION_STRING, Constantes.BD_USER, Constantes.BD_PASS);
+            //conn = DriverManager.getConnection(Constantes.BD_CONNECTION_STRING, Constantes.BD_USER, Constantes.BD_PASS);
+            conn = session.getSessionFactory().getSessionFactoryOptions().getServiceRegistry().getService(ConnectionProvider.class).getConnection();
             LOGGER.log(Level.INFO, "Conexion abierta con exito");
         }
         catch(SQLException e) {
@@ -51,12 +58,13 @@ public class GenerarReportes {
             File f = new File(fileName);
             JasperReport report = JasperCompileManager.compileReport(f.getAbsolutePath());
             Map parameters = new HashMap();
-            iniciarConexion();
+            if (session==null)
+                iniciarConexion();
             JasperPrint jprint = JasperFillManager.fillReport(report, parameters, conn);
             JasperViewer jv = new JasperViewer(jprint, false);
             jv.setTitle(reportName);
             jv.setVisible(true);
-            conn.close();
+            //conn.close();
             // exportar PDF
             generarPDF(jprint, rutaFinal, reportName);
             LOGGER.log(Level.INFO, "Reporte de insumo creado con exito");
@@ -79,7 +87,7 @@ public class GenerarReportes {
             JasperViewer jv = new JasperViewer(jprint, false);
             jv.setTitle(reportName);
             jv.setVisible(true);
-            conn.close();
+            //conn.close();
             // exportar PDF
             generarPDF(jprint, rutaFinal, reportName);
             LOGGER.log(Level.INFO, "Reporte de ventas creado con exito");
