@@ -104,10 +104,10 @@ public class DevolucionPedidoController implements Initializable {
 
     }
 
-    public void initModel(Boolean isEdit, Pedido pedido, StackPane hiddenSp) {
+    public void initModel(Pedido pedido, StackPane hiddenSp) {
         PedidoHelper helper = new PedidoHelper();
         this.pedido = helper.getPedidoEager(pedido.getId());
-        ArrayList<DetallePedido> d = new ArrayList<>(pedido.getDetallePedido());
+        ArrayList<DetallePedido> d = new ArrayList<>(this.pedido.getDetallePedido());
         d.forEach((t) -> {
             pedidos.add(new PedidoLista(t));
         });
