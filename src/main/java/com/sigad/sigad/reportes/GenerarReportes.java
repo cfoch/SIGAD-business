@@ -82,7 +82,8 @@ public class GenerarReportes {
             JasperReport report = JasperCompileManager.compileReport(f.getAbsolutePath());
             Map parameters = new HashMap();
             parameters.put("idTienda", tiendaId);
-            iniciarConexion();
+            if (session==null)
+                iniciarConexion();
             JasperPrint jprint = JasperFillManager.fillReport(report, parameters, conn);
             JasperViewer jv = new JasperViewer(jprint, false);
             jv.setTitle(reportName);
