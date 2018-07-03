@@ -64,12 +64,13 @@ public class PdfHelper {
 
     }
 
-    public void crearBoletaVenta(Pedido pedido) throws DocumentException {
+    public void crearBoletaVenta(String ruta, Pedido pedido) throws DocumentException {
 
         FileOutputStream fichero = null;
         try {
             Document document = new Document();
-            fichero = new FileOutputStream("boleta.pdf");
+            System.out.println(ruta);
+            fichero = new FileOutputStream(ruta + "/" +pedido.getId() + "boleta.pdf");
             PdfWriter writter = PdfWriter.getInstance(document, fichero);
             document.open();
             //Metadata
@@ -209,12 +210,12 @@ public class PdfHelper {
     }
     
     
-    public void crearNotaDeCredito(Pedido pedido, NotaCredito nota) throws DocumentException {
+    public void crearNotaDeCredito(String ruta,Pedido pedido, NotaCredito nota) throws DocumentException {
 
         FileOutputStream fichero = null;
         try {
             Document document = new Document();
-            fichero = new FileOutputStream("notadecredito.pdf");
+            fichero = new FileOutputStream(ruta + "/" +pedido.getId() + "notadecredito.pdf");
             PdfWriter writter = PdfWriter.getInstance(document, fichero);
             document.open();
             //Metadata
@@ -360,13 +361,13 @@ public class PdfHelper {
     }
 
 
-    public void crearFacturaVenta(Pedido pedido) throws DocumentException {
+    public void crearFacturaVenta(String ruta, Pedido pedido) throws DocumentException {
 
         FileOutputStream fichero = null;
         try {
             
             Document document = new Document();
-            fichero = new FileOutputStream("factura.pdf");
+            fichero = new FileOutputStream(ruta + "/" +pedido.getId() + "factura.pdf");
             
             PdfWriter writter = PdfWriter.getInstance(document, fichero);
             document.open();

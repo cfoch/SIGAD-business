@@ -74,6 +74,30 @@ public class GenerarReportes {
             JOptionPane.showMessageDialog(null, "Error al mostrar el reporte : " + e);
         }
     }
+
+    public void reporteInsumos(String rutaFinal, String fileName, String reportName, Long tiendaId){
+        try {
+            //JasperReport report = (JasperReport) JRLoader.loadObjectFromFile("Insumos.jasper");
+            File f = new File(fileName);
+            JasperReport report = JasperCompileManager.compileReport(f.getAbsolutePath());
+            Map parameters = new HashMap();
+            parameters.put("idTienda", tiendaId);
+            if (session==null)
+                iniciarConexion();
+            JasperPrint jprint = JasperFillManager.fillReport(report, parameters, conn);
+//            JasperViewer jv = new JasperViewer(jprint, false);
+//            jv.setTitle(reportName);
+//            jv.setVisible(true);
+            //conn.close();
+            // exportar PDF
+            generarPDF(jprint, rutaFinal, reportName);
+            LOGGER.log(Level.INFO, "Reporte de insumos creado con exito");
+        }
+        catch(Exception e) {
+            LOGGER.log(Level.SEVERE, "Ocurrio un error al intentar abrir el reporte %s en pantalla", reportName);
+            JOptionPane.showMessageDialog(null, "Error al mostrar el reporte : " + e);
+        }
+    }
     
     public void reporteVentas(String rutaFinal, String fileName, String reportName, Long tiendaId){
         try {

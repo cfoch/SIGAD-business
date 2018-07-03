@@ -42,14 +42,18 @@ import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableCell;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.Window;
 import javafx.util.Callback;
 
 /**
@@ -94,7 +98,7 @@ public class EditarEliminarPedidoController implements Initializable {
 
     @FXML
     private JFXTextField txtTurno;
-    
+
     @FXML
     private JFXTextField txtigv;
 
@@ -134,9 +138,9 @@ public class EditarEliminarPedidoController implements Initializable {
         txtDireccion.setText(this.pedido.getDireccionDeEnvio());
         txtEstado.setText(this.pedido.getEstado().getNombre());
         txtmensaje.setText(this.pedido.getMensajeDescripicion());
-        Double igv = this.pedido.getTotal() / (HomeController.IGV +1) * HomeController.IGV;
-        Double pctdesc = (this.pedido.getDescuentoCliente()!=null)? this.pedido.getDescuentoCliente().getValue() : 0.0;
-        Double descuentoCliente = (this.pedido.getTotal() - igv)/ (1 + pctdesc) * pctdesc;
+        Double igv = this.pedido.getTotal() / (HomeController.IGV + 1) * HomeController.IGV;
+        Double pctdesc = (this.pedido.getDescuentoCliente() != null) ? this.pedido.getDescuentoCliente().getValue() : 0.0;
+        Double descuentoCliente = (this.pedido.getTotal() - igv) / (1 + pctdesc) * pctdesc;
         txtigv.setText(GeneralHelper.roundTwoDecimals(igv).toString());
         txtDescuento.setText(GeneralHelper.roundTwoDecimals(descuentoCliente).toString());
         txtTotal.setText(this.pedido.getTotal().toString());
@@ -194,25 +198,39 @@ public class EditarEliminarPedidoController implements Initializable {
         tblpedido.setShowRoot(false);
     }
 
+    public Window getCurrentStage(ActionEvent event) {
+        Node source = (Node) event.getSource();
+        return source.getScene().getWindow();
+    }
+
     @FXML
-    void generarBoleta(MouseEvent event) throws DocumentException {
-        PdfHelper helper = new PdfHelper();
-        if (pedido.getEstado().getNombre().equals(Constantes.ESTADO_DEVOLUCION)) {
-            System.out.println("Entro a esttado devolucion");
-            NotaCreditoHelper helpernota = new NotaCreditoHelper();
-            nota = helpernota.getNota(pedido.getId());
-            helpernota.close();
-            helper.crearNotaDeCredito(pedido, nota);
-            ErrorController err = new ErrorController();
-            err.loadDialog("Aviso", "Documento generado satisfactoriamente", "Ok", stackPane);
-        } else if (pedido.getRucFactura() == null) {
-            helper.crearBoletaVenta(pedido);
-            ErrorController err = new ErrorController();
-            err.loadDialog("Aviso", "Documento generado satisfactoriamente", "Ok", stackPane);
-        } else {
-            helper.crearFacturaVenta(pedido);
-            ErrorController err = new ErrorController();
-            err.loadDialog("Aviso", "Documento generado satisfactoriamente", "Ok", stackPane);
+    void generarBoleta(ActionEvent event) throws DocumentException {
+        if (event.getSource() == btnGenerarDocumento) {
+            PdfHelper helper = new PdfHelper();
+
+            Window currentStage = getCurrentStage(event);
+            DirectoryChooser dirChooser = new DirectoryChooser();
+            String downloadDir = dirChooser.showDialog(currentStage).getAbsolutePath();
+            if (downloadDir != null) {
+                System.out.println(downloadDir);
+            }
+            if (pedido.getEstado().getNombre().equals(Constantes.ESTADO_DEVOLUCION)) {
+                System.out.println("Entro a esttado devolucion");
+                NotaCreditoHelper helpernota = new NotaCreditoHelper();
+                nota = helpernota.getNota(pedido.getId());
+                helpernota.close();
+                helper.crearNotaDeCredito(downloadDir, pedido, nota);
+                ErrorController err = new ErrorController();
+                err.loadDialog("Aviso", "Documento generado satisfactoriamente", "Ok", stackPane);
+            } else if (pedido.getRucFactura() == null) {
+                helper.crearBoletaVenta(downloadDir, pedido);
+                ErrorController err = new ErrorController();
+                err.loadDialog("Aviso", "Documento generado satisfactoriamente", "Ok", stackPane);
+            } else {
+                helper.crearFacturaVenta(downloadDir, pedido);
+                ErrorController err = new ErrorController();
+                err.loadDialog("Aviso", "Documento generado satisfactoriamente", "Ok", stackPane);
+            }
         }
 
     }
