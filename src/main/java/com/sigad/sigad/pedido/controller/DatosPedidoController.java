@@ -146,8 +146,8 @@ public class DatosPedidoController implements Initializable {
             dpFechaEntrega.setValue(localDate);
             cmbInicio.setValue(pedido.getTurno());
             cmbDedicatoria.setText(pedido.getMensajeDescripicion());
-            btnBoleta.setSelected((pedido.getRucFactura()==null));
-            btnFactura.setSelected((pedido.getRucFactura()!=null));
+            btnBoleta.setSelected((pedido.getRucFactura() == null));
+            btnFactura.setSelected((pedido.getRucFactura() != null));
             btnBoleta.setDisable(true);
             btnFactura.setDisable(true);
             btnEfectivo.setSelected(pedido.getTipoPago().getDescripcion().equals(Constantes.TIPO_PAGO_EFECTIVO));
@@ -230,7 +230,14 @@ public class DatosPedidoController implements Initializable {
         System.out.println(descuentos.size());
         UsuarioHelper us = new UsuarioHelper();
         Usuario u = us.getUser(pedido.getCliente().getId().intValue());
-        Integer numPedidos = u.getPedidoCliente().size();
+        ArrayList<Pedido> pedidosCliente = new ArrayList(u.getPedidoCliente());
+        Integer numPedidos = 0;
+        for (Pedido pedcli : pedidosCliente) {
+            PedidoHelper pedhelper = new PedidoHelper();
+            if (pedhelper.getPedidoEstado(pedcli.getId()).equals(Constantes.ESTADO_FINALIZADO)) {
+                numPedidos = numPedidos + 1;
+            }
+        }
         for (Iterator<ClienteDescuento> iterator = descuentos.iterator(); iterator.hasNext();) {
             ClienteDescuento t = iterator.next();
             System.out.println(t.getTipo() + t.getFechaInicio() + t.getValue());
@@ -340,9 +347,9 @@ public class DatosPedidoController implements Initializable {
             pedido.setNombreEmpresa(txtEmpresa.getText());
             pedido.setRucFactura(txtdoc.getText());
         }
-        
 
     }
+
     void calcularInsumos(Producto p, Integer cantidad) {
         ArrayList<ProductoInsumo> pxi = new ArrayList(p.getProductoxInsumos());
         for (ProductoInsumo productoInsumo : pxi) {
