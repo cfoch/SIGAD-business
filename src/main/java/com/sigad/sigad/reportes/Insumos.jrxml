@@ -3,17 +3,19 @@
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
+	<parameter name="idTienda" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
 	<queryString>
-		<![CDATA[SELECT P.nombre as proveedor, I.nombre as insumo, SUM(MT.cantidadmovimiento) as total, date_trunc('month', MT.fecha) as MES , T.direccion as tienda
+		<![CDATA[SELECT P.nombre as proveedor, I.nombre as insumo, SUM(MT.cantidadmovimiento) as total, to_char(MT.fecha, 'MM') as MES
 FROM proveedor P, insumo I, tienda T, proveedorinsumo PI, movimientostienda MT, ordencompra OC, detalleordencompra DOC, loteinsumo LI
-WHERE MT.tipomovimiento_id = (select id from tipomovimiento where nombre = 'Entrada Fisica') and P.id = OC.proveedor_id and OC.id = DOC.orden_id and DOC.loteinsumo_id = LI.id and LI.id = MT.loteinsumo_id and MT.tienda_id = T.id
-GROUP BY P.nombre, date_trunc('month', MT.fecha), I.nombre, T.direccion;]]>
+WHERE MT.tipomovimiento_id = (select id from tipomovimiento where nombre = 'Entrada Fisica') and P.id = OC.proveedor_id and OC.id = DOC.orden_id and DOC.loteinsumo_id = LI.id and I.id = LI.insumo_id and LI.id = MT.loteinsumo_id and case when $P{idTienda} = 0 then true else MT.tienda_id = $P{idTienda} end
+GROUP BY proveedor, insumo, MES;]]>
 	</queryString>
 	<field name="proveedor" class="java.lang.String"/>
 	<field name="insumo" class="java.lang.String"/>
 	<field name="total" class="java.lang.Long"/>
-	<field name="mes" class="java.sql.Timestamp"/>
-	<field name="tienda" class="java.lang.String"/>
+	<field name="mes" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -69,13 +71,6 @@ GROUP BY P.nombre, date_trunc('month', MT.fecha), I.nombre, T.direccion;]]>
 				</textElement>
 				<text><![CDATA[Mes]]></text>
 			</staticText>
-			<staticText>
-				<reportElement x="427" y="0" width="100" height="20"/>
-				<textElement textAlignment="Center">
-					<font isBold="true"/>
-				</textElement>
-				<text><![CDATA[Tienda]]></text>
-			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
@@ -98,12 +93,7 @@ GROUP BY P.nombre, date_trunc('month', MT.fecha), I.nombre, T.direccion;]]>
 			<textField>
 				<reportElement x="327" y="0" width="100" height="20"/>
 				<textElement textAlignment="Center"/>
-				<textFieldExpression class="java.sql.Timestamp"><![CDATA[$F{mes}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="427" y="0" width="100" height="20"/>
-				<textElement textAlignment="Center"/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{tienda}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{mes}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

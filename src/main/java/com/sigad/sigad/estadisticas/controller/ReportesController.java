@@ -88,7 +88,14 @@ public class ReportesController implements Initializable {
         DirectoryChooser dirChooser = new DirectoryChooser();
         String downloadDir = dirChooser.showDialog(currentStage).getAbsolutePath();
         if(downloadDir != null){
-            reporteGenerator.reporte(downloadDir, "src/main/java/com/sigad/sigad/reportes/Insumos.jrxml","Reporte de Insumos");
+            Long idTienda = 0L;
+            String reporteTitulo = "Reporte General de Insumos";
+            Tienda currentStore = LoginController.user.getTienda();
+            if(currentStore != null){
+                idTienda = currentStore.getId();
+                reporteTitulo = "Reporte de Insumos para la tienda " + currentStore.getDireccion();
+            }
+            reporteGenerator.reporteInsumos(downloadDir, "src/main/java/com/sigad/sigad/reportes/Insumos.jrxml",reporteTitulo,idTienda);
         }
     }
     
