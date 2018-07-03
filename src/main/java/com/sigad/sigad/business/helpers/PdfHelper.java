@@ -64,13 +64,15 @@ public class PdfHelper {
 
     }
 
-    public void crearBoletaVenta(String ruta, Pedido pedido) throws DocumentException {
+    public String crearBoletaVenta(String ruta, Pedido pedido) throws DocumentException {
 
         FileOutputStream fichero = null;
+        String fil = ruta + "/" + pedido.getId() + "boleta.pdf";
         try {
+            
             Document document = new Document();
             System.out.println(ruta);
-            fichero = new FileOutputStream(ruta + "/" +pedido.getId() + "boleta.pdf");
+            fichero = new FileOutputStream(fil);
             PdfWriter writter = PdfWriter.getInstance(document, fichero);
             document.open();
             //Metadata
@@ -199,23 +201,26 @@ public class PdfHelper {
 
         } catch (FileNotFoundException ex) {
             Logger.getLogger(DatosPedidoController.class.getName()).log(Level.SEVERE, null, ex);
+            fil = null;
         } finally {
             try {
                 fichero.close();
             } catch (IOException ex) {
+                fil = null;
                 Logger.getLogger(DatosPedidoController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        return fil;
 
     }
-    
-    
-    public void crearNotaDeCredito(String ruta,Pedido pedido, NotaCredito nota) throws DocumentException {
+
+    public String crearNotaDeCredito(String ruta, Pedido pedido, NotaCredito nota) throws DocumentException {
 
         FileOutputStream fichero = null;
+        String fil = ruta + "/" + pedido.getId() + "notadecredito.pdf";
         try {
             Document document = new Document();
-            fichero = new FileOutputStream(ruta + "/" +pedido.getId() + "notadecredito.pdf");
+            fichero = new FileOutputStream(fil);
             PdfWriter writter = PdfWriter.getInstance(document, fichero);
             document.open();
             //Metadata
@@ -349,26 +354,30 @@ public class PdfHelper {
             document.close();
 
         } catch (FileNotFoundException ex) {
+            fil = null;
             Logger.getLogger(DatosPedidoController.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
                 fichero.close();
+
             } catch (IOException ex) {
+                fil = null;
                 Logger.getLogger(DatosPedidoController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        return fil;
 
     }
 
-
-    public void crearFacturaVenta(String ruta, Pedido pedido) throws DocumentException {
+    public String crearFacturaVenta(String ruta, Pedido pedido) throws DocumentException {
 
         FileOutputStream fichero = null;
+        String fil = ruta + "/" + pedido.getId() + "factura.pdf";
         try {
-            
+
             Document document = new Document();
-            fichero = new FileOutputStream(ruta + "/" +pedido.getId() + "factura.pdf");
-            
+            fichero = new FileOutputStream(fil);
+
             PdfWriter writter = PdfWriter.getInstance(document, fichero);
             document.open();
             //Metadata
@@ -503,13 +512,16 @@ public class PdfHelper {
 
         } catch (FileNotFoundException ex) {
             Logger.getLogger(DatosPedidoController.class.getName()).log(Level.SEVERE, null, ex);
+            fil = null;
         } finally {
             try {
                 fichero.close();
             } catch (IOException ex) {
+                fil = null;
                 Logger.getLogger(DatosPedidoController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        return fil;
 
     }
 }
