@@ -89,6 +89,7 @@ public class DetallePedido {
         this.producto = producto;
         this.pedido = pedido;
         this.descuento = descuento;
+        this.descuentoCategoria = descuentoCategoria;
     }
 
     public DetallePedido(boolean activo, Integer cantidad, Double precioUnitario, Integer numEntregados, ComboPromocion combo, Pedido pedido) {
