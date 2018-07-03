@@ -253,7 +253,7 @@ public class MantenimientoPedidosController implements Initializable {
     public void cancelarPedido() {
         HashMap<Insumo, Integer> insumos = new HashMap<>();
         PedidoHelper phelper = new PedidoHelper();
-        Pedido ped =  phelper.getPedidoEager(pedido.getId());
+        Pedido ped = phelper.getPedidoEager(pedido.getId());
         ped.getDetallePedido().forEach((dp) -> {
             if (dp.getProducto() != null) {
                 ProductoHelper helperProducto = new ProductoHelper();
@@ -287,7 +287,7 @@ public class MantenimientoPedidosController implements Initializable {
         err.loadDialog("Aviso", "El pedido fue cancelado", "Ok", hiddenSp);
         reloadTable();
     }
-    
+
     void calcularInsumos(Producto p, Integer cantidad, HashMap<Insumo, Integer> insumosConsumidos) {
         ProductoHelper helper = new ProductoHelper();
         p = helper.getProducto(p.getId());
@@ -542,7 +542,7 @@ public class MantenimientoPedidosController implements Initializable {
             DateFormat f = new SimpleDateFormat("dd/MM/yyyy");
             this.fecha = new SimpleStringProperty(f.format(pedido.getFechaVenta()));
             this.estado = new SimpleStringProperty(pedido.getEstado().getNombre());
-            this.tipopago = new SimpleStringProperty(pedido.getTipoPago().getDescripcion());
+            this.tipopago = new SimpleStringProperty((pedido.getTipoPago() != null) ? pedido.getTipoPago().getDescripcion() : "");
 
         }
 

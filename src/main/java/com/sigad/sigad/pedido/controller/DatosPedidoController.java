@@ -265,12 +265,16 @@ public class DatosPedidoController implements Initializable {
             pedido.setDescuentoCliente(descuentoCliente);
             txtTipo.setText("Por superar " + descuentoCliente.getCondicion().toString() + " en " + descuentoCliente.getTipo());
             txtDescuento.setText(String.valueOf(descuentoCliente.getValue() * 100) + " %");
-            txtTotalPago.setText(pedido.getTotal().toString());
+            Double igv = GeneralHelper.roundTwoDecimals(pedido.getTotal() * HomeController.IGV);
+            pedido.setTotal(pedido.getTotal() + igv);
+            txtigv.setText(igv.toString());
+            txtTotalPago.setText(GeneralHelper.roundTwoDecimals(pedido.getTotal()).toString());
         } else {
             txtDescuento.setText("No aplica");
             Double igv = GeneralHelper.roundTwoDecimals(pedido.getTotal() * HomeController.IGV);
+            pedido.setTotal(pedido.getTotal() + igv);
             txtigv.setText(igv.toString());
-            txtTotalPago.setText(GeneralHelper.roundTwoDecimals(pedido.getTotal() + igv).toString());
+            txtTotalPago.setText(GeneralHelper.roundTwoDecimals(pedido.getTotal()).toString());
 
         }
 

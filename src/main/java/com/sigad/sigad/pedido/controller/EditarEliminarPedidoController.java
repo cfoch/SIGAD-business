@@ -14,6 +14,7 @@ import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import com.sigad.sigad.app.controller.ErrorController;
+import com.sigad.sigad.app.controller.HomeController;
 import com.sigad.sigad.business.ComboPromocion;
 import com.sigad.sigad.business.Constantes;
 import com.sigad.sigad.business.DetallePedido;
@@ -93,6 +94,12 @@ public class EditarEliminarPedidoController implements Initializable {
 
     @FXML
     private JFXTextField txtTurno;
+    
+    @FXML
+    private JFXTextField txtigv;
+
+    @FXML
+    private JFXTextField txtDescuento;
 
     @FXML
     JFXTreeTableColumn<PedidoLista, String> nombrePedido = new JFXTreeTableColumn<>("Nombre");
@@ -127,6 +134,11 @@ public class EditarEliminarPedidoController implements Initializable {
         txtDireccion.setText(this.pedido.getDireccionDeEnvio());
         txtEstado.setText(this.pedido.getEstado().getNombre());
         txtmensaje.setText(this.pedido.getMensajeDescripicion());
+        Double igv = this.pedido.getTotal() / (HomeController.IGV +1) * HomeController.IGV;
+        Double pctdesc = (this.pedido.getDescuentoCliente()!=null)? this.pedido.getDescuentoCliente().getValue() : 0.0;
+        Double descuentoCliente = (this.pedido.getTotal() - igv)/ (1 + pctdesc) * pctdesc;
+        txtigv.setText(GeneralHelper.roundTwoDecimals(igv).toString());
+        txtDescuento.setText(GeneralHelper.roundTwoDecimals(descuentoCliente).toString());
         txtTotal.setText(this.pedido.getTotal().toString());
         txtTurno.setText(this.pedido.getTurno());
         txtruc.setText((this.pedido.getRucFactura() == null) ? "-" : this.pedido.getRucFactura());
@@ -153,7 +165,7 @@ public class EditarEliminarPedidoController implements Initializable {
 
     public void columnasPedidos() {
 
-        nombrePedido.setPrefWidth(150);
+        nombrePedido.setPrefWidth(450);
         nombrePedido.setCellValueFactory((TreeTableColumn.CellDataFeatures<PedidoLista, String> param) -> param.getValue().getValue().nombre);
 
         cantidadPedido.setPrefWidth(80);

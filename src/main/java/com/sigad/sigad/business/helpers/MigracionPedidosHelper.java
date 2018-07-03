@@ -238,7 +238,7 @@ public class MigracionPedidosHelper {
                         prod.remove(producto);//Si ya no hay posibilida de armar el producto en esta tienda se retira
                         continue;
                     }
-                    total = total + producto.getPrecio() * cant;
+
                     volumen = volumen + producto.getVolumen() * cant;
                     detalle.setCantidad(cant);
                     detalle.setNumEntregados(0);
@@ -250,32 +250,38 @@ public class MigracionPedidosHelper {
                     ProductoCategoriaDescuentoHelper hcar = new ProductoCategoriaDescuentoHelper();
                     ProductoCategoriaDescuento descCat = hcar.getDescuentoByCategoria(producto.getCategoria().getId().intValue());
                     hcar.close();
+                    Double valdesc = 0.0;
                     if (descuento != null && descCat != null) {
                         if (descuento.getValorPct() > descCat.getValue()) {
+                            valdesc = descuento.getValorPct();
                             detalle.setDescuentoProducto(descuento);
                             detalle.setDescuentoCategoria(null);
                         } else {
+                            valdesc = descCat.getValue();
                             detalle.setDescuentoCategoria(descCat);
                             detalle.setDescuentoProducto(null);
                         }
 
                     } else if (descuento != null) {
+                        valdesc = descuento.getValorPct();
                         detalle.setDescuentoProducto(descuento);
                         detalle.setDescuentoCategoria(null);
                     } else if (descCat != null) {
+                        valdesc = descCat.getValue();
                         detalle.setDescuentoCategoria(descCat);
                         detalle.setDescuentoProducto(null);
                     } else {
                         detalle.setDescuentoProducto(null);
                         detalle.setDescuentoCategoria(null);
                     }
+                    total = total + producto.getPrecio() * cant * (1 - valdesc);
                     detalle.setCombo(null);
                     detalle.setPedido(pedido);
                     detalles.add(detalle);
                     disponibles.remove(producto);
                     recalcularStockProducto(producto, cant, 0, insumosTienda);
                 }
-                pedido.setTotal(total - HomeController.IGV * total);
+                pedido.setTotal(total + HomeController.IGV * total);
                 pedido.setVolumenTotal(volumen);
                 if (detalles.size() > 0) {
                     pedido.setDetallePedido(detalles);
