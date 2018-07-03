@@ -13,6 +13,7 @@ import com.jfoenix.controls.JFXTreeTableColumn;
 import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
+import com.sigad.sigad.app.controller.EmailController;
 import com.sigad.sigad.app.controller.ErrorController;
 import com.sigad.sigad.app.controller.HomeController;
 import com.sigad.sigad.business.ComboPromocion;
@@ -118,6 +119,7 @@ public class EditarEliminarPedidoController implements Initializable {
     @FXML
     JFXTreeTableColumn<PedidoLista, Integer> entregados = new JFXTreeTableColumn<>("Entregados");
     private final ObservableList<PedidoLista> pedidos = FXCollections.observableArrayList();
+    private  String  mailBody = "Confirmacion de venta N "; 
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -146,6 +148,7 @@ public class EditarEliminarPedidoController implements Initializable {
         txtTotal.setText(this.pedido.getTotal().toString());
         txtTurno.setText(this.pedido.getTurno());
         txtruc.setText((this.pedido.getRucFactura() == null) ? "-" : this.pedido.getRucFactura());
+        mailBody = mailBody + pedido.getId();
         setup();
     }
 
@@ -211,6 +214,7 @@ public class EditarEliminarPedidoController implements Initializable {
             Window currentStage = getCurrentStage(event);
             DirectoryChooser dirChooser = new DirectoryChooser();
             String downloadDir = dirChooser.showDialog(currentStage).getAbsolutePath();
+            String path;
             if (downloadDir != null) {
                 System.out.println(downloadDir);
             }
@@ -219,17 +223,18 @@ public class EditarEliminarPedidoController implements Initializable {
                 NotaCreditoHelper helpernota = new NotaCreditoHelper();
                 nota = helpernota.getNota(pedido.getId());
                 helpernota.close();
-                helper.crearNotaDeCredito(downloadDir, pedido, nota);
-                ErrorController err = new ErrorController();
-                err.loadDialog("Aviso", "Documento generado satisfactoriamente", "Ok", stackPane);
+                path = helper.crearNotaDeCredito(downloadDir, pedido, nota);
             } else if (pedido.getRucFactura() == null) {
-                helper.crearBoletaVenta(downloadDir, pedido);
-                ErrorController err = new ErrorController();
-                err.loadDialog("Aviso", "Documento generado satisfactoriamente", "Ok", stackPane);
+                path = helper.crearBoletaVenta(downloadDir, pedido);
             } else {
-                helper.crearFacturaVenta(downloadDir, pedido);
+                path = helper.crearFacturaVenta(downloadDir, pedido);
+            }
+            if (path != null) {
+                EmailController h = new EmailController("Confirmacion de venta", pedido.getCliente().toString(), pedido.getCliente().getCorreo(), mailBody);
+                h.emailSendWithPdf(path);
                 ErrorController err = new ErrorController();
                 err.loadDialog("Aviso", "Documento generado satisfactoriamente", "Ok", stackPane);
+
             }
         }
 
