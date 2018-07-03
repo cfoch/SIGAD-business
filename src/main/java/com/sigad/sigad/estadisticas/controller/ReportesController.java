@@ -79,7 +79,7 @@ public class ReportesController implements Initializable {
                 idTienda = currentStore.getId();
                 reporteTitulo = "Reporte de Ventas para la tienda " + currentStore.getDireccion();
             }
-            reporteGenerator.reporteVentas(downloadDir, "src/main/java/com/sigad/sigad/reportes/Ventas.jrxml",reporteTitulo, idTienda);
+            reporteGenerator.reporteVentas(downloadDir, "/Ventas.jrxml",reporteTitulo, idTienda);
         }
     }
     
@@ -95,7 +95,7 @@ public class ReportesController implements Initializable {
                 idTienda = currentStore.getId();
                 reporteTitulo = "Reporte de Insumos para la tienda " + currentStore.getDireccion();
             }
-            reporteGenerator.reporteInsumos(downloadDir, "src/main/java/com/sigad/sigad/reportes/Insumos.jrxml",reporteTitulo,idTienda);
+            reporteGenerator.reporteInsumos(downloadDir, "/Insumos.jrxml",reporteTitulo,idTienda);
         }
     }
     
@@ -104,7 +104,7 @@ public class ReportesController implements Initializable {
         DirectoryChooser dirChooser = new DirectoryChooser();
         String downloadDir = dirChooser.showDialog(currentStage).getAbsolutePath();
         if(downloadDir != null){
-            reporteGenerator.reporte(downloadDir, "src/main/java/com/sigad/sigad/reportes/Favoritos.jrxml","Reporte de Productos Favoritos");
+            reporteGenerator.reporte(downloadDir, "/Favoritos.jrxml","Reporte de Productos Favoritos");
         }
     }
     
