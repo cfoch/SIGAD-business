@@ -5,10 +5,7 @@
  */
 package com.sigad.sigad.app.repartos.controller;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXTreeTableColumn;
-import com.jfoenix.controls.JFXTreeTableRow;
 import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
@@ -16,8 +13,6 @@ import com.sigad.sigad.business.Pedido;
 import com.sigad.sigad.business.Reparto;
 import com.sigad.sigad.business.helpers.PedidoHelper;
 import com.sigad.sigad.business.helpers.RepartoHelper;
-import com.sigad.sigad.utils.ui.UIFuncs;
-import com.sigad.sigad.utils.ui.UIFuncs.Dialogs;
 import java.net.URL;
 import java.text.Format;
 import java.text.SimpleDateFormat;
@@ -32,12 +27,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 
 /**
@@ -71,8 +62,8 @@ public class RepartosListaController implements Initializable {
         JFXTreeTableColumn<RepartoInfo, String> colFecha;
         JFXTreeTableColumn<RepartoInfo, String> colTurno;
         JFXTreeTableColumn<RepartoInfo, Number> colNPedidos;
-        JFXTreeTableColumn<RepartoInfo, Number> colNPedidosRepartidos;
-        JFXTreeTableColumn<RepartoInfo, Number> colNPedidosPorRepartir;
+        JFXTreeTableColumn<RepartoInfo, Number> colNPedidosFinalizados;
+        JFXTreeTableColumn<RepartoInfo, Number> colNPedidosDespacho;
 
         colId = new JFXTreeTableColumn<>("Código");
         colId.setPrefWidth(150);
@@ -89,18 +80,18 @@ public class RepartosListaController implements Initializable {
         colTurno.setCellValueFactory(
                 (TreeTableColumn.CellDataFeatures<RepartoInfo, String> param) ->
                         param.getValue().getValue().turno);
-        colNPedidosRepartidos =
-                new JFXTreeTableColumn<>("N° Pedidos repartidos");
-        colNPedidosRepartidos.setPrefWidth(150);
-        colNPedidosRepartidos.setCellValueFactory(
+        colNPedidosFinalizados =
+                new JFXTreeTableColumn<>("N° Pedidos (Finalizado)");
+        colNPedidosFinalizados.setPrefWidth(150);
+        colNPedidosFinalizados.setCellValueFactory(
                 (TreeTableColumn.CellDataFeatures<RepartoInfo, Number> param) ->
-                        param.getValue().getValue().nPedidosRepartidos);
-        colNPedidosPorRepartir =
-                new JFXTreeTableColumn<>("N° Pedidos por repartir");
-        colNPedidosPorRepartir.setPrefWidth(150);
-        colNPedidosPorRepartir.setCellValueFactory(
+                        param.getValue().getValue().nPedidosFinalizados);
+        colNPedidosDespacho =
+                new JFXTreeTableColumn<>("N° Pedidos (Despacho)");
+        colNPedidosDespacho.setPrefWidth(150);
+        colNPedidosDespacho.setCellValueFactory(
                 (TreeTableColumn.CellDataFeatures<RepartoInfo, Number> param) ->
-                        param.getValue().getValue().nPedidosPorRepartir);
+                        param.getValue().getValue().nPedidosDespacho);
         colNPedidos = new JFXTreeTableColumn<>("N°  Pedidos");
         colNPedidos.setPrefWidth(150);
         colNPedidos.setCellValueFactory(
@@ -115,8 +106,8 @@ public class RepartosListaController implements Initializable {
                 colId,
                 colFecha,
                 colTurno,
-                colNPedidosRepartidos,
-                colNPedidosPorRepartir,
+                colNPedidosFinalizados,
+                colNPedidosDespacho,
                 colNPedidos
         );
         treeView.setRoot(root);
@@ -134,18 +125,20 @@ public class RepartosListaController implements Initializable {
         repartos.forEach((reparto) -> {
             List<Pedido> pedidos;
             RepartoInfo info;
-            Integer nPedidosRepartidos, nPedidosPorRepartir;
+            Integer nPedidosFinalizados, nPedidosDespacho;
 
             pedidos = reparto.getPedidos();
             pedidos = pedidos.stream()
                     .sorted((a, b) -> a.getSecuenciaReparto() - b.getSecuenciaReparto())
                     .collect(Collectors.toList());
-            nPedidosRepartidos = pedidos.stream()
-                    .filter((p) -> p.getEstado().equals("Despacho") || p.getEstado().equals("Finalizado"))
+            nPedidosFinalizados = pedidos.stream()
+                    .filter((p) -> p.getEstado().getNombre().equals("Finalizado"))
                     .collect(Collectors.toList()).size();
-            nPedidosPorRepartir = pedidos.size() - nPedidosRepartidos;
-            info = new RepartoInfo(reparto, nPedidosRepartidos,
-                    nPedidosPorRepartir);
+            nPedidosDespacho = pedidos.stream()
+                    .filter((p) -> p.getEstado().getNombre().equals("Despacho"))
+                    .collect(Collectors.toList()).size();
+            info = new RepartoInfo(reparto, nPedidosFinalizados,
+                    nPedidosDespacho);
             infos.add(info);
         });
         helperReparto.close();
@@ -184,11 +177,11 @@ public class RepartosListaController implements Initializable {
         StringProperty fecha;
         StringProperty turno;
         IntegerProperty nPedidos;
-        IntegerProperty nPedidosRepartidos;
-        IntegerProperty nPedidosPorRepartir;
+        IntegerProperty nPedidosFinalizados;
+        IntegerProperty nPedidosDespacho;
 
-        public RepartoInfo(Reparto reparto, int nRepartidos,
-                int nNoRepartidos) {
+        public RepartoInfo(Reparto reparto, int nFinalizado,
+                int nDespacho) {
             Format formatter = new SimpleDateFormat("dd-MM-yyyy");
             id = new SimpleIntegerProperty(reparto.getId().intValue());
             fecha = new SimpleStringProperty(
@@ -196,8 +189,8 @@ public class RepartosListaController implements Initializable {
             turno = new SimpleStringProperty(
                     PedidoHelper.stringifyTurno(reparto.getTurno()));
             nPedidos = new SimpleIntegerProperty(reparto.getPedidos().size());
-            nPedidosRepartidos = new SimpleIntegerProperty(nRepartidos);
-            nPedidosPorRepartir = new SimpleIntegerProperty(nNoRepartidos);
+            nPedidosFinalizados = new SimpleIntegerProperty(nFinalizado);
+            nPedidosDespacho = new SimpleIntegerProperty(nDespacho);
         }
     }
 }
