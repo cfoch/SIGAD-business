@@ -99,7 +99,7 @@ public class MigracionPedidosHelper {
             "Av. Arica 1391, Breña",
             "Av. la Alborada 1327, Lima",
             "Av. Rep. de Venezuela 2291",
-            "Belisario Sosa Pelaez 1395, Lima   "
+            "Belisario Sosa Pelaez 1395, Lima"
         },
         {
             "Av de los Precursores 1031, Lima",

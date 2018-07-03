@@ -27,7 +27,7 @@ import java.util.logging.Logger;
  */
 public class DBPopulationHelper extends BaseHelper {
     static final int DEFAULT_LOTE_INSUMO_STOCK_FISICO = 0;
-    static final int DEFAULT_LOTE_INSUMO_STOCK_LOGICO = 100;
+    static final int DEFAULT_LOTE_INSUMO_STOCK_LOGICO = 600;
     static final int DEFAULT_LOTE_INSUMO_DIAS_DESDE_HOY = 15;
     static final int DEFAULT_LOTE_INSUMO_COSTO_UNITARIO_MIN = 50;
     static final int DEFAULT_LOTE_INSUMO_COSTO_UNITARIO_MAX = 100;
