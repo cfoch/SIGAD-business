@@ -61,9 +61,9 @@ public class GenerarReportes {
             if (session==null)
                 iniciarConexion();
             JasperPrint jprint = JasperFillManager.fillReport(report, parameters, conn);
-            JasperViewer jv = new JasperViewer(jprint, false);
-            jv.setTitle(reportName);
-            jv.setVisible(true);
+//            JasperViewer jv = new JasperViewer(jprint, false);
+//            jv.setTitle(reportName);
+//            jv.setVisible(true);
             //conn.close();
             // exportar PDF
             generarPDF(jprint, rutaFinal, reportName);
